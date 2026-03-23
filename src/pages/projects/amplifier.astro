@@ -1,0 +1,221 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const tags = [
+  'Next.js 15', 'React 19', 'TypeScript', 'Supabase', 'PostgreSQL',
+  'Claude Sonnet 4 (Vision)', 'Claude 3.5 Haiku', 'Canvas API',
+  'Zod', 'Nodemailer', 'Web Crypto API',
+];
+
+const screenshots = [
+  { src: '/images/amplifier/dashboard.png', alt: 'Amplifier dashboard showing overview stats — total images, tag vocabulary size, AI accuracy, and storage used' },
+  { src: '/images/amplifier/upload.png', alt: 'Image upload screen with duplicate detection checking' },
+  { src: '/images/amplifier/gallery.png', alt: 'Uploaded images grid with 22 images pending tagging' },
+  { src: '/images/amplifier/tagger.png', alt: 'AI tagging interface — image preview with tag categories and AI-suggested tags' },
+  { src: '/images/amplifier/analytics.png', alt: 'AI Learning Analytics dashboard showing prompt learning status and per-category accuracy' },
+];
+---
+
+<BaseLayout
+  title="Amplifier — AI Image Tagging System"
+  description="An AI-powered design reference system that connects intelligent image tagging with automated client briefings."
+>
+  <a href="/" class="back-link">&larr; Back</a>
+
+  <header class="case-header">
+    <h1>Amplifier</h1>
+    <p class="case-year">2025</p>
+    <p class="case-context">
+      An AI-powered design reference system that connects intelligent image tagging with automated client briefings.
+    </p>
+  </header>
+
+  <!-- Hero screenshot -->
+  <img class="case-image" src={screenshots[0].src} alt={screenshots[0].alt} loading="eager" />
+
+  <!-- Problem -->
+  <section class="case-section">
+    <h2>The Problem</h2>
+    <p>Design studios face two recurring pain points:</p>
+    <ul>
+      <li><strong>Unorganized reference libraries</strong> — thousands of saved images with no consistent tagging, making them unsearchable when you actually need them</li>
+      <li><strong>Inefficient client onboarding</strong> — lengthy back-and-forth to understand brand vision, then manually curating mood boards from that disorganized library</li>
+    </ul>
+  </section>
+
+  <!-- Solution -->
+  <section class="case-section">
+    <h2>The Solution</h2>
+    <p>Amplifier is two connected systems:</p>
+    <ol>
+      <li><strong>AI Image Tagger</strong> — Upload reference images in bulk. Claude Sonnet analyzes each image and suggests tags across dynamic categories (industry, style, mood, color, etc.). The designer reviews, corrects, and saves. Over time, the AI learns from corrections — tracking frequently missed and over-suggested tags to improve future accuracy.</li>
+      <li><strong>Visual Briefing Tool</strong> — Clients fill out a guided brand questionnaire. Claude Haiku extracts keywords from their responses. Those keywords automatically search the tagged reference library and surface relevant images. Clients favorite the ones that resonate. The complete brief — answers, keywords, selected references — is packaged into an HTML email and sent to the studio.</li>
+    </ol>
+    <p class="case-callout">The tagger builds the library. The briefing tool makes it useful.</p>
+  </section>
+
+  <!-- Screenshots: Upload + Gallery -->
+  <div class="case-image-grid">
+    <img class="case-image" src={screenshots[1].src} alt={screenshots[1].alt} loading="lazy" />
+    <img class="case-image" src={screenshots[2].src} alt={screenshots[2].alt} loading="lazy" />
+  </div>
+
+  <!-- Key Features -->
+  <section class="case-section">
+    <h2>Key Features</h2>
+
+    <h3>AI-Powered Image Analysis</h3>
+    <ul>
+      <li>Claude Sonnet Vision analyzes each image against a configurable vocabulary</li>
+      <li>Prompt caching reduces API response time by ~60–70%</li>
+      <li>Next-image prefetching — AI analyzes the next image while you tag the current one</li>
+      <li>Correction learning — the system tracks where designers disagree with AI and adjusts future prompts</li>
+    </ul>
+  </section>
+
+  <!-- Tagger screenshot -->
+  <img class="case-image" src={screenshots[3].src} alt={screenshots[3].alt} loading="lazy" />
+
+  <section class="case-section">
+    <h3>Smart Duplicate Detection</h3>
+    <ul>
+      <li>Three-tier detection: SHA-256 hash (exact match), perceptual hash (visually similar), filename match</li>
+      <li>Perceptual hashing uses 8x8 grayscale representation with Hamming distance at 90% threshold</li>
+      <li>Catches duplicates before upload, saving storage and preventing confusion</li>
+    </ul>
+  </section>
+
+  <section class="case-section">
+    <h3>Dynamic Vocabulary System</h3>
+    <ul>
+      <li>Categories, tags, storage types, and search weights are all configurable via JSON — no schema changes needed</li>
+      <li>Supports arrays, nested JSONB, and text fields</li>
+      <li>Add new tag categories without touching code</li>
+    </ul>
+  </section>
+
+  <section class="case-section">
+    <h3>Guided Briefing Workflow</h3>
+    <ul>
+      <li>9-step questionnaire covering brand strategy, personality, visual identity, audience, and vision</li>
+      <li>Auto-saves progress to localStorage with resume prompt on return</li>
+      <li>AI keyword extraction from free-form responses</li>
+      <li>Weighted search across the reference library</li>
+      <li>Favorite selection with visual gallery</li>
+      <li>HTML email generation with full brief + curated images</li>
+    </ul>
+  </section>
+
+  <section class="case-section">
+    <h3>Analytics Dashboard</h3>
+    <ul>
+      <li>AI accuracy tracking per category</li>
+      <li>Frequently missed tags (AI under-suggests)</li>
+      <li>Frequently wrong tags (AI over-suggests)</li>
+      <li>Per-image correction analysis</li>
+      <li>Vocabulary usage statistics</li>
+    </ul>
+  </section>
+
+  <!-- Analytics screenshot -->
+  <img class="case-image" src={screenshots[4].src} alt={screenshots[4].alt} loading="lazy" />
+
+  <!-- Architecture -->
+  <section class="case-section">
+    <h2>Architecture</h2>
+    <div class="architecture-block">
+      <pre><code>Client (React)
+  ├── Briefing Flow (public)
+  │     ├── Questionnaire → /api/extract-keywords (Claude Haiku)
+  │     ├── Keywords → /api/search-references (weighted DB search)
+  │     └── Submit → /api/send-briefing (HTML email)
+  │
+  └── Tagger System (auth-protected)
+        ├── Upload → Duplicate Detection (SHA-256 + pHash)
+        ├── Tag → /api/suggest-tags (Claude Sonnet Vision + prompt cache)
+        ├── Save → Supabase (images + tags + corrections)
+        └── Analytics → /api/retrain-prompt (correction analysis)
+
+Supabase
+  ├── PostgreSQL (reference_images, tag_vocabulary, tag_corrections)
+  ├── Auth (email/password, RLS policies)
+  └── Storage (originals + thumbnails)</code></pre>
+    </div>
+  </section>
+
+  <!-- Engineering Highlights -->
+  <section class="case-section">
+    <h2>Engineering Highlights</h2>
+
+    <h3>Prompt Caching Strategy</h3>
+    <p>
+      The vocabulary (which can be large) is placed in the system message with Anthropic's ephemeral cache.
+      The first request in a session pays the full cost, but subsequent image analyses reuse the cached vocabulary
+      — reducing latency by 60–70% and cutting token costs.
+    </p>
+
+    <h3>Correction-Based Learning</h3>
+    <p>
+      Every time a designer overrides the AI's suggestions, the delta is recorded.
+      The analytics engine aggregates corrections to identify patterns — "you frequently miss the 'tech' tag"
+      or "you over-suggest 'minimal' in 40% of images." These insights are injected into the system prompt
+      for future requests, creating a feedback loop without fine-tuning.
+    </p>
+
+    <h3>72% Component Code Reduction</h3>
+    <p>
+      The original ImageTaggerClient was a 2,400-line monolith. It was decomposed into 9 custom hooks
+      (useAISuggestions, useImageUpload, useDuplicateDetection, etc.) and focused UI components,
+      reducing the main component to ~640 lines while improving testability and reuse.
+    </p>
+
+    <h3>Security Hardening</h3>
+    <ul>
+      <li>Defense-in-depth: both middleware-level and per-route authentication using getUser() (server-verified, not just JWT)</li>
+      <li>All API inputs validated with Zod</li>
+      <li>HTML escaping on all email template interpolation points (XSS prevention)</li>
+      <li>Prompt injection prevention by separating system instructions from user data</li>
+      <li>Rate limiting on public endpoints</li>
+      <li>Generic error responses (no internal details leaked)</li>
+    </ul>
+  </section>
+
+  <!-- Tech Stack -->
+  <section class="case-section">
+    <h2>Tech Stack</h2>
+    <div class="tech-table">
+      <div class="tech-row"><span class="tech-label">Framework</span><span>Next.js 15 (App Router), React 19, TypeScript</span></div>
+      <div class="tech-row"><span class="tech-label">Styling</span><span>Tailwind CSS 4, Framer Motion</span></div>
+      <div class="tech-row"><span class="tech-label">AI</span><span>Claude Sonnet 4 (vision), Claude 3.5 Haiku (text)</span></div>
+      <div class="tech-row"><span class="tech-label">Database</span><span>Supabase (PostgreSQL + Auth + Storage)</span></div>
+      <div class="tech-row"><span class="tech-label">Validation</span><span>Zod schemas on all API inputs</span></div>
+      <div class="tech-row"><span class="tech-label">Email</span><span>Nodemailer with HTML templates</span></div>
+      <div class="tech-row"><span class="tech-label">Hashing</span><span>Web Crypto API (SHA-256), custom perceptual hash</span></div>
+    </div>
+    <div class="tags">
+      {tags.map((tag) => <span class="tag">{tag}</span>)}
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section class="case-section">
+    <h2>Results</h2>
+    <ul>
+      <li><strong>From unstructured to searchable</strong> — reference images tagged and discoverable by keyword in seconds</li>
+      <li><strong>Client onboarding time reduced</strong> — guided questionnaire replaces unstructured emails and calls</li>
+      <li><strong>AI accuracy improves over time</strong> — correction tracking creates a self-improving tagging system</li>
+      <li><strong>Zero manual mood board curation</strong> — briefing tool auto-surfaces relevant references from the library</li>
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .case-section h3 {
+    margin-top: 32px;
+    margin-bottom: 8px;
+  }
+
+  .case-section h3:first-child {
+    margin-top: 0;
+  }
+</style>

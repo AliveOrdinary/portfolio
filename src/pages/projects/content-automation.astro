@@ -1,0 +1,255 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const tags = [
+  'React 19', 'Vite', 'Tailwind CSS 4', 'Fabric.js 7',
+  'Radix UI', 'Supabase', 'PostgreSQL', 'n8n',
+  'Gemini 2.5 Flash', 'Netlify', 'Cloudflare Access',
+];
+
+const screenshots = {
+  editor: '/images/content-automation/editor-desktop.png',
+  editorDetail: '/images/content-automation/editor-desktop-2.png',
+  n8nGenerate: '/images/content-automation/n8n-generate.png',
+  n8nPublish: '/images/content-automation/n8n-publish.png',
+  mobileTools: '/images/content-automation/mobile-tools.jpeg',
+  mobileCaption: '/images/content-automation/mobile-caption.jpeg',
+  mobileGenerate: '/images/content-automation/mobile-generate.jpeg',
+};
+---
+
+<BaseLayout
+  title="Sacred Cosmos Dashboard — Content Automation Platform"
+  description="AI-powered content choreography platform for astrology social media — automated generation, visual design editor, and one-click publishing."
+>
+  <a href="/" class="back-link">&larr; Back</a>
+
+  <header class="case-header">
+    <h1>Sacred Cosmos Dashboard</h1>
+    <p class="case-year">2026</p>
+    <p class="case-context">
+      AI-powered content choreography platform for astrology social media.
+    </p>
+  </header>
+
+  <!-- Hero screenshot -->
+  <img class="case-image" src={screenshots.editor} alt="Cosmic Editor desktop view — canvas tools panel, design canvas with fire element carousel, slide tray, and content generators" loading="eager" />
+
+  <!-- Overview -->
+  <section class="case-section">
+    <h2>Overview</h2>
+    <p>
+      An end-to-end content creation and publishing platform that transforms AI-generated astrology content
+      into visually polished Instagram carousels and Facebook posts — without writing a single word manually.
+      The system combines automated content generation, a visual design editor, and one-click social media
+      publishing into a seamless workflow.
+    </p>
+  </section>
+
+  <!-- Problem -->
+  <section class="case-section">
+    <h2>The Problem</h2>
+    <p>
+      Running a daily astrology social media brand requires producing 10+ unique content pieces per day —
+      horoscopes for 12 zodiac signs, element-based posts, manifestation content, stories, and weekly forecasts.
+      Manually writing, designing, and publishing this volume is unsustainable for a solo creator.
+    </p>
+  </section>
+
+  <!-- Solution -->
+  <section class="case-section">
+    <h2>The Solution</h2>
+    <p>A three-layer architecture that fully automates the content pipeline:</p>
+    <ol>
+      <li><strong>n8n Automation Layer</strong> — AI workflows generate all content daily (horoscopes, element posts, manifestation themes, blog articles, video scripts) and store it in a structured database.</li>
+      <li><strong>Visual Design Layer</strong> — A Fabric.js canvas editor lets me generate multi-slide carousels with one click, customize backgrounds, add AI-generated images, and fine-tune every slide.</li>
+      <li><strong>Publishing Layer</strong> — Exports slides, uploads to cloud storage, and publishes directly to Instagram and Facebook via the Graph API — all from one button.</li>
+    </ol>
+  </section>
+
+  <!-- n8n Workflows -->
+  <section class="case-section">
+    <h2>n8n Workflow Automation</h2>
+
+    <img class="case-image" src={screenshots.n8nGenerate} alt="n8n content generation workflow — schedule trigger, ProKerala API, AI generators with Sunday branching, Supabase write" loading="lazy" />
+
+    <p>The content generation workflow runs daily at 6 AM and:</p>
+    <ul>
+      <li>Generates horoscopes, element messages, and manifestation content via AI</li>
+      <li>Structures 70+ data fields into a single payload</li>
+      <li>Writes to Supabase with service-role authentication</li>
+      <li>On Sundays, additionally generates weekly forecasts and challenges</li>
+    </ul>
+
+    <img class="case-image" src={screenshots.n8nPublish} alt="n8n publish workflow — webhook receives carousel data, posts to Instagram and Facebook via Graph API" loading="lazy" />
+
+    <p>The publish workflow receives carousel data from the dashboard and:</p>
+    <ul>
+      <li>Accepts image URLs and caption text via webhook</li>
+      <li>Posts carousels to Instagram via the Graph API</li>
+      <li>Cross-posts to Facebook Pages</li>
+      <li>Runs behind Cloudflare Zero Trust for security</li>
+    </ul>
+  </section>
+
+  <!-- Key Features -->
+  <section class="case-section">
+    <h2>Key Features</h2>
+
+    <h3>9+ One-Click Carousel Generators</h3>
+    <ul>
+      <li>Daily sign horoscopes (Parts 1 & 2, covering all 12 signs)</li>
+      <li>Weekly forecasts (auto-enabled on Sundays)</li>
+      <li>Element-themed posts (Fire, Earth, Air, Water)</li>
+      <li>Manifestation carousels with themed CTAs</li>
+      <li>Instagram Stories (vertical format)</li>
+      <li>Daily & weekly overview cards</li>
+      <li>Spiritual practice and weekly challenge cards</li>
+    </ul>
+
+    <h3>Full Visual Editor</h3>
+    <ul>
+      <li>Canvas-based design with text, shapes, icons, and images</li>
+      <li>20+ gradient/color background presets</li>
+      <li>Drag-and-drop image support</li>
+      <li>Multi-slide management with thumbnails</li>
+      <li>Multiple canvas sizes (square, portrait, story)</li>
+    </ul>
+  </section>
+
+  <!-- Desktop detail screenshot -->
+  <img class="case-image" src={screenshots.editorDetail} alt="Editor detail — content generator buttons, AI image generator with Gemini, caption editor with social/element/weekly variants, and publish button" loading="lazy" />
+
+  <section class="case-section">
+    <h3>AI Image Generation</h3>
+    <ul>
+      <li>Google Gemini integration for cosmic-themed imagery</li>
+      <li>Prompt pre-filled from daily content data</li>
+      <li>One-click "apply to all slides" for consistent visual identity</li>
+    </ul>
+
+    <h3>Smart Caption System</h3>
+    <ul>
+      <li>Multiple caption variants (social post, element CTAs, weekly)</li>
+      <li>Live editing with character count</li>
+      <li>One-click copy to clipboard</li>
+    </ul>
+
+    <h3>Direct Social Publishing</h3>
+    <ul>
+      <li>Platform selection (Instagram, Facebook, or both)</li>
+      <li>Automatic image export, upload, and webhook trigger</li>
+      <li>Real-time progress feedback during publish</li>
+    </ul>
+  </section>
+
+  <!-- Mobile views -->
+  <section class="case-section">
+    <h2>Mobile-First Design</h2>
+    <p>Lightroom-style layout with a bottom tab bar for touch-optimized editing on any device.</p>
+    <div class="mobile-grid">
+      <figure>
+        <img src={screenshots.mobileGenerate} alt="Mobile generate tab — one-click carousel generator buttons" loading="lazy" />
+        <figcaption>Generate</figcaption>
+      </figure>
+      <figure>
+        <img src={screenshots.mobileTools} alt="Mobile tools tab — background presets, gradients, and canvas tools" loading="lazy" />
+        <figcaption>Tools</figcaption>
+      </figure>
+      <figure>
+        <img src={screenshots.mobileCaption} alt="Mobile caption tab — caption editor with Instagram and Facebook publish" loading="lazy" />
+        <figcaption>Caption & Publish</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Architecture -->
+  <section class="case-section">
+    <h2>Architecture</h2>
+    <div class="architecture-block">
+      <pre><code>┌──────────────────┐     ┌──────────────────┐     ┌──────────────────┐
+│   n8n Workflows  │     │  React Dashboard │     │  Social Platforms│
+│                  │     │                  │     │                  │
+│  Daily AI        │────&gt;│  Fabric.js       │────&gt;│  Instagram       │
+│  Content Gen     │     │  Canvas Editor   │     │  (Carousel API)  │
+│                  │     │                  │     │                  │
+│  Publish         │&lt;────│  Caption Editor  │     │  Facebook        │
+│  Webhook         │     │  + Publisher     │     │  (Pages API)     │
+└────────┬─────────┘     └────────┬─────────┘     └──────────────────┘
+         │                        │
+         ▼                        ▼
+┌──────────────────┐     ┌──────────────────┐
+│    Supabase      │     │     Netlify      │
+│  cosmic_data DB  │     │  Serverless Fn   │
+│  Auth + Storage  │     │  (CF Access      │
+│  Edge Functions  │     │   header proxy)  │
+└──────────────────┘     └──────────────────┘</code></pre>
+    </div>
+  </section>
+
+  <!-- Security -->
+  <section class="case-section">
+    <h2>Security & Infrastructure</h2>
+    <ul>
+      <li><strong>Zero client-side secrets</strong> — Cloudflare Access tokens and API keys are injected server-side via Netlify functions and Supabase Edge Functions</li>
+      <li><strong>Row-Level Security</strong> — Supabase RLS ensures authenticated users can only read content; only n8n (service role) can write</li>
+      <li><strong>Fire-and-forget publishing</strong> — Dashboard returns immediately after webhook delivery; n8n processes asynchronously</li>
+    </ul>
+  </section>
+
+  <!-- Tech Stack -->
+  <section class="case-section">
+    <h2>Tech Stack</h2>
+    <div class="tech-table">
+      <div class="tech-row"><span class="tech-label">Frontend</span><span>React 19, Vite, Tailwind CSS 4, Fabric.js 7</span></div>
+      <div class="tech-row"><span class="tech-label">UI</span><span>Radix UI, Lucide Icons</span></div>
+      <div class="tech-row"><span class="tech-label">Backend</span><span>Supabase (PostgreSQL, Auth, Storage, Edge Functions)</span></div>
+      <div class="tech-row"><span class="tech-label">Automation</span><span>n8n (self-hosted, daily AI generation + Graph API publishing)</span></div>
+      <div class="tech-row"><span class="tech-label">AI</span><span>Google Gemini 2.5 Flash (image generation)</span></div>
+      <div class="tech-row"><span class="tech-label">Hosting</span><span>Netlify (static build + serverless functions)</span></div>
+      <div class="tech-row"><span class="tech-label">Security</span><span>Cloudflare Access (Zero Trust), Supabase RLS</span></div>
+    </div>
+    <div class="tags">
+      {tags.map((tag) => <span class="tag">{tag}</span>)}
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section class="case-section">
+    <h2>Results</h2>
+    <ul>
+      <li><strong>10+ content pieces generated daily</strong> with zero manual writing</li>
+      <li><strong>One-click carousel creation</strong> reduces design time from 30+ minutes to under 2 minutes</li>
+      <li><strong>Direct publishing</strong> eliminates the download-upload-caption loop entirely</li>
+      <li><strong>Mobile-responsive editor</strong> enables publishing from anywhere</li>
+    </ul>
+  </section>
+
+  <!-- What I Learned -->
+  <section class="case-section">
+    <h2>What I Learned</h2>
+    <ul>
+      <li>Designing a canvas editor with Fabric.js and managing multi-slide state serialization</li>
+      <li>Building serverless proxy functions for secure third-party API integration</li>
+      <li>Architecting n8n workflows that bridge AI generation with social media APIs</li>
+      <li>Implementing Cloudflare Zero Trust in a serverless deployment pipeline</li>
+    </ul>
+  </section>
+
+  <!-- Live link -->
+  <section class="case-section">
+    <h2>Live</h2>
+    <p><a href="https://insights.sacredcosmos.org/" target="_blank" rel="noopener noreferrer">insights.sacredcosmos.org</a> (blog output from the content pipeline)</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .case-section h3 {
+    margin-top: 32px;
+    margin-bottom: 8px;
+  }
+
+  .case-section h3:first-child {
+    margin-top: 0;
+  }
+</style>

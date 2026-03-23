@@ -1,0 +1,110 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const skills = [
+  'JavaScript', 'TypeScript', 'React', 'Next.js', 'Node.js',
+  'Supabase', 'PostgreSQL', 'n8n', 'Git', 'Netlify',
+  'Canvas API', 'Fabric.js', 'Anthropic Claude API', 'Gemini API',
+];
+
+const projects = [
+  {
+    name: 'Amplifier — AI Image Tagging System',
+    description: 'AI-powered design reference system connecting intelligent image tagging with automated client briefings.',
+    tags: ['Next.js', 'React', 'Claude Vision API', 'Supabase', 'Canvas API'],
+    link: '/projects/amplifier',
+    linkText: 'View case study',
+    external: false,
+  },
+  {
+    name: 'Sacred Cosmos — Content Automation Platform',
+    description: 'AI-powered content choreography platform — automated generation, visual canvas editor, and one-click Instagram/Facebook publishing.',
+    tags: ['React', 'Fabric.js', 'n8n', 'Supabase', 'Gemini API', 'Netlify'],
+    link: '/projects/content-automation',
+    linkText: 'View case study',
+    external: false,
+  },
+  {
+    name: 'Francis — Portfolio',
+    description: 'Responsive Next.js portfolio for an Art Director with image optimization and zero-cost CMS.',
+    tags: ['Next.js', 'Netlify CMS', 'Netlify'],
+    link: 'https://francisdes.com',
+    linkText: 'Visit site',
+    external: true,
+  },
+  {
+    name: 'Eldhose Kuriyan — Portfolio',
+    description: 'Recreated from Framer to vanilla JavaScript with enhanced features and improved performance.',
+    tags: ['JavaScript', 'HTML', 'CSS', 'Netlify'],
+    link: 'https://eldhosekuriyan.com',
+    linkText: 'Visit site',
+    external: true,
+  },
+];
+---
+
+<BaseLayout title="Navaneeth Krishnan — Full-Stack Developer">
+  <!-- Top bar -->
+  <nav class="topbar">
+    <span class="topbar-name">Navaneeth Krishnan</span>
+    <a class="topbar-email" href="mailto:vrnavaneeth135@gmail.com">vrnavaneeth135@gmail.com</a>
+  </nav>
+
+  <!-- Hero -->
+  <section class="section hero">
+    <h1>Navaneeth Krishnan</h1>
+    <p class="subtitle">Full-Stack Developer</p>
+    <p class="tagline">Building web apps, automation workflows, and AI-integrated tools.</p>
+    <div class="hero-links">
+      <a href="https://github.com/AliveOrdinary" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <span> &middot; </span>
+      <a href="https://linkedin.com/in/vrnavaneeth" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <span> &middot; </span>
+      <a href="mailto:vrnavaneeth135@gmail.com">Email</a>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="section">
+    <p class="section-label">About</p>
+    <p class="about-text">
+      Full-Stack Developer with 2+ years of experience. Background in Physics and Anthropology.
+      I enjoy using technology to solve real problems — from automating content pipelines to building
+      self-learning AI tools. Based in Toronto, open to full-time roles.
+    </p>
+    <p class="skills-line">{skills.join(', ')}</p>
+  </section>
+
+  <!-- Projects -->
+  <section class="section">
+    <p class="section-label">Projects</p>
+    <div class="project-list">
+      {projects.map((project, i) => (
+        <div class="project-item">
+          <span class="project-number">{String(i + 1).padStart(2, '0')}</span>
+          <div class="project-content">
+            <h3 class="project-name">{project.name}</h3>
+            <p class="project-desc">{project.description}</p>
+            <p class="project-tech">{project.tags.join(', ')}</p>
+            <a
+              class="project-link"
+              href={project.link}
+              {...(project.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            >
+              {project.linkText} &rarr;
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="section">
+    <p class="section-label">Contact</p>
+    <h2 style="font-size: 28px; margin-bottom: 24px;">Let's work together</h2>
+    <a class="contact-email" href="mailto:vrnavaneeth135@gmail.com">vrnavaneeth135@gmail.com</a>
+    <a class="contact-secondary" href="https://linkedin.com/in/vrnavaneeth" target="_blank" rel="noopener noreferrer">linkedin.com/in/vrnavaneeth</a>
+  </section>
+
+</BaseLayout>
