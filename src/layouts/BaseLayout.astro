@@ -2,9 +2,10 @@
 interface Props {
   title: string;
   description?: string;
+  page?: string;
 }
 
-const { title, description = 'Full-Stack Developer building web apps, automation workflows, and AI-integrated tools.' } = Astro.props;
+const { title, description = 'Full-Stack Developer building web apps, automation workflows, and AI-integrated tools.', page } = Astro.props;
 ---
 
 <html lang="en">
@@ -16,11 +17,28 @@ const { title, description = 'Full-Stack Developer building web apps, automation
     <meta name="generator" content={Astro.generator} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@300;400&family=Unbounded:wght@300;400;700&display=swap" rel="stylesheet" />
     <title>{title}</title>
+    <script is:inline>document.documentElement.classList.add('js')</script>
   </head>
-  <body>
+  <body data-page={page}>
     <slot />
+    <script is:inline>
+      (function() {
+        if (document.body.dataset.page !== 'case-study') return;
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in-view');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('.case-section, .case-image-grid, .case-section ~ .case-image').forEach(function(el) {
+          observer.observe(el);
+        });
+      })();
+    </script>
   </body>
 </html>
 

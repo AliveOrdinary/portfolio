@@ -1,329 +1,652 @@
-/* Reset */
+/* ==========================================================================
+   Reset
+   ========================================================================== */
+
 *,
 *::before,
 *::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
-/* Variables */
+/* ==========================================================================
+   Tokens
+   ========================================================================== */
+
 :root {
-  --color-text: #111111;
-  --color-text-muted: #444444;
-  --color-text-faint: #777777;
-  --color-bg: #ffffff;
-  --color-accent: #0092b8;
-  --color-divider: #f0f0f0;
-  --color-number: #c0c0c0;
-  --font-serif: 'DM Serif Display', Georgia, serif;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --max-width: 900px;
+  --ink: oklch(0.10 0.015 240);
+  --paper: oklch(0.87 0.01 240);
+  --muted: oklch(0.38 0.01 240);
+  --accent: oklch(0.42 0.13 230);
+  --accent-light: oklch(0.84 0.04 230);
+  --rule: oklch(0.70 0.01 240);
+  --mono: 'Martian Mono', monospace;
+  --display: 'Unbounded', sans-serif;
 }
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
 
 html {
-  font-family: var(--font-sans);
-  font-weight: 400;
-  color: var(--color-text);
-  background: var(--color-bg);
-  line-height: 1.7;
-  font-size: 16px;
-  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
 }
 
 body {
-  max-width: var(--max-width);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-weight: 300;
+  font-size: 16px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 0 48px;
-  padding-bottom: 120px;
-}
-
-a {
-  color: var(--color-accent);
-  text-decoration: none;
-}
-
-a:hover {
-  color: var(--color-accent);
-}
-
-h1, h2 {
-  font-family: var(--font-serif);
-  font-weight: 400;
-}
-
-h3 {
-  font-family: var(--font-sans);
-  font-weight: 500;
-  font-size: 1rem;
+  padding: 0 2rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 p {
-  color: var(--color-text-muted);
+  color: var(--muted);
 }
 
 strong {
-  font-weight: 500;
-  color: var(--color-text);
+  font-weight: 400;
+  color: var(--ink);
 }
 
-/* Top bar */
-.topbar {
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ==========================================================================
+   Nav
+   ========================================================================== */
+
+nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 0;
-  font-size: 14px;
-  margin-bottom: 80px;
+  padding: 2rem 0 1.5rem;
+  border-bottom: 1px solid var(--rule);
 }
 
-.topbar-name {
-  color: var(--color-text);
+.nav-name {
+  font-family: var(--display);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--ink);
 }
 
-.topbar-email {
-  color: var(--color-text-muted);
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
 }
 
-.topbar-email:hover {
-  color: var(--color-accent);
+.nav-links a {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  transition: color 0.15s;
 }
 
-/* Section spacing */
-.section {
-  margin-bottom: 120px;
+.nav-links a:hover {
+  color: var(--ink);
 }
 
-.section-label {
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: var(--color-accent);
-  margin-bottom: 24px;
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+
+.hero {
+  padding: 7rem 0 5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: end;
 }
 
-/* Hero */
-.hero h1 {
-  font-size: clamp(48px, 8vw, 96px);
+.hero-name {
+  font-family: var(--display);
+  font-size: clamp(2.8rem, 6vw, 4.8rem);
+  font-weight: 700;
   line-height: 1.05;
-  letter-spacing: -0.02em;
-  margin-bottom: 16px;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin-bottom: 2.5rem;
 }
 
-.hero .subtitle {
-  font-family: var(--font-sans);
-  font-size: 18px;
-  color: var(--color-text-muted);
-  margin-bottom: 4px;
+.hero-tagline {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+  margin-bottom: 0.75rem;
 }
 
-.hero .tagline {
-  font-family: var(--font-sans);
-  font-size: 16px;
-  color: var(--color-text-muted);
-  margin-bottom: 20px;
+.hero-sub {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.75;
+  max-width: 38ch;
+}
+
+.hero-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1rem;
+  padding-bottom: 0.25rem;
 }
 
 .hero-links {
-  font-size: 15px;
-  color: var(--color-text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
 }
 
 .hero-links a {
-  color: var(--color-text-muted);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  transition: color 0.15s;
 }
 
 .hero-links a:hover {
-  color: var(--color-accent);
+  color: var(--accent);
 }
 
-/* About */
-.about-text {
-  max-width: 600px;
-  line-height: 1.75;
+/* Status pill */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent-light);
+  color: var(--accent);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  padding: 5px 12px;
+  border-radius: 2px;
+  font-family: var(--mono);
 }
 
-.skills-line {
-  font-size: 14px;
-  color: var(--color-text-muted);
-  margin-top: 24px;
-  line-height: 1.9;
+.status-dot {
+  width: 5px;
+  height: 5px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
 }
 
-/* Projects */
-.project-list {
-  display: flex;
-  flex-direction: column;
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
 }
 
-.project-item {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  gap: 32px;
-  padding: 48px 0;
-  border-bottom: 1px solid var(--color-divider);
+/* ==========================================================================
+   Dividers & Labels
+   ========================================================================== */
+
+.section-rule {
+  height: 1px;
+  background: var(--rule);
 }
 
-.project-item:first-child {
-  padding-top: 0;
+.section-label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  font-family: var(--mono);
+  padding: 2rem 0 0;
+  margin-bottom: 3rem;
+  text-transform: uppercase;
 }
 
-.project-item:last-child {
-  border-bottom: none;
+/* ==========================================================================
+   Projects
+   ========================================================================== */
+
+.projects {
+  padding: 0 0 5rem;
 }
 
-.project-number {
-  font-family: var(--font-serif);
-  font-size: clamp(64px, 10vw, 120px);
-  line-height: 0.85;
-  color: var(--color-number);
-  flex-shrink: 0;
-  width: 120px;
+.project-row {
+  display: grid;
+  grid-template-columns: 140px 1fr auto;
+  align-items: start;
+  gap: 0 2rem;
+  padding: 2.5rem 0;
+  border-bottom: 1px solid var(--rule);
+  transition: background 0.2s;
+}
+
+.project-row:first-of-type {
+  border-top: 1px solid var(--rule);
+}
+
+.project-row:hover {
+  background: color-mix(in oklch, var(--paper), var(--ink) 3%);
+}
+
+.project-row:hover .project-num {
+  color: var(--accent);
+}
+
+.project-num {
+  font-family: var(--display);
+  font-size: clamp(3rem, 7vw, 5rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--rule);
+  transition: color 0.2s;
+  letter-spacing: -0.04em;
   user-select: none;
+  padding-top: 0.1em;
 }
 
-.project-content {
-  padding-top: 12px;
-  flex: 1;
-  min-width: 0;
+.project-type {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 0.85rem;
 }
 
 .project-name {
-  font-family: var(--font-serif);
+  font-family: var(--display);
+  font-size: clamp(1rem, 2.2vw, 1.4rem);
   font-weight: 400;
-  font-size: 28px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
   line-height: 1.2;
-  color: var(--color-text);
-  margin-bottom: 8px;
 }
 
 .project-desc {
-  font-size: 16px;
-  color: var(--color-text-muted);
-  line-height: 1.7;
-  max-width: 500px;
-  margin-bottom: 12px;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.8;
+  max-width: 52ch;
+  margin-bottom: 1rem;
 }
 
-.project-tech {
-  font-size: 13px;
-  color: var(--color-text-faint);
-  margin-bottom: 16px;
+.project-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .project-link {
-  font-size: 14px;
-  color: var(--color-accent);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  padding-top: 0.5rem;
+  transition: color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .project-link:hover {
-  text-decoration: underline;
+  color: var(--accent);
 }
 
-/* Contact */
+.arrow {
+  font-size: 14px;
+  transition: transform 0.15s;
+  display: inline-block;
+}
+
+.project-link:hover .arrow {
+  transform: translate(2px, -2px);
+}
+
+/* ==========================================================================
+   Tags (shared across homepage + case studies)
+   ========================================================================== */
+
+.tag {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  border: 1px solid var(--rule);
+  padding: 3px 8px;
+  border-radius: 2px;
+  font-family: var(--mono);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 1rem;
+}
+
+/* ==========================================================================
+   About
+   ========================================================================== */
+
+.about {
+  padding: 0 0 5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+}
+
+.about-text {
+  font-size: 14px;
+  line-height: 1.85;
+  color: var(--muted);
+  max-width: 50ch;
+}
+
+.about-text + .about-text {
+  margin-top: 1.25rem;
+}
+
+.stack-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.stack-row-label {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--rule);
+  font-family: var(--mono);
+  margin-bottom: 0.4rem;
+}
+
+.stack-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+/* ==========================================================================
+   Contact
+   ========================================================================== */
+
+.contact {
+  padding: 4rem 0 5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.contact-heading {
+  font-family: var(--display);
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--ink);
+  max-width: 14ch;
+}
+
+.contact-heading span {
+  color: var(--accent);
+}
+
+.contact-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
 .contact-email {
-  display: block;
-  font-family: var(--font-serif);
-  font-size: 32px;
-  color: var(--color-text);
-  text-decoration: none;
-  margin-bottom: 12px;
-  line-height: 1.3;
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+  transition: color 0.15s;
 }
 
 .contact-email:hover {
-  color: var(--color-accent);
+  color: var(--accent);
 }
 
-.contact-secondary {
-  font-size: 15px;
-  color: var(--color-text-muted);
+.contact-socials {
+  display: flex;
+  gap: 1.5rem;
 }
 
-.contact-secondary:hover {
-  color: var(--color-accent);
+.contact-socials a {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color 0.15s;
 }
 
-/* Case study */
+.contact-socials a:hover {
+  color: var(--ink);
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+footer {
+  border-top: 1px solid var(--rule);
+  padding: 1.5rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+footer span {
+  font-size: 10px;
+  color: var(--rule);
+  letter-spacing: 0.06em;
+  font-family: var(--mono);
+}
+
+/* ==========================================================================
+   Entrance — homepage only
+   ========================================================================== */
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+[data-page="home"] > * {
+  animation: enter 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+[data-page="home"] > :nth-child(1) { animation-delay: 0s; }
+[data-page="home"] > :nth-child(2) { animation-delay: 0.05s; }
+[data-page="home"] > :nth-child(3) { animation-delay: 0.08s; }
+[data-page="home"] > :nth-child(4) { animation-delay: 0.12s; }
+[data-page="home"] > :nth-child(5) { animation-delay: 0.16s; }
+[data-page="home"] > :nth-child(6) { animation-delay: 0.2s; }
+[data-page="home"] > :nth-child(7) { animation-delay: 0.24s; }
+[data-page="home"] > :nth-child(8) { animation-delay: 0.28s; }
+[data-page="home"] > :nth-child(9) { animation-delay: 0.32s; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-page="home"] > *,
+  [data-page="case-study"] .back-link,
+  [data-page="case-study"] .case-header,
+  [data-page="case-study"] .case-header + .case-image {
+    animation: none;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  .js [data-page="case-study"] .case-section,
+  .js [data-page="case-study"] .case-image-grid,
+  .js [data-page="case-study"] .case-section ~ .case-image {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+   Case Study — Entrance
+   ========================================================================== */
+
+[data-page="case-study"] .back-link {
+  animation: enter 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+[data-page="case-study"] .case-header {
+  animation: enter 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.06s;
+}
+
+[data-page="case-study"] .case-header + .case-image {
+  animation: enter 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.15s;
+}
+
+/* ==========================================================================
+   Scroll Reveal — Case Studies
+   ========================================================================== */
+
+.js [data-page="case-study"] .case-section,
+.js [data-page="case-study"] .case-image-grid,
+.js [data-page="case-study"] .case-section ~ .case-image {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.js [data-page="case-study"] .case-section.in-view,
+.js [data-page="case-study"] .case-image-grid.in-view,
+.js [data-page="case-study"] .case-section ~ .case-image.in-view {
+  opacity: 1;
+  transform: none;
+}
+
+/* ==========================================================================
+   Case Study — Header
+   ========================================================================== */
+
 .back-link {
-  display: inline-block;
-  font-size: 14px;
-  margin-bottom: 64px;
-  color: var(--color-text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  margin-bottom: 4rem;
+  margin-top: 2rem;
+  color: var(--muted);
+  transition: color 0.15s;
 }
 
 .back-link:hover {
-  color: var(--color-accent);
+  color: var(--ink);
 }
 
 .case-header {
-  margin-bottom: 64px;
+  margin-bottom: 3rem;
 }
 
 .case-header h1 {
-  font-size: clamp(36px, 6vw, 72px);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  margin-bottom: 8px;
+  font-family: var(--display);
+  font-size: clamp(2.2rem, 6vw, 3.8rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.5rem;
 }
 
 .case-year {
-  font-size: 14px;
-  color: var(--color-text-muted);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
 .case-context {
-  font-size: 18px;
-  color: var(--color-text-muted);
-  margin-top: 16px;
-  max-width: 640px;
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 1rem;
+  max-width: 55ch;
+  line-height: 1.8;
 }
 
+/* ==========================================================================
+   Case Study — Sections
+   ========================================================================== */
+
 .case-section {
-  margin-bottom: 64px;
+  margin-bottom: 3.5rem;
 }
 
 .case-section h2 {
-  font-size: 28px;
-  margin-bottom: 20px;
+  font-family: var(--display);
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+  color: var(--ink);
 }
 
 .case-section h3 {
-  font-size: 17px;
-  font-weight: 500;
-  color: var(--color-text);
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.case-section h3:first-child {
+  margin-top: 0;
 }
 
 .case-section p {
-  font-size: 16px;
-  max-width: 640px;
-  line-height: 1.75;
+  font-size: 14px;
+  max-width: 58ch;
+  line-height: 1.85;
 }
 
 .case-section p + p {
-  margin-top: 16px;
+  margin-top: 1rem;
 }
 
 .case-section p + ul,
 .case-section p + ol {
-  margin-top: 12px;
+  margin-top: 0.75rem;
 }
 
 .case-section ul,
 .case-section ol {
   padding-left: 1.25rem;
-  color: var(--color-text-muted);
-  font-size: 16px;
-  line-height: 1.75;
-  max-width: 640px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.85;
+  max-width: 58ch;
 }
 
 .case-section ul li,
 .case-section ol li {
-  margin-bottom: 10px;
+  margin-bottom: 0.5rem;
   padding-left: 4px;
 }
 
@@ -332,61 +655,69 @@ strong {
   margin-bottom: 0;
 }
 
-/* Case images */
+.case-callout {
+  margin-top: 1rem;
+  font-style: italic;
+  color: var(--ink);
+  font-size: 13px;
+}
+
+/* ==========================================================================
+   Case Study — Images
+   ========================================================================== */
+
 .case-image {
   width: 100%;
-  border-radius: 4px;
-  margin-bottom: 64px;
+  margin-bottom: 3rem;
 }
 
 .case-image-grid {
   display: grid;
-  gap: 16px;
-  margin-bottom: 64px;
+  gap: 1rem;
+  margin-bottom: 3rem;
 }
 
 .case-image-grid .case-image {
   margin-bottom: 0;
 }
 
-.case-callout {
-  margin-top: 16px;
-  font-style: italic;
-  color: var(--color-text);
-}
+/* ==========================================================================
+   Case Study — Architecture Block
+   ========================================================================== */
 
-/* Architecture block */
 .architecture-block {
-  background: #111111;
-  color: #d4d4d4;
-  border-radius: 4px;
-  padding: 32px;
+  background: var(--ink);
+  color: oklch(0.78 0.008 240);
+  padding: 2rem;
   overflow-x: auto;
 }
 
 .architecture-block pre {
   margin: 0;
-  font-size: 13px;
-  line-height: 1.6;
-  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 12px;
+  line-height: 1.65;
+  font-family: var(--mono);
 }
 
 .architecture-block code {
   font-family: inherit;
 }
 
-/* Tech table */
+/* ==========================================================================
+   Case Study — Tech Table
+   ========================================================================== */
+
 .tech-table {
   display: flex;
   flex-direction: column;
-  max-width: 640px;
+  max-width: 540px;
 }
 
 .tech-row {
   display: flex;
-  font-size: 14px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--color-divider);
+  font-size: 13px;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--rule);
   line-height: 1.6;
 }
 
@@ -395,40 +726,27 @@ strong {
 }
 
 .tech-label {
-  width: 120px;
+  width: 100px;
   flex-shrink: 0;
-  font-weight: 500;
-  color: var(--color-text);
-  font-size: 13px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--rule);
 }
 
 .tech-row span:last-child {
-  color: var(--color-text-muted);
+  color: var(--muted);
 }
 
-/* Tags — used in case studies for tech stack */
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 16px;
-}
+/* ==========================================================================
+   Case Study — Mobile Grid
+   ========================================================================== */
 
-.tag {
-  font-size: 12px;
-  color: var(--color-text-faint);
-}
-
-.tag:not(:last-child)::after {
-  content: ',';
-}
-
-/* Mobile grid (case study) */
 .mobile-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-top: 16px;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .mobile-grid figure {
@@ -437,59 +755,93 @@ strong {
 
 .mobile-grid img {
   width: 100%;
-  border-radius: 4px;
 }
 
 .mobile-grid figcaption {
   text-align: center;
-  font-size: 13px;
-  color: var(--color-text-muted);
-  margin-top: 8px;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-top: 0.5rem;
+  font-family: var(--mono);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 620px) {
   body {
-    padding: 0 24px;
-    padding-bottom: 80px;
+    padding: 0 1.25rem;
   }
 
-  .topbar {
-    margin-bottom: 48px;
+  /* Touch targets — minimum 44px tap area */
+  .nav-links a,
+  .hero-links a,
+  .back-link {
+    padding: 0.5rem 0;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
   }
 
-  .section {
-    margin-bottom: 80px;
+  .nav-links {
+    gap: 1rem;
   }
 
-  .project-number {
-    font-size: clamp(48px, 8vw, 80px);
-    width: 72px;
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    padding: 4rem 0 3rem;
   }
 
-  .project-item {
-    gap: 20px;
-    padding: 36px 0;
+  .hero-right {
+    align-items: flex-start;
   }
 
-  .project-name {
-    font-size: 22px;
+  .hero-links {
+    align-items: flex-start;
   }
 
-  .contact-email {
-    font-size: 24px;
+  .about {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .contact {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+
+  .contact-right {
+    align-items: flex-start;
+  }
+
+  .project-row {
+    grid-template-columns: 48px 1fr;
+  }
+
+  .project-num {
+    font-size: clamp(1.8rem, 6vw, 3rem);
+  }
+
+  .project-link {
+    grid-column: 2;
+    padding: 0.5rem 0;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
   }
 
   .case-header h1 {
-    font-size: clamp(28px, 6vw, 48px);
-  }
-
-  .case-section h2 {
-    font-size: 22px;
+    font-size: clamp(1.6rem, 6vw, 2.4rem);
   }
 
   .architecture-block {
-    padding: 16px;
+    padding: 1rem;
+    margin-inline: -1.25rem;
+    width: calc(100% + 2.5rem);
   }
 
   .architecture-block pre {
@@ -497,11 +849,18 @@ strong {
   }
 
   .tech-label {
-    width: 90px;
+    width: 80px;
   }
 
   .mobile-grid {
-    gap: 8px;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .contact-socials a {
+    padding: 0.5rem 0;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
   }
 }
-

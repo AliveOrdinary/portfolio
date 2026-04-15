@@ -8,17 +8,21 @@ const tags = [
 ];
 
 const screenshots = [
-  { src: '/images/amplifier/dashboard.png', alt: 'Amplifier dashboard showing overview stats — total images, tag vocabulary size, AI accuracy, and storage used' },
-  { src: '/images/amplifier/upload.png', alt: 'Image upload screen with duplicate detection checking' },
-  { src: '/images/amplifier/gallery.png', alt: 'Uploaded images grid with 22 images pending tagging' },
-  { src: '/images/amplifier/tagger.png', alt: 'AI tagging interface — image preview with tag categories and AI-suggested tags' },
-  { src: '/images/amplifier/analytics.png', alt: 'AI Learning Analytics dashboard showing prompt learning status and per-category accuracy' },
+  { src: '/images/amplifier/tagger.png', alt: 'Review-centric tagging interface — flat tag summary at top, Accept & Next as primary action, full palette collapsed below' },
+  { src: '/images/amplifier/upload.png', alt: 'Image upload with duplicate detection — side-by-side comparison with Upload Anyway option' },
+  { src: '/images/amplifier/gallery.png', alt: 'Reference image gallery with filter and search controls' },
+  { src: '/images/amplifier/briefing-questionnaire.png', alt: 'Client-facing brand questionnaire with step indicator and progress tracking' },
+  { src: '/images/amplifier/briefing-gallery.png', alt: 'AI-curated visual gallery showing matched reference images scored by keyword relevance' },
+  { src: '/images/amplifier/dashboard.png', alt: 'Dashboard showing overview stats — total images, vocabulary size, AI accuracy, and storage' },
+  { src: '/images/amplifier/analytics.png', alt: 'AI Learning Analytics — prompt learning status, per-category accuracy, correction patterns' },
+  { src: '/images/amplifier/vocabulary.png', alt: 'Dynamic vocabulary management — categories, tags, and usage counts' },
 ];
 ---
 
 <BaseLayout
-  title="Amplifier — AI Image Tagging System"
+  title="Amplifier — AI-Powered Creative Intelligence Platform"
   description="An AI-powered design reference system that connects intelligent image tagging with automated client briefings."
+  page="case-study"
 >
   <a href="/" class="back-link">&larr; Back</a>
 
@@ -30,7 +34,7 @@ const screenshots = [
     </p>
   </header>
 
-  <!-- Hero screenshot -->
+  <!-- Hero: Tagger -->
   <img class="case-image" src={screenshots[0].src} alt={screenshots[0].alt} loading="eager" />
 
   <!-- Problem -->
@@ -48,8 +52,8 @@ const screenshots = [
     <h2>The Solution</h2>
     <p>Amplifier is two connected systems:</p>
     <ol>
-      <li><strong>AI Image Tagger</strong> — Upload reference images in bulk. Claude Sonnet analyzes each image and suggests tags across dynamic categories (industry, style, mood, color, etc.). The designer reviews, corrects, and saves. Over time, the AI learns from corrections — tracking frequently missed and over-suggested tags to improve future accuracy.</li>
-      <li><strong>Visual Briefing Tool</strong> — Clients fill out a guided brand questionnaire. Claude Haiku extracts keywords from their responses. Those keywords automatically search the tagged reference library and surface relevant images. Clients favorite the ones that resonate. The complete brief — answers, keywords, selected references — is packaged into an HTML email and sent to the studio.</li>
+      <li><strong>AI Image Tagger</strong> — Upload reference images in bulk. Claude Sonnet analyzes each image and suggests tags across dynamic categories (industry, style, mood, color, etc.). The designer reviews AI suggestions in a flat summary view, corrects if needed, and accepts with a single keystroke. Over time, the AI learns from corrections to improve future accuracy.</li>
+      <li><strong>Visual Briefing Tool</strong> — Clients fill out a 10-step brand questionnaire. Claude Haiku extracts visual keywords from their responses. Those keywords automatically search the tagged reference library and surface relevant images ranked by match score. Clients favorite the ones that resonate. The complete brief — answers, keywords, selected references — is packaged into an HTML email and sent to the studio.</li>
     </ol>
     <p class="case-callout">The tagger builds the library. The briefing tool makes it useful.</p>
   </section>
@@ -64,47 +68,65 @@ const screenshots = [
   <section class="case-section">
     <h2>Key Features</h2>
 
-    <h3>AI-Powered Image Analysis</h3>
+    <h3>Review-Centric Tagging Interface</h3>
     <ul>
-      <li>Claude Sonnet Vision analyzes each image against a configurable vocabulary</li>
-      <li>Prompt caching reduces API response time by ~60–70%</li>
-      <li>Next-image prefetching — AI analyzes the next image while you tag the current one</li>
-      <li>Correction learning — the system tracks where designers disagree with AI and adjusts future prompts</li>
+      <li>AI suggests tags — the designer's job is to verify, not tag from scratch</li>
+      <li>Flat tag summary at top shows all AI selections as removable pills — no scrolling through categories</li>
+      <li>Full tag palette collapsed below, only opened when the AI missed something</li>
+      <li>Keyboard shortcuts: Enter (accept & next), S (skip), arrow keys (navigate)</li>
+      <li>Sticky image preview stays visible while reviewing tags</li>
     </ul>
   </section>
 
-  <!-- Tagger screenshot -->
-  <img class="case-image" src={screenshots[3].src} alt={screenshots[3].alt} loading="lazy" />
+  <section class="case-section">
+    <h3>AI-Powered Image Analysis</h3>
+    <ul>
+      <li>Claude Sonnet Vision analyzes each image against a configurable vocabulary</li>
+      <li>Prompt caching reduces API response time by ~60-70%</li>
+      <li>Next-image prefetching — AI analyzes the next image while you review the current one</li>
+      <li>Correction learning — the system tracks where designers disagree with AI and adjusts future prompts</li>
+    </ul>
+  </section>
 
   <section class="case-section">
     <h3>Smart Duplicate Detection</h3>
     <ul>
       <li>Three-tier detection: SHA-256 hash (exact match), perceptual hash (visually similar), filename match</li>
       <li>Perceptual hashing uses 8x8 grayscale representation with Hamming distance at 90% threshold</li>
-      <li>Catches duplicates before upload, saving storage and preventing confusion</li>
+      <li>Side-by-side comparison with option to upload anyway for non-exact matches</li>
     </ul>
   </section>
 
   <section class="case-section">
     <h3>Dynamic Vocabulary System</h3>
     <ul>
-      <li>Categories, tags, storage types, and search weights are all configurable via JSON — no schema changes needed</li>
+      <li>Categories, tags, storage types, and search weights are all configurable — no schema changes needed</li>
       <li>Supports arrays, nested JSONB, and text fields</li>
-      <li>Add new tag categories without touching code</li>
+      <li>Both the tagger and briefing search read the same config — add a new category and both systems adapt automatically</li>
     </ul>
   </section>
+
+  <!-- Vocabulary screenshot -->
+  <img class="case-image" src={screenshots[7].src} alt={screenshots[7].alt} loading="lazy" />
 
   <section class="case-section">
     <h3>Guided Briefing Workflow</h3>
     <ul>
-      <li>9-step questionnaire covering brand strategy, personality, visual identity, audience, and vision</li>
+      <li>10-step questionnaire covering brand strategy, personality, visual identity, audience, and vision</li>
       <li>Auto-saves progress to localStorage with resume prompt on return</li>
-      <li>AI keyword extraction from free-form responses</li>
-      <li>Weighted search across the reference library</li>
+      <li>AI keyword extraction from free-form responses via Claude Haiku</li>
+      <li>Weighted search across the reference library — each vocabulary category has a configurable search weight</li>
+      <li>Adaptive scoring thresholds — loosens match criteria automatically if results are sparse</li>
       <li>Favorite selection with visual gallery</li>
       <li>HTML email generation with full brief + curated images</li>
     </ul>
   </section>
+
+  <!-- Briefing screenshots -->
+  <div class="case-image-grid">
+    <img class="case-image" src={screenshots[3].src} alt={screenshots[3].alt} loading="lazy" />
+    <img class="case-image" src={screenshots[4].src} alt={screenshots[4].alt} loading="lazy" />
+  </div>
 
   <section class="case-section">
     <h3>Analytics Dashboard</h3>
@@ -117,8 +139,11 @@ const screenshots = [
     </ul>
   </section>
 
-  <!-- Analytics screenshot -->
-  <img class="case-image" src={screenshots[4].src} alt={screenshots[4].alt} loading="lazy" />
+  <!-- Dashboard + Analytics screenshots -->
+  <div class="case-image-grid">
+    <img class="case-image" src={screenshots[5].src} alt={screenshots[5].alt} loading="lazy" />
+    <img class="case-image" src={screenshots[6].src} alt={screenshots[6].alt} loading="lazy" />
+  </div>
 
   <!-- Architecture -->
   <section class="case-section">
@@ -132,7 +157,7 @@ const screenshots = [
   │
   └── Tagger System (auth-protected)
         ├── Upload → Duplicate Detection (SHA-256 + pHash)
-        ├── Tag → /api/suggest-tags (Claude Sonnet Vision + prompt cache)
+        ├── Review → /api/suggest-tags (Claude Sonnet Vision + prompt cache)
         ├── Save → Supabase (images + tags + corrections)
         └── Analytics → /api/retrain-prompt (correction analysis)
 
@@ -151,7 +176,7 @@ Supabase
     <p>
       The vocabulary (which can be large) is placed in the system message with Anthropic's ephemeral cache.
       The first request in a session pays the full cost, but subsequent image analyses reuse the cached vocabulary
-      — reducing latency by 60–70% and cutting token costs.
+      — reducing latency by 60-70% and cutting token costs.
     </p>
 
     <h3>Correction-Based Learning</h3>
@@ -162,21 +187,21 @@ Supabase
       for future requests, creating a feedback loop without fine-tuning.
     </p>
 
-    <h3>72% Component Code Reduction</h3>
+    <h3>Modular Hook Architecture</h3>
     <p>
-      The original ImageTaggerClient was a 2,400-line monolith. It was decomposed into 9 custom hooks
-      (useAISuggestions, useImageUpload, useDuplicateDetection, etc.) and focused UI components,
-      reducing the main component to ~640 lines while improving testability and reuse.
+      The tagger UI orchestrates 9 custom hooks (useAISuggestions, useImageUpload, useDuplicateDetection, etc.)
+      that each own a single concern. When the entire UI was redesigned from checkbox-based to review-centric,
+      only the view layer changed — every hook stayed untouched.
     </p>
 
     <h3>Security Hardening</h3>
     <ul>
-      <li>Defense-in-depth: both middleware-level and per-route authentication using getUser() (server-verified, not just JWT)</li>
-      <li>All API inputs validated with Zod</li>
+      <li>Server-side authentication via getUser() on all admin routes — not just JWT session checks</li>
+      <li>All API inputs validated with Zod schemas</li>
       <li>HTML escaping on all email template interpolation points (XSS prevention)</li>
-      <li>Prompt injection prevention by separating system instructions from user data</li>
-      <li>Rate limiting on public endpoints</li>
-      <li>Generic error responses (no internal details leaked)</li>
+      <li>Prompt injection prevention by separating system instructions from user data in Claude calls</li>
+      <li>Per-route, per-IP rate limiting on public endpoints</li>
+      <li>Generic error responses — no internal details leaked to clients</li>
     </ul>
   </section>
 
@@ -185,7 +210,7 @@ Supabase
     <h2>Tech Stack</h2>
     <div class="tech-table">
       <div class="tech-row"><span class="tech-label">Framework</span><span>Next.js 15 (App Router), React 19, TypeScript</span></div>
-      <div class="tech-row"><span class="tech-label">Styling</span><span>Tailwind CSS 4, Framer Motion</span></div>
+      <div class="tech-row"><span class="tech-label">Styling</span><span>Tailwind CSS 4</span></div>
       <div class="tech-row"><span class="tech-label">AI</span><span>Claude Sonnet 4 (vision), Claude 3.5 Haiku (text)</span></div>
       <div class="tech-row"><span class="tech-label">Database</span><span>Supabase (PostgreSQL + Auth + Storage)</span></div>
       <div class="tech-row"><span class="tech-label">Validation</span><span>Zod schemas on all API inputs</span></div>
@@ -205,17 +230,7 @@ Supabase
       <li><strong>Client onboarding time reduced</strong> — guided questionnaire replaces unstructured emails and calls</li>
       <li><strong>AI accuracy improves over time</strong> — correction tracking creates a self-improving tagging system</li>
       <li><strong>Zero manual mood board curation</strong> — briefing tool auto-surfaces relevant references from the library</li>
+      <li><strong>Batch processing practical</strong> — keyboard shortcuts and review-centric design let designers process 50+ images in minutes</li>
     </ul>
   </section>
 </BaseLayout>
-
-<style>
-  .case-section h3 {
-    margin-top: 32px;
-    margin-bottom: 8px;
-  }
-
-  .case-section h3:first-child {
-    margin-top: 0;
-  }
-</style>
