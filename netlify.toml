@@ -1,3 +1,14 @@
 [build]
   command = "npm run build"
   publish = "dist"
+
+# Old addresses from the previous site and résumé. Safe to remove once the old résumé is out of circulation.
+[[redirects]]
+  from = "/projects/amplifier"
+  to = "/work/amplifier/"
+  status = 301
+
+[[redirects]]
+  from = "/projects/content-automation"
+  to = "/"
+  status = 301
