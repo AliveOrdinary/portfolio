@@ -162,12 +162,12 @@ const steps = [
     display: grid; grid-template-columns: minmax(0, 1fr) auto;
     border: 1.5px solid var(--ink); border-radius: 3px; background: var(--sheet);
   }
-  .hero-fields { display: grid; grid-template-columns: auto auto auto minmax(0, 1fr); margin: 0; }
-  .hero-fields .field { padding: 0.7rem 1.25rem 0.8rem; border-right: 1px solid var(--grid-strong); }
+  .hero-fields { display: grid; grid-template-columns: repeat(3, minmax(min-content, max-content)) minmax(min-content, 1fr); margin: 0; }
+  .hero-fields .field { padding: 0.7rem 1rem 0.8rem; border-right: 1px solid var(--grid-strong); }
   .hero-fields .field:last-child { border-right: 1.5px solid var(--ink); }
-  .hero-fields dd { font-size: var(--t-md); white-space: nowrap; }
-  .hero-stamp { display: grid; place-items: center; padding: 0.75rem 1.75rem; }
-  .hero-stamp .stamp { font-size: var(--t-xl); }
+  .hero-fields dd { font-size: var(--t-md); }
+  .hero-stamp { display: grid; place-items: center; padding: 0.75rem 1.25rem; }
+  .hero-stamp .stamp { font-size: var(--t-lg); }
 
   .hero-title {
     font-size: clamp(3rem, 8.4vw, 7.25rem);
@@ -181,13 +181,12 @@ const steps = [
   .hero-lede { font-size: var(--t-lg); line-height: 1.5; max-width: 36rem; color: var(--ink); }
   .hero-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.75rem; }
 
-  @media (max-width: 66rem) {
+  @media (max-width: 72rem) {
     .hero-sheet { grid-template-columns: 1fr; }
     .hero-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .hero-fields .field { border-bottom: 1px solid var(--grid-strong); }
     .hero-fields .field:nth-child(2n) { border-right: 0; }
     .hero-fields .field:last-child { border-right: 0; }
-    .hero-fields dd { white-space: normal; }
     .hero-stamp { justify-items: start; padding: 1.25rem; }
   }
 
