@@ -1,43 +1,27 @@
-# Astro Starter Kit: Minimal
+# Portfolio
+
+Navaneeth Krishnan's portfolio. Astro, static, deployed on Netlify.
 
 ```sh
-npm create astro@latest -- --template minimal
+npm install
+npm run dev      # http://localhost:4321
+npm run build    # into dist/
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Layout
 
-## 🚀 Project Structure
+- `src/pages/index.astro`: home
+- `src/pages/work/*.astro`: case studies (Sortlog, 613 Automotive, Amplifier)
+- `src/data/projects.ts`: project summaries, "also built" and tools
+- `src/components/demos/`: the live demos
+  - `EstimateBuilder`: 613's estimate, using a copy of the shop app's totals module (`src/lib/demo/shop-totals.ts`)
+  - `LabelReader`: reads a made-up skid label with zxing-wasm in the browser (`public/zxing_reader.wasm`)
+  - `HoursToTimes`: Sortlog's times logic (`src/lib/demo/times.ts`)
+- `src/styles/global.css`: colours, type and shared pieces
 
-Inside of your Astro project, you'll see the following folders and files:
+The files in `src/lib/demo/` are copied from the apps. If the logic changes there, copy it again.
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+## Sortlog screenshots
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Put them in `src/assets/sortlog/` and list them in `src/data/sortlog-shots.ts`. The "The app" section on the
+Sortlog page only appears once at least one listed file exists.

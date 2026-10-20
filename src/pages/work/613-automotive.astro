@@ -1,0 +1,211 @@
+---
+import { Image } from 'astro:assets';
+import Case from '../../layouts/Case.astro';
+import Bench from '../../components/Bench.astro';
+import EstimateBuilder from '../../components/demos/EstimateBuilder.astro';
+
+import jobHeader from '../../assets/613/desktop/07-job-header.png';
+import vin from '../../assets/613/desktop/04-add-vehicle-vin-lookup.png';
+import dropoff from '../../assets/613/desktop/10-vehicle-at-drop-off.png';
+import approve from '../../assets/613/desktop/11-approve-estimate.png';
+import invoice from '../../assets/613/desktop/12-create-invoice.png';
+import payment from '../../assets/613/desktop/13-record-payment.png';
+import pLines from '../../assets/613/phone/02-job-jump-bar.png';
+import pPhotos from '../../assets/613/phone/03-photos.png';
+import pInspect from '../../assets/613/phone/04-inspection.png';
+import pQc from '../../assets/613/phone/05-quality-check.png';
+import pDocs from '../../assets/613/phone/06-documents-sheet.png';
+import dEstimate from '../../assets/613/documents/01-estimate.png';
+import dWork from '../../assets/613/documents/02-work-order-page-1.png';
+import dInvoice from '../../assets/613/documents/03-invoice.png';
+import dInspect from '../../assets/613/documents/04-inspection-page-1.png';
+
+const spec = [
+  { label: 'For', value: '613 Automotive, Kingston, Ontario' },
+  { label: 'My role', value: 'Everything: research, brand, app, printed documents' },
+  { label: 'When', value: 'October 2026' },
+  { label: 'Used by', value: 'The front desk on a computer, technicians on phones in the bay' },
+  { label: 'Status', value: 'In live testing at the shop' },
+  { label: 'Built with', value: 'Next.js 16, React 19, Supabase, jsPDF, Tailwind 4, Vitest' },
+];
+
+const docs = [
+  { src: dEstimate, alt: 'Printed estimate EST-214 with customer, vehicle, eight repair lines and the insurance split.', caption: 'Estimate' },
+  { src: dWork, alt: 'Printed work order RO-214, page one.', caption: 'Work order' },
+  { src: dInvoice, alt: 'Printed invoice INV-214 with odometer in and out, payments and balance.', caption: 'Invoice' },
+  { src: dInspect, alt: 'Printed mechanical inspection with OK, attention and urgent results per item.', caption: 'Inspection' },
+];
+const phones = [
+  { src: pLines, alt: 'Job on a phone: section chips to jump between parts of the job, line items, and the total pinned to the bottom.' },
+  { src: pPhotos, alt: 'Photos and files on a phone, tagged as drop-off, during repair or completed.' },
+  { src: pInspect, alt: 'Brake inspection on a phone: OK, attention, urgent or N/A per item, with a note on urgent ones.' },
+  { src: pQc, alt: 'Final quality check on a phone, ten items ticked.' },
+  { src: pDocs, alt: 'Invoice sheet on a phone: open to print, download PDF, or share.' },
+];
+---
+
+<Case
+  title="613 Automotive: shop app by Navaneeth Krishnan"
+  name="613 Automotive"
+  summary="Estimates, work orders, inspections and invoices for a collision, paint and mechanical shop."
+  description="How I built 613 Automotive's shop app: a job from estimate to paid, four printed documents, and inspections on a phone in the bay."
+  spec={spec}
+  next={{ href: '/work/sortlog', name: 'Sortlog' }}
+>
+  <section class="case-section">
+    <div class="wrap split">
+      <div class="prose">
+        <h2>The shop</h2>
+        <p>
+          613 Automotive does collision repair, refinishing and mechanical work. When I started, they had no real
+          paperwork: a few sample estimates someone had made in ChatGPT, totals worked out on a calculator, and a
+          logo as a single JPEG.
+        </p>
+        <p>
+          Their jobs aren’t simple invoices. Body, paint and mechanical labour are billed at different hourly rates.
+          Paint materials carry a markup. Insurance jobs arrive with the insurer’s own estimate, and the bill is split
+          between the insurer and the customer’s deductible. Customers sign on paper.
+        </p>
+        <p>
+          They asked for an invoice generator. What they needed was the whole life of a job, from the first estimate
+          to the last payment, in one place, with paperwork they could hand to a customer without apologising for it.
+        </p>
+      </div>
+      <figure>
+        <Image src={jobHeader} alt="A job in the 613 app: RO-214, approved, with the progress bar from estimate to paid, the three documents, section chips, customer and vehicle, and the totals." widths={[640, 1000, 1400]} sizes="(min-width: 56rem) 34rem, 100vw" class="shot" />
+        <figcaption>A job, and where it is: estimate, approved, ready, invoiced, paid. Every customer and vehicle in these screens is made up.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="case-section">
+    <div class="wrap">
+      <Bench title="Build an estimate" id="estimate-demo">
+        <p slot="intro">
+          This is the shop’s sample collision job. Change hours, prices or line types and the totals work themselves
+          out the way the app does it. Then approve the estimate and push a line up: Ontario caps the final bill at
+          10% over an approved estimate.
+        </p>
+        <EstimateBuilder />
+      </Bench>
+    </div>
+  </section>
+
+  <section class="case-section">
+    <div class="wrap">
+      <div class="prose">
+        <h2>What I built</h2>
+        <p>A job follows the order the shop already works in.</p>
+        <ol>
+          <li><strong>Customer and vehicle.</strong> Type the VIN and the year, make, model and engine fill in from NHTSA’s free vehicle database.</li>
+          <li><strong>Estimate.</strong> Lines by type, each with its own rate, parts marked new or used and OEM or aftermarket, the insurer’s estimate attached as a PDF.</li>
+          <li><strong>Drop-off.</strong> Odometer, existing damage, warning lights, belongings, and photos taken on a phone, so the shop is covered if a customer questions a scratch later.</li>
+          <li><strong>Approval.</strong> How the customer approved (signed the estimate, by phone, and so on) is recorded, because Ontario requires it.</li>
+          <li><strong>In the bay.</strong> A 46-item mechanical inspection and a final quality check, filled in on a phone.</li>
+          <li><strong>Invoice and payment.</strong> The invoice locks the lines so the printed copy always matches. Payments can be split between customer and insurer.</li>
+        </ol>
+      </div>
+      <div class="shots shots-3 shot-wide">
+        <figure>
+          <Image src={vin} alt="Adding a vehicle: the VIN field says the VIN looks right and shows the decoded 2021 Toyota RAV4 XLE, with the fields filled in." widths={[480, 800]} sizes="(min-width: 56rem) 22rem, 50vw" />
+          <figcaption>The VIN fills in the vehicle.</figcaption>
+        </figure>
+        <figure>
+          <Image src={approve} alt="Approve estimate dialog asking how the customer approved it, with an Approve and create work order button." widths={[480, 800]} sizes="(min-width: 56rem) 22rem, 50vw" />
+          <figcaption>Approval records how the customer said yes.</figcaption>
+        </figure>
+        <figure>
+          <Image src={invoice} alt="Create invoice dialog warning that the odometer out is blank, which Ontario expects on the invoice." widths={[480, 800]} sizes="(min-width: 56rem) 22rem, 50vw" />
+          <figcaption>The invoice warns about what Ontario expects on it.</figcaption>
+        </figure>
+        <figure>
+          <Image src={dropoff} alt="Vehicle at drop-off: odometer, exterior damage chips, mechanical concerns and warning lights." widths={[480, 800]} sizes="(min-width: 56rem) 22rem, 50vw" />
+          <figcaption>Drop-off, mostly taps instead of typing.</figcaption>
+        </figure>
+        <figure>
+          <Image src={payment} alt="Record payment dialog with amount, method, date and a reference field noting never to enter a full card number." widths={[480, 800]} sizes="(min-width: 56rem) 22rem, 50vw" />
+          <figcaption>Payments keep a reference, never a full card number.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="case-section">
+    <div class="wrap">
+      <div class="prose">
+        <h2>On a phone in the bay</h2>
+        <p>
+          Technicians don’t sit at the front desk. On a phone, a job is one long page with a row of chips to jump
+          between sections, the total pinned to the bottom, and big tap targets.
+        </p>
+      </div>
+      <div class="shots shots-5 shot-wide phones">
+        {phones.map((p) => (
+          <Image src={p.src} alt={p.alt} widths={[320, 480]} sizes="(min-width: 56rem) 13rem, 45vw" />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="case-section">
+    <div class="wrap">
+      <div class="prose">
+        <h2>Four documents from one job</h2>
+        <p>
+          Estimate, work order, invoice and inspection all print from the same data with jsPDF, in the brand I made
+          from their logo: the “613” lettering traced from the JPEG, the stripes redrawn as clean shapes, Saira for
+          headings and totals, and 613 yellow kept for the one thing that matters on each page.
+        </p>
+      </div>
+      <div class="paper-row grid-paper grid-soft shot-wide">
+        {docs.map((d) => (
+          <figure>
+            <Image src={d.src} alt={d.alt} widths={[320, 640]} sizes="(min-width: 52rem) 15rem, 45vw" />
+            <figcaption>{d.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="case-section">
+    <div class="wrap">
+      <h2>Decisions</h2>
+      <div class="decisions" style="margin-top:1.5rem">
+        <div class="decision">
+          <h3>Money is worked out in one place</h3>
+          <p>One module, in whole cents, works out every total. The job screen, the jobs list and the PDFs all call it, so they can’t disagree. Its tests include the shop’s own sample estimate.</p>
+        </div>
+        <div class="decision">
+          <h3>The law is part of the workflow</h3>
+          <p>Ontario wants a record of how an estimate was approved, a cap of 10% over it, and odometer readings on the invoice. The app asks for each at the moment it matters instead of leaving it to memory.</p>
+        </div>
+        <div class="decision">
+          <h3>Database rules are tested, not assumed</h3>
+          <p>The real migrations run in PGlite inside the test suite, so the row-level security that keeps data to the shop’s staff is checked on every change.</p>
+        </div>
+        <div class="decision">
+          <h3>A brand before an interface</h3>
+          <p>The shop had a logo and nothing else. Making the colours, type and logo files first meant the app and the paperwork look like the same business.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="case-section">
+    <div class="wrap">
+      <h2 style="margin-bottom:1.25rem">Where it is now</h2>
+      <dl class="outcome">
+        <div class="field"><dt>Status</dt><dd>In live testing at the shop since October 2026</dd></div>
+        <div class="field"><dt>Covers</dt><dd>Estimate to paid, inspections, photos, four printed documents</dd></div>
+        <div class="field"><dt>Next</dt><dd>Emailing documents to customers</dd></div>
+      </dl>
+    </div>
+  </section>
+</Case>
+
+<style>
+  .phones { grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: start; }
+  @media (max-width: 56rem) { .phones { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 36rem) { .phones { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+</style>

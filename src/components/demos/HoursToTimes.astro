@@ -1,0 +1,209 @@
+---
+// Skid hours and crews in, everyone's start and end times out, using Sortlog's own planTimes.
+---
+
+<div class="ht" data-ht>
+  <div class="ht-in">
+    <fieldset class="ht-block">
+      <legend>Who worked</legend>
+      <div data-people></div>
+    </fieldset>
+    <fieldset class="ht-block">
+      <legend>Skids finished today, in part order</legend>
+      <div data-parts></div>
+    </fieldset>
+    <button type="button" class="ht-reset" data-reset>Start over</button>
+  </div>
+
+  <div class="ht-out">
+    <div class="ht-chart" data-chart aria-hidden="true"></div>
+    <table class="ht-table" data-table>
+      <caption class="visually-hidden">Times per person and part</caption>
+    </table>
+    <ul class="ht-notes" data-notes aria-live="polite"></ul>
+  </div>
+</div>
+
+<script>
+  import { planTimes, type PartWork } from '../../lib/demo/times';
+  import { formatTime, type Shift } from '../../lib/demo/schedule';
+
+  type Person = { id: string; name: string; start: number; end: number };
+  type Skid = { key: string; hours: number; crew: string[] };
+  type Part = { id: string; name: string; colour: string; skids: Skid[] };
+
+  const fresh = () => ({
+    people: [
+      { id: 'asha', name: 'Asha', start: 7 * 60, end: 15 * 60 + 30 },
+      { id: 'marco', name: 'Marco', start: 7 * 60, end: 15 * 60 + 30 },
+      { id: 'lin', name: 'Lin', start: 7 * 60, end: 11 * 60 },
+    ] as Person[],
+    parts: [
+      { id: 'housing', name: 'Housing', colour: 'var(--stamp)', skids: [
+        { key: 'h1', hours: 3, crew: ['asha', 'marco'] },
+        { key: 'h2', hours: 4.5, crew: ['asha', 'marco', 'lin'] },
+      ] },
+      { id: 'bracket', name: 'Bracket', colour: '#7a5c00', skids: [{ key: 'b1', hours: 5, crew: ['marco', 'lin'] }] },
+      { id: 'oil', name: 'Oil removal', colour: 'var(--ok)', skids: [{ key: 'o1', hours: 2, crew: ['asha'] }] },
+    ] as Part[],
+  });
+
+  const toClock = (m: number) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+  const toMin = (v: string) => { const [h, m] = v.split(':').map(Number); return (h || 0) * 60 + (m || 0); };
+  const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-ht]')) {
+    const $ = <T extends Element>(s: string) => root.querySelector(s) as T;
+    let state = fresh();
+
+    function renderInputs() {
+      $<HTMLElement>('[data-people]').innerHTML = state.people.map((p) => `
+        <div class="ht-person">
+          <span class="ht-name">${p.name}</span>
+          <label><span class="visually-hidden">${p.name} start</span><input class="input" type="time" step="900" value="${toClock(p.start)}" data-person="${p.id}" data-f="start" /></label>
+          <span aria-hidden="true">to</span>
+          <label><span class="visually-hidden">${p.name} end</span><input class="input" type="time" step="900" value="${toClock(p.end)}" data-person="${p.id}" data-f="end" /></label>
+        </div>`).join('');
+      $<HTMLElement>('[data-parts]').innerHTML = state.parts.map((part) => `
+        <div class="ht-part">
+          <span class="ht-part-name"><i style="background:${part.colour}"></i>${part.name}</span>
+          ${part.skids.map((s, i) => `
+            <div class="ht-skid">
+              <label class="ht-hours"><span class="field-label">${part.skids.length > 1 ? `Skid ${i + 1} hours` : part.id === 'oil' ? 'Hours' : 'Skid hours'}</span>
+                <input class="input" type="number" min="0" step="0.25" inputmode="decimal" value="${s.hours}" data-skid="${s.key}" /></label>
+              <div class="ht-crew" role="group" aria-label="Who sorted it">
+                <span class="field-label">Who sorted it</span>
+                <div>${state.people.map((p) => `<button type="button" class="ht-chip" aria-pressed="${s.crew.includes(p.id)}" data-skid="${s.key}" data-who="${p.id}">${p.name}</button>`).join('')}</div>
+              </div>
+            </div>`).join('')}
+        </div>`).join('');
+    }
+
+    function render() {
+      const shifts = new Map<string, Shift>(state.people.map((p) => [p.id, { workerId: p.id, start: p.start, end: p.end }]));
+      const work: PartWork[] = state.parts.map((p) => ({ jobId: p.id, skids: p.skids.map((s) => ({ key: s.key, hours: s.hours, crew: s.crew })) }));
+      const names = (id: string) => state.people.find((p) => p.id === id)?.name ?? id;
+      const partName = (id: string) => state.parts.find((p) => p.id === id)?.name ?? id;
+      const plan = planTimes(work, shifts, [], names, partName);
+
+      // Chart: one lane per person, their shift as an outline, parts as blocks.
+      const from = Math.min(...state.people.map((p) => p.start), ...plan.rows.map((r) => r.start ?? 1e9)) - 30;
+      const to = Math.max(...state.people.map((p) => p.end), ...plan.rows.map((r) => r.end ?? 0)) + 30;
+      const span = Math.max(60, to - from);
+      const pct = (m: number) => ((m - from) / span) * 100;
+      const hours: number[] = [];
+      for (let h = Math.ceil(from / 60) * 60; h <= to; h += 60) hours.push(h);
+
+      $<HTMLElement>('[data-chart]').innerHTML = `
+        <div class="ht-axis">${hours.map((h) => `<span style="left:${pct(h)}%">${formatTime(h).replace(':00', '')}</span>`).join('')}</div>
+        ${state.people.map((p) => `
+          <div class="ht-lane">
+            <span class="ht-lane-name">${p.name}</span>
+            <div class="ht-track">
+              ${hours.map((h) => `<i class="ht-tick" style="left:${pct(h)}%"></i>`).join('')}
+              <span class="ht-shift" style="left:${pct(p.start)}%;width:${pct(p.end) - pct(p.start)}%"></span>
+              ${plan.rows.filter((r) => r.workerId === p.id && r.start !== null).map((r) => {
+                const part = state.parts.find((x) => x.id === r.jobId)!;
+                const late = r.end! > p.end;
+                return `<span class="ht-block-bar${late ? ' late' : ''}" style="left:${pct(r.start!)}%;width:${pct(r.end!) - pct(r.start!)}%;--c:${part.colour}"><b>${part.name}</b></span>`;
+              }).join('')}
+            </div>
+          </div>`).join('')}`;
+
+      const rows = [...plan.rows].sort((a, b) => names(a.workerId).localeCompare(names(b.workerId)) || (a.start ?? 0) - (b.start ?? 0));
+      $<HTMLElement>('[data-table]').innerHTML = `
+        <caption class="visually-hidden">Times per person and part</caption>
+        <thead><tr><th scope="col">Person</th><th scope="col">Part</th><th scope="col">Start</th><th scope="col">End</th><th scope="col" class="r">Hours</th></tr></thead>
+        <tbody>${rows.map((r) => `<tr><td>${esc(names(r.workerId))}</td><td>${esc(partName(r.jobId))}</td><td>${r.start === null ? '' : formatTime(r.start)}</td><td>${r.end === null ? '' : formatTime(r.end)}</td><td class="r">${r.hours}</td></tr>`).join('')}</tbody>`;
+
+      const notes = plan.notes;
+      $<HTMLElement>('[data-notes]').innerHTML = notes.length
+        ? notes.map((n) => `<li class="tone-${n.tone}">${esc(n.text)}</li>`).join('')
+        : `<li class="tone-ok">Every hour on every skid is given to someone, inside their shift.</li>`;
+    }
+
+    root.addEventListener('input', (e) => {
+      const el = e.target as HTMLInputElement;
+      if (el.dataset.person) {
+        const p = state.people.find((x) => x.id === el.dataset.person)!;
+        if (el.value) p[el.dataset.f as 'start' | 'end'] = toMin(el.value);
+      } else if (el.dataset.skid && el.type === 'number') {
+        const skid = state.parts.flatMap((x) => x.skids).find((s) => s.key === el.dataset.skid)!;
+        skid.hours = Math.max(0, Number(el.value) || 0);
+      }
+      render();
+    });
+
+    root.addEventListener('click', (e) => {
+      const chip = (e.target as HTMLElement).closest<HTMLButtonElement>('.ht-chip');
+      if (chip) {
+        const skid = state.parts.flatMap((x) => x.skids).find((s) => s.key === chip.dataset.skid)!;
+        const who = chip.dataset.who!;
+        skid.crew = skid.crew.includes(who) ? skid.crew.filter((w) => w !== who) : [...skid.crew, who];
+        chip.setAttribute('aria-pressed', String(skid.crew.includes(who)));
+        render();
+        return;
+      }
+      if ((e.target as HTMLElement).closest('[data-reset]')) {
+        state = fresh();
+        renderInputs();
+        render();
+      }
+    });
+
+    renderInputs();
+    render();
+  }
+</script>
+
+<style>
+  .ht { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 1.5rem; align-items: start; }
+  @media (max-width: 60rem) { .ht { grid-template-columns: minmax(0, 1fr); } }
+  .ht-in, .ht-out { background: var(--sheet); border: 1px solid var(--grid-strong); border-radius: 3px; padding: 1rem 1.1rem; }
+  .ht-block { border: 0; padding: 0; margin: 0 0 1.25rem; min-width: 0; }
+  .ht-block legend { font-family: var(--display); font-stretch: 85%; font-weight: 750; font-size: var(--t-md); padding: 0; margin-bottom: 0.5rem; }
+  :global(.ht-person) { display: grid; grid-template-columns: 3.5rem minmax(0, 1fr) auto minmax(0, 1fr); gap: 0.5rem; align-items: center; margin-bottom: 0.4rem; font-family: var(--display); font-size: var(--t-sm); }
+  :global(.ht-name) { font-weight: 700; }
+  :global(.ht-person input) { min-width: 0; padding-inline: 0.4rem; }
+  :global(.ht-part) { border-top: 1px solid var(--grid-strong); padding: 0.75rem 0; }
+  :global(.ht-part-name) { display: flex; align-items: center; gap: 0.5rem; font-family: var(--display); font-weight: 750; font-stretch: 88%; }
+  :global(.ht-part-name i) { width: 0.8rem; height: 0.8rem; border-radius: 2px; display: inline-block; }
+  :global(.ht-skid) { display: grid; grid-template-columns: 6.5rem 1fr; gap: 0.75rem; margin-top: 0.5rem; align-items: end; }
+  :global(.ht-hours) { display: flex; flex-direction: column; gap: 0.15rem; }
+  :global(.ht-crew) { display: flex; flex-direction: column; gap: 0.15rem; }
+  :global(.ht-crew > div) { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+  :global(.ht-chip) {
+    font-family: var(--display); font-stretch: 90%; font-weight: 600; font-size: var(--t-sm);
+    min-height: 2.5rem; padding: 0 0.8rem; border-radius: 3px; cursor: pointer;
+    border: 1px solid var(--grid-strong); background: var(--sheet); color: var(--pencil);
+  }
+  :global(.ht-chip[aria-pressed="true"]) { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
+  .ht-reset { background: none; border: 0; padding: 0.3rem 0; font-family: var(--display); font-size: var(--t-xs); color: var(--stamp); text-decoration: underline; cursor: pointer; }
+
+  /* Chart */
+  .ht-chart { position: relative; padding-top: 1.5rem; margin-bottom: 1rem; }
+  :global(.ht-axis) { position: absolute; top: 0; left: 4.5rem; right: 0; height: 1.2rem; }
+  :global(.ht-axis span) { position: absolute; transform: translateX(-50%); font-family: var(--display); font-size: 0.7rem; color: var(--pencil); white-space: nowrap; }
+  :global(.ht-lane) { display: grid; grid-template-columns: 4.5rem 1fr; align-items: center; margin-bottom: 0.5rem; }
+  :global(.ht-lane-name) { font-family: var(--display); font-weight: 700; font-size: var(--t-sm); }
+  :global(.ht-track) { position: relative; height: 2.6rem; background: var(--pad); border-radius: 2px; overflow: hidden; }
+  :global(.ht-tick) { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--grid-strong); }
+  :global(.ht-shift) { position: absolute; top: 3px; bottom: 3px; border: 1.5px dashed var(--pencil); border-radius: 3px; background: var(--sheet); }
+  :global(.ht-block-bar) {
+    position: absolute; top: 7px; bottom: 7px; background: var(--c); border-radius: 2px;
+    border-right: 2px solid var(--sheet); display: flex; align-items: center; overflow: hidden;
+  }
+  :global(.ht-block-bar b) { color: #fff; font-family: var(--display); font-stretch: 80%; font-size: 0.72rem; font-weight: 700; padding-left: 0.35rem; white-space: nowrap; }
+  :global(.ht-block-bar.late) { outline: 2px solid var(--reject); outline-offset: 1px; }
+
+  .ht-table { width: 100%; border-collapse: collapse; font-family: var(--display); font-size: var(--t-sm); font-variant-numeric: tabular-nums; }
+  :global(.ht-table th) { text-align: left; font-weight: 600; font-size: var(--t-xs); color: var(--pencil); border-bottom: 1.5px solid var(--ink); padding: 0.3rem 0.4rem 0.3rem 0; }
+  :global(.ht-table td) { padding: 0.35rem 0.4rem 0.35rem 0; border-bottom: 1px solid var(--grid); }
+  :global(.ht-table .r) { text-align: right; }
+
+  .ht-notes { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.4rem; }
+  :global(.ht-notes li) { font-size: var(--t-sm); padding: 0.45rem 0.7rem; border-left: 3px solid var(--pencil); background: var(--pad); }
+  :global(.ht-notes .tone-warn) { border-color: var(--tag-deep); }
+  :global(.ht-notes .tone-bad) { border-color: var(--reject); color: var(--reject); }
+  :global(.ht-notes .tone-ok) { border-color: var(--ok); }
+</style>

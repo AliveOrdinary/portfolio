@@ -12,6 +12,10 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^6.0.8"
+    "@fontsource-variable/archivo": "^5.3.0",
+    "@fontsource-variable/literata": "^5.3.0",
+    "astro": "^6.0.8",
+    "jsbarcode": "^3.12.3",
+    "zxing-wasm": "^3.1.6"
   }
 }

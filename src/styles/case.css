@@ -1,0 +1,81 @@
+/* Case study pages */
+.case-head { padding-top: clamp(1rem, 4vw, 2.5rem); }
+.case-back {
+  font-family: var(--display); font-stretch: 88%; font-weight: 600; font-size: var(--t-sm);
+  color: var(--pencil);
+}
+.case-head h1 {
+  font-size: clamp(3.25rem, 10vw, 8rem); font-stretch: 62%; font-weight: 850;
+  line-height: 0.9; margin: 1.25rem 0 1rem; letter-spacing: -0.012em;
+}
+.case-summary { font-size: var(--t-xl); line-height: 1.35; max-width: 40rem; }
+
+.case-spec {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 2.25rem 0 0; border: 1.5px solid var(--ink); border-radius: 3px; background: var(--sheet);
+}
+.case-spec .field { padding: 0.75rem 1rem 0.9rem; border-right: 1px solid var(--grid-strong); border-bottom: 1px solid var(--grid-strong); }
+.case-spec .field:nth-child(3n) { border-right: 0; }
+.case-spec .field:nth-last-child(-n + 3):nth-child(3n + 1),
+.case-spec .field:nth-last-child(-n + 3):nth-child(3n + 1) ~ .field { border-bottom: 0; }
+@media (max-width: 52rem) {
+  .case-spec { grid-template-columns: 1fr 1fr; }
+  .case-spec .field { border-right: 1px solid var(--grid-strong) !important; border-bottom: 1px solid var(--grid-strong) !important; }
+  .case-spec .field:nth-child(2n) { border-right: 0 !important; }
+}
+@media (max-width: 30rem) {
+  .case-spec { grid-template-columns: 1fr; }
+  .case-spec .field { border-right: 0 !important; }
+}
+
+/* Prose sections: text column with an optional side column */
+.case-section { margin-top: clamp(3.5rem, 8vw, 6rem); }
+.case-section > .wrap > h2 { margin-bottom: 1.25rem; }
+.prose { max-width: var(--measure); }
+.prose h3 { margin: 2rem 0 0.6rem; font-size: var(--t-lg); font-stretch: 82%; }
+.prose ul, .prose ol { padding-left: 1.2rem; margin: 0 0 1em; max-width: var(--measure); }
+.prose li { margin-bottom: 0.45em; }
+.prose li::marker { color: var(--pencil); }
+.prose strong { font-weight: 650; }
+
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3.5rem); align-items: start; }
+@media (max-width: 56rem) { .split { grid-template-columns: 1fr; } }
+
+/* Decisions: each one a short entry with its reason */
+.decisions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border-top: 1.5px solid var(--ink); }
+.decision { padding: 1.25rem 1.5rem 1.5rem 0; border-bottom: 1px solid var(--grid-strong); }
+.decision:nth-child(2n) { padding-left: 1.5rem; padding-right: 0; border-left: 1px solid var(--grid-strong); }
+.decision h3 { font-size: var(--t-lg); font-stretch: 82%; margin-bottom: 0.5rem; }
+.decision p { font-size: var(--t-sm); }
+@media (max-width: 52rem) {
+  .decisions { grid-template-columns: 1fr; }
+  .decision, .decision:nth-child(2n) { padding: 1.25rem 0; border-left: 0; }
+}
+
+/* Screens */
+.shots { display: grid; gap: 1.5rem; }
+.shots-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.shots-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.shots-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 56rem) { .shots-3, .shots-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 36rem) { .shots-2, .shots-3 { grid-template-columns: 1fr; } }
+.shots img { border: 1px solid var(--grid-strong); border-radius: 3px; background: var(--sheet); width: 100%; }
+.shot-wide { margin-top: 1.5rem; }
+
+/* Documents laid out like sheets on a bench */
+.paper-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(0.75rem, 2vw, 1.5rem); padding: clamp(1rem, 3vw, 2rem); border: 1.5px solid var(--ink); border-radius: 3px; }
+.paper-row figure img { box-shadow: 0 1px 0 var(--grid-strong), 0 6px 18px -10px rgba(34, 38, 31, 0.35); border: 1px solid var(--grid-strong); }
+@media (max-width: 52rem) { .paper-row { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Outcome strip */
+.outcome { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1.5px solid var(--ink); border-radius: 3px; background: var(--sheet); }
+.outcome .field { padding: 1rem 1.25rem 1.2rem; border-right: 1px solid var(--grid-strong); }
+.outcome .field:last-child { border-right: 0; }
+.outcome dd { font-size: var(--t-md); }
+@media (max-width: 52rem) { .outcome { grid-template-columns: 1fr; } .outcome .field { border-right: 0; border-bottom: 1px solid var(--grid-strong); } .outcome .field:last-child { border-bottom: 0; } }
+
+.case-next { margin-top: clamp(4rem, 8vw, 6rem); display: flex; flex-direction: column; gap: 0.25rem; }
+.case-next a {
+  font-family: var(--display); font-stretch: 64%; font-weight: 850; font-size: var(--t-2xl);
+  color: var(--ink); text-decoration-color: var(--stamp); line-height: 1;
+}

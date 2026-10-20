@@ -1,0 +1,62 @@
+---
+// A made-up supplier skid label in the layout the sorting floor sees: separate
+// Code 128 barcodes for part number, quantity, supplier and serial.
+// Nothing on it is a real part, supplier or serial.
+import { code128 } from '../lib/code128';
+import { LABEL } from '../lib/label';
+
+interface Props { id?: string; class?: string; }
+const { id, class: className } = Astro.props;
+
+const M = 1.7; // px per module
+const H = 46;  // bar height
+function bc(value: string, x: number, y: number) {
+  const { bars, modules } = code128(value);
+  return { rects: bars.map((b) => ({ x: x + b.x * M, w: b.w * M, y })), width: modules * M };
+}
+const part = bc(LABEL.part, 24, 70);
+const qty = bc(LABEL.qty, 24, 186);
+const sup = bc(LABEL.supplier, 324, 186);
+const ser = bc(LABEL.serial, 24, 302);
+---
+
+<svg
+  id={id}
+  class={className}
+  viewBox="0 0 600 380"
+  xmlns="http://www.w3.org/2000/svg"
+  role="img"
+  aria-label={`Sample skid label. Part ${LABEL.part}, quantity ${LABEL.qty}, supplier ${LABEL.supplier}, serial ${LABEL.serial}, lot ${LABEL.lot}.`}
+>
+  <rect x="0" y="0" width="600" height="380" fill="#ffffff" />
+  <rect x="4" y="4" width="592" height="372" fill="none" stroke="#111" stroke-width="2" />
+  <line x1="4" y1="132" x2="596" y2="132" stroke="#111" stroke-width="2" />
+  <line x1="4" y1="248" x2="596" y2="248" stroke="#111" stroke-width="2" />
+  <line x1="300" y1="132" x2="300" y2="376" stroke="#111" stroke-width="2" />
+
+  <g font-family="Arial, Helvetica, sans-serif" fill="#111">
+    <text x="24" y="28" font-size="11" font-weight="700">PART NO. (P)</text>
+    <text x="24" y="58" font-size="28" font-weight="700" letter-spacing="1">{LABEL.part}</text>
+    <text x="420" y="28" font-size="10">DEMO COMPONENTS LTD.</text>
+    <text x="420" y="44" font-size="10">MISSISSAUGA, ON</text>
+    <text x="420" y="60" font-size="10">SAMPLE LABEL</text>
+
+    <text x="24" y="152" font-size="11" font-weight="700">QUANTITY (Q)</text>
+    <text x="24" y="178" font-size="22" font-weight="700">{LABEL.qty}</text>
+    <text x="324" y="152" font-size="11" font-weight="700">SUP CODE (V)</text>
+    <text x="324" y="178" font-size="22" font-weight="700">{LABEL.supplier}</text>
+
+    <text x="24" y="268" font-size="11" font-weight="700">SERIAL (S)</text>
+    <text x="24" y="294" font-size="22" font-weight="700">{LABEL.serial}</text>
+    <text x="324" y="268" font-size="11" font-weight="700">BATCH/LOT</text>
+    <text x="324" y="294" font-size="22" font-weight="700">{LABEL.lot}</text>
+    <text x="324" y="330" font-size="10">PACKED 10/14/2026  HU 7 OF 12</text>
+  </g>
+
+  <g fill="#111">
+    {part.rects.map((r) => <rect x={r.x} y={r.y} width={r.w} height={H} />)}
+    {qty.rects.map((r) => <rect x={r.x} y={r.y} width={r.w} height={H} />)}
+    {sup.rects.map((r) => <rect x={r.x} y={r.y} width={r.w} height={H} />)}
+    {ser.rects.map((r) => <rect x={r.x} y={r.y} width={r.w} height={H} />)}
+  </g>
+</svg>

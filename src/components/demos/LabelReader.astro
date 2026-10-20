@@ -1,0 +1,168 @@
+---
+// Reads the barcodes on a skid label in the browser, the way Sortlog does on the floor.
+import SkidLabel from '../SkidLabel.astro';
+---
+
+<div class="lr" data-lr>
+  <div class="lr-photo">
+    <div class="lr-frame">
+      <SkidLabel id="lr-label" class="lr-label" />
+      <img class="lr-own" alt="Your label photo" data-own hidden />
+    </div>
+    <div class="lr-actions">
+      <button type="button" class="btn btn-tag" data-read>Read this label</button>
+      <label class="btn lr-file">
+        Try your own photo
+        <input type="file" accept="image/*" data-file class="visually-hidden" />
+      </label>
+    </div>
+    <p class="lr-privacy">Photos stay in your browser. Nothing is uploaded.</p>
+  </div>
+
+  <div class="lr-out" aria-live="polite">
+    <p class="lr-status" data-status>Press <b>Read this label</b>. The barcodes are decoded right here, with the same library and rules the app uses.</p>
+    <dl class="lr-fields" data-fields hidden>
+      <div class="field"><dt>Part number</dt><dd data-k="partNumber"></dd></div>
+      <div class="field"><dt>Serial</dt><dd data-k="serial"></dd></div>
+      <div class="field"><dt>Quantity</dt><dd data-k="qty"></dd></div>
+      <div class="field"><dt>Supplier code</dt><dd data-k="supplierCode"></dd></div>
+    </dl>
+    <p class="lr-raw" data-raw hidden></p>
+    <p class="lr-filed" data-filed hidden></p>
+  </div>
+</div>
+
+<script>
+  import { classifyBarcodes, isComplete } from '../../lib/demo/labels';
+
+  type Reader = typeof import('zxing-wasm/reader');
+  let reader: Promise<Reader> | null = null;
+  function loadReader() {
+    reader ??= import('zxing-wasm/reader').then((m) => {
+      m.prepareZXingModule({
+        overrides: { locateFile: (path: string, prefix: string) => (path.endsWith('.wasm') ? '/zxing_reader.wasm' : prefix + path) },
+        fireImmediately: true,
+      });
+      return m;
+    });
+    return reader;
+  }
+
+  /** Draws the label like a phone photo: a little rotated, on a grey skid. */
+  async function svgToImageData(svg: SVGSVGElement): Promise<ImageData> {
+    const xml = new XMLSerializer().serializeToString(svg);
+    const img = new Image();
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(xml);
+    await img.decode();
+    const w = 1400, h = 1000;
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    const ctx = c.getContext('2d')!;
+    ctx.fillStyle = '#8b8d86';
+    ctx.fillRect(0, 0, w, h);
+    ctx.translate(w / 2, h / 2);
+    ctx.rotate((-3 * Math.PI) / 180);
+    const lw = 1200, lh = 760;
+    ctx.drawImage(img, -lw / 2, -lh / 2, lw, lh);
+    return ctx.getImageData(0, 0, w, h);
+  }
+
+  async function fileToImageData(file: File, max = 1600): Promise<ImageData> {
+    const bmp = await createImageBitmap(file);
+    const s = Math.min(1, max / Math.max(bmp.width, bmp.height));
+    const c = document.createElement('canvas');
+    c.width = Math.round(bmp.width * s); c.height = Math.round(bmp.height * s);
+    const ctx = c.getContext('2d')!;
+    ctx.drawImage(bmp, 0, 0, c.width, c.height);
+    return ctx.getImageData(0, 0, c.width, c.height);
+  }
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-lr]')) {
+    const $ = <T extends Element>(s: string) => root.querySelector(s) as T;
+    const status = $<HTMLElement>('[data-status]');
+    const fields = $<HTMLElement>('[data-fields]');
+    const raw = $<HTMLElement>('[data-raw]');
+    const filed = $<HTMLElement>('[data-filed]');
+    const label = $<SVGSVGElement>('#lr-label');
+    const own = $<HTMLImageElement>('[data-own]');
+    const readBtn = $<HTMLButtonElement>('[data-read]');
+
+    async function run(getPixels: () => Promise<ImageData>, isSample: boolean) {
+      readBtn.disabled = true;
+      status.textContent = 'Reading…';
+      fields.hidden = raw.hidden = filed.hidden = true;
+      try {
+        const [{ readBarcodes }, pixels] = await Promise.all([loadReader(), getPixels()]);
+        const t0 = performance.now();
+        const results = await readBarcodes(pixels, {
+          tryHarder: true,
+          tryRotate: true,
+          maxNumberOfSymbols: 12,
+          formats: ['Code128', 'Code39', 'Code93', 'DataMatrix', 'QRCode', 'PDF417'],
+        });
+        const ms = Math.round(performance.now() - t0);
+        const values = results.filter((r) => r.isValid && r.text).map((r) => r.text);
+        if (!values.length) {
+          status.innerHTML = 'No barcodes found. In the app this is when it asks Claude to read the printed text instead.';
+          return;
+        }
+        const data = classifyBarcodes(values);
+        for (const dd of fields.querySelectorAll<HTMLElement>('[data-k]')) {
+          const v = data[dd.dataset.k as keyof typeof data];
+          dd.textContent = v === undefined || Array.isArray(v) ? 'not found' : String(v);
+          dd.classList.toggle('missing', v === undefined);
+        }
+        fields.hidden = false;
+        raw.hidden = false;
+        raw.textContent = `${values.length} barcodes in ${ms} ms: ${values.join(', ')}`;
+        status.innerHTML = isComplete(data)
+          ? 'Read. Each value is told apart by its shape: the part number by its pattern, the supplier code by its leading zeros, the quantity by its length.'
+          : 'Some fields are missing. In the app you’d type them in, or let Claude read the printed text.';
+        if (isSample) {
+          filed.hidden = false;
+          filed.innerHTML = `Filed under <b>Housing ${data.partNumber}</b>, skid 3 today. Next: enter its hours and who sorted it.`;
+        }
+      } catch (e) {
+        status.textContent = 'This browser couldn’t run the barcode reader. Try a recent Chrome, Edge, Firefox or Safari.';
+        console.error(e);
+      } finally {
+        readBtn.disabled = false;
+      }
+    }
+
+    readBtn.addEventListener('click', () => {
+      own.hidden = true; label.style.display = '';
+      run(() => svgToImageData(label), true);
+    });
+    $<HTMLInputElement>('[data-file]').addEventListener('change', (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      own.src = URL.createObjectURL(file);
+      own.hidden = false; label.style.display = 'none';
+      run(() => fileToImageData(file), false);
+    });
+  }
+</script>
+
+<style>
+  .lr { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 1.5rem; align-items: start; }
+  @media (max-width: 56rem) { .lr { grid-template-columns: minmax(0, 1fr); } }
+  .lr-frame { background: #8b8d86; padding: clamp(1rem, 4vw, 2.25rem); border-radius: 3px; border: 1px solid var(--ink); }
+  .lr-label { width: 100%; height: auto; transform: rotate(-1.5deg); box-shadow: 0 6px 16px -8px rgba(0,0,0,.5); }
+  .lr-own { max-height: 24rem; margin-inline: auto; }
+  .lr-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
+  .lr-file { position: relative; }
+  .lr-file:focus-within { outline: 3px solid var(--stamp); outline-offset: 3px; }
+  .lr-privacy { font-family: var(--display); font-stretch: 90%; font-size: var(--t-xs); color: var(--pencil); margin-top: 0.5rem; background: var(--sheet); display: inline-block; padding: 0 0.25rem; }
+  .lr-out { background: var(--sheet); border: 1px solid var(--grid-strong); border-radius: 3px; padding: 1.1rem 1.25rem; display: grid; gap: 1rem; }
+  .lr-status { font-size: var(--t-sm); margin: 0; }
+  .lr-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin: 0; border: 1.5px solid var(--ink); border-radius: 2px; }
+  .lr-fields .field { padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--grid-strong); }
+  .lr-fields .field:nth-child(odd) { border-right: 1px solid var(--grid-strong); }
+  .lr-fields .field:nth-last-child(-n + 2) { border-bottom: 0; }
+  .lr-fields dd { font-family: var(--display); font-weight: 700; font-size: var(--t-md); font-variant-numeric: tabular-nums; font-stretch: 85%; overflow-wrap: anywhere; }
+  .lr-fields dd:global(.missing) { color: var(--reject); font-weight: 500; font-size: var(--t-sm); }
+  .lr-raw { font-family: var(--display); font-size: var(--t-xs); color: var(--pencil); margin: 0; word-break: break-word; }
+  .lr-filed { margin: 0; font-size: var(--t-sm); padding: 0.6rem 0.75rem; background: var(--pad); border-left: 3px solid var(--ok); }
+  [hidden] { display: none !important; }
+</style>
