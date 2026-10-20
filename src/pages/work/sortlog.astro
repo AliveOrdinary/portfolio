@@ -1,0 +1,145 @@
+---
+import { Image } from 'astro:assets';
+import Case from '../../layouts/Case.astro';
+import Bench from '../../components/Bench.astro';
+import LabelReader from '../../components/demos/LabelReader.astro';
+import HoursToTimes from '../../components/demos/HoursToTimes.astro';
+import { sortlogShots } from '../../data/sortlog-shots';
+
+const spec = [
+  { label: 'For', value: 'My crew at IQ Automotive Services' },
+  { label: 'My role', value: 'Built it, and use it every shift to write the reports' },
+  { label: 'When', value: 'September to October 2026' },
+  { label: 'Used by', value: 'Site supervisors at the end of a shift; IQ’s office for reports and hours' },
+  { label: 'Status', value: 'Used every shift since late September 2026' },
+  { label: 'Built with', value: 'Next.js 16, Supabase, zxing-wasm, Claude Haiku, ExcelJS, jsPDF, Vitest' },
+];
+
+const shotFiles = import.meta.glob<{ default: ImageMetadata }>('../../assets/sortlog/*.{png,jpg,jpeg,webp}', { eager: true });
+const shots = sortlogShots
+  .map((s) => ({ ...s, src: shotFiles[`../../assets/sortlog/${s.file}`]?.default }))
+  .filter((s) => s.src);
+---
+
+<Case
+  title="Sortlog: sorting reports by Navaneeth Krishnan"
+  name="Sortlog"
+  summary="Daily sorting reports and hours for a containment-sorting crew at IQ Automotive Services."
+  description="How I built Sortlog: skid label photos in, IQ’s sorting reports and hours out, used every shift on the floor."
+  spec={spec}
+  next={{ href: '/work/amplifier', name: 'Amplifier' }}
+>
+  <section class="case-section">
+    <div class="wrap prose">
+      <h2>The floor</h2>
+      <p>
+        When a supplier’s parts are suspect, a containment crew sorts every skid at the customer’s plant before the
+        parts go on the line. We check each part, tag the rejects, and at the end of every shift report what was
+        sorted, what was rejected, and who worked how long.
+      </p>
+      <p>
+        That reporting was Excel. One workbook per part, filled in by hand from the skid labels and paper notes.
+        Hours typed again into a daily hours sheet, then again into a monthly one. Every number lived in more than
+        one place.
+      </p>
+      <p>
+        I work on this floor and I write these reports, so I built the tool I wanted at the end of my own shift.
+      </p>
+    </div>
+  </section>
+
+  <section class="case-section">
+    <div class="wrap">
+      <Bench title="Read a skid label" id="label-demo">
+        <p slot="intro">
+          At the end of a shift you photograph the labels of the skids you finished. The app reads every barcode,
+          works out which value is which, and files the skid under its part. Here’s a made-up label.
+        </p>
+        <LabelReader />
+      </Bench>
+    </div>
+  </section>
+
+  <section class="case-section">
+    <div class="wrap prose">
+      <h2>What I built</h2>
+      <p>The end of a shift is one page, top to bottom.</p>
+      <ol>
+        <li><strong>Who worked,</strong> with everyone’s start and end time.</li>
+        <li><strong>Skids.</strong> Label photos in, skids filed under their part. For each one: hours, suspect and missing counts, the reject tag, defect photos, and who sorted it. A skid that takes two days is picked up again the next morning.</li>
+        <li><strong>Times,</strong> worked out per person and part from the skids, and editable.</li>
+        <li><strong>Reports,</strong> in IQ’s own format: a sorting report per customer group and per part as PDF and Excel, daily and monthly hours, or all of them as one zip.</li>
+      </ol>
+      <p>
+        Around that: a reports page that answers “every part we’ve done for this customer and the total rejects”
+        for any date range; a skid board built from the customer’s skid list, oldest first, so shipping can be asked
+        for skids in order; and a company with sites, admins, managers and supervisors, where each company only
+        ever sees its own data.
+      </p>
+    </div>
+  </section>
+
+  <section class="case-section">
+    <div class="wrap">
+      <Bench title="From skid hours to everyone’s times" id="times-demo">
+        <p slot="intro">
+          Nobody on the floor writes down when they started each part. They know how long a skid took and who was
+          on it. Change the hours or the crew and watch the day lay out. Push the bracket skid to 8 hours, then end
+          Lin’s shift at 9:00, and add Asha to the bracket skid.
+        </p>
+        <HoursToTimes />
+      </Bench>
+    </div>
+  </section>
+
+  {shots.length > 0 && (
+    <section class="case-section">
+      <div class="wrap">
+        <h2 style="margin-bottom:1.25rem">The app</h2>
+        <div class="shots shots-2">
+          {shots.map((s) => (
+            <figure>
+              <Image src={s.src!} alt={s.alt} widths={[640, 1000, 1400]} sizes="(min-width: 56rem) 34rem, 100vw" />
+              <figcaption>{s.caption}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="case-section">
+    <div class="wrap">
+      <h2>Decisions</h2>
+      <div class="decisions" style="margin-top:1.5rem">
+        <div class="decision">
+          <h3>Barcodes first, Claude second</h3>
+          <p>Barcodes are read in the browser, free and instant. Only when a label is torn or blurred does the photo go to Claude Haiku, which is asked for JSON and told to leave a field empty rather than guess a digit.</p>
+        </div>
+        <div class="decision">
+          <h3>Point out problems, never fix them</h3>
+          <p>Hours are pay. The app never moves time between people or parts. It splits a skid evenly, keeps everyone inside their shift, and flags what doesn’t add up: past an end time, two parts at once, hours nobody has room for.</p>
+        </div>
+        <div class="decision">
+          <h3>Excel stays Excel</h3>
+          <p>The office lives in spreadsheets, so the reports do too: IQ’s layout and colours, with live formulas for good parts, totals and suspect rates. Correct one number and everything that depends on it follows.</p>
+        </div>
+        <div class="decision">
+          <h3>Built for more than one site</h3>
+          <p>Companies, sites and roles are separate in the database, with row-level security on every table. Adding a customer plant is a new site, not a new copy of the app.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="case-section">
+    <div class="wrap">
+      <h2 style="margin-bottom:1.25rem">Where it is now</h2>
+      <dl class="outcome">
+        <div class="field"><dt>Status</dt><dd>Used every shift since late September 2026</dd></div>
+        <div class="field"><dt>Replaced</dt><dd>A workbook per part, a daily hours sheet and a monthly one</dd></div>
+        <div class="field"><dt>Ready for</dt><dd>More sites, each with its own supervisor and crew</dd></div>
+      </dl>
+    </div>
+  </section>
+</Case>

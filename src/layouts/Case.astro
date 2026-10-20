@@ -1,0 +1,41 @@
+---
+import Base from './Base.astro';
+import '../styles/case.css';
+
+interface Props {
+  title: string;
+  name: string;
+  summary: string;
+  description: string;
+  spec: { label: string; value: string }[];
+  next?: { href: string; name: string };
+}
+const { title, name, summary, description, spec, next } = Astro.props;
+---
+
+<Base title={title} description={description} current="work">
+  <article class="case">
+    <header class="wrap case-head">
+      <a class="case-back" href="/#work">All work</a>
+      <h1>{name}</h1>
+      <p class="case-summary">{summary}</p>
+      <dl class="case-spec">
+        {spec.map((s) => (
+          <div class="field">
+            <dt>{s.label}</dt>
+            <dd>{s.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </header>
+
+    <slot />
+
+    {next && (
+      <nav class="wrap case-next" aria-label="Next project">
+        <span class="field-label">Next</span>
+        <a href={next.href}>{next.name}</a>
+      </nav>
+    )}
+  </article>
+</Base>

@@ -1,154 +1,252 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import SkidLabel from '../components/SkidLabel.astro';
+import { featured, alsoBuilt, tools } from '../data/projects';
+import shop from '../assets/613/phone/07-in-the-bay-overview.png';
+import tagger from '../assets/amplifier/tagger.png';
 
-const stack = [
-  { label: 'Frontend', items: ['React', 'Next.js', 'TypeScript', 'Canvas API', 'Fabric.js'] },
-  { label: 'Backend / Data', items: ['Node.js', 'Supabase', 'PostgreSQL'] },
-  { label: 'Automation / AI', items: ['n8n', 'Claude API', 'Gemini API'] },
-  { label: 'Deploy', items: ['Git', 'Netlify', 'Cloudflare'] },
-];
+const images: Record<string, { src: ImageMetadata; alt: string } | null> = {
+  sortlog: null,
+  '613-automotive': { src: shop, alt: '613 app on a phone: photos and files, the brake inspection with two urgent items, and the final quality check, all ten ticked.' },
+  amplifier: { src: tagger, alt: 'Amplifier tagging screen: the image on the left, Claude’s suggested tags as removable pills on the right, and an Accept and next button.' },
+};
 
-const projects = [
+const steps = [
   {
-    name: 'Amplifier — AI Image Tagging System',
-    type: 'AI / Full-stack',
-    description: 'Design reference system pairing intelligent image tagging with automated client briefing generation. Features a self-learning feedback loop that sharpens tag accuracy over time.',
-    tags: ['Next.js', 'React', 'Claude Vision API', 'Supabase', 'Canvas API'],
-    link: '/projects/amplifier',
-    linkText: 'Case study',
-    external: false,
+    title: 'Go where the work is',
+    body: 'I work on the sorting floor Sortlog was built for, and I write the reports it replaced. For 613, I started from the paperwork they already had. The tool comes out of the place it will be used.',
   },
   {
-    name: 'Sacred Cosmos — Content Automation Platform',
-    type: 'Automation / Full-stack',
-    description: 'AI-powered content choreography platform — automated generation, visual canvas editor, and one-click Instagram/Facebook publishing.',
-    tags: ['React', 'Fabric.js', 'n8n', 'Supabase', 'Gemini API', 'Netlify'],
-    link: '/projects/content-automation',
-    linkText: 'Case study',
-    external: false,
+    title: 'Write down what actually happens',
+    body: 'Anthropology is mostly this: the gap between how a process is described and how people really do it. The workaround someone keeps on a sticky note is usually the feature.',
   },
   {
-    name: 'Francis — Art Director Portfolio',
-    type: 'Freelance / Frontend',
-    description: "Responsive portfolio built for an Art Director. Image-optimised and running on a zero-cost CMS — fast, maintainable, and entirely under the client's control.",
-    tags: ['Next.js', 'Netlify CMS', 'Netlify'],
-    link: 'https://francisdes.com',
-    linkText: 'Visit site',
-    external: true,
+    title: 'Build the smallest thing that removes the worst step',
+    body: 'Sortlog’s first version did one thing: turn the end-of-shift entry into the report. Skid tracking, times and the manager pages came later, once it was in daily use.',
   },
   {
-    name: 'Eldhose Kuriyan — Portfolio Rebuild',
-    type: 'Freelance / Frontend',
-    description: "Migrated a Framer site to vanilla JavaScript — same design fidelity, measurably better performance, and features the original couldn't support.",
-    tags: ['JavaScript', 'HTML', 'CSS', 'Netlify'],
-    link: 'https://eldhosekuriyan.com',
-    linkText: 'Visit site',
-    external: true,
+    title: 'Keep the numbers honest',
+    body: 'A physics habit. Money and hours are worked out in one place and tested against real samples. 613’s totals are checked against the shop’s own estimate. Sortlog’s Excel files keep live formulas, so a corrected number flows through.',
   },
 ];
 ---
 
-<BaseLayout title="Navaneeth Krishnan — Full-Stack Developer" page="home">
-
-  <nav>
-    <a href="/" class="nav-name">NK</a>
-    <ul class="nav-links">
-      <li><a href="#work">work</a></li>
-      <li><a href="#about">about</a></li>
-      <li><a href="#contact">contact</a></li>
-    </ul>
-  </nav>
-
-  <section class="hero">
-    <div class="hero-left">
-      <h1 class="hero-name">Navaneeth<br>Krishnan</h1>
-      <p class="hero-tagline">I build things that think.</p>
-      <p class="hero-sub">Full-stack developer. Physics brain, anthropology lens. Based in Toronto.</p>
-    </div>
-    <div class="hero-right">
-      <div class="status-pill">
-        <span class="status-dot"></span>
-        open to roles
-      </div>
-      <div class="hero-links">
-        <a href="https://github.com/AliveOrdinary" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="https://linkedin.com/in/vrnavaneeth" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-        <a href="mailto:vrnavaneeth135@gmail.com">vrnavaneeth135@gmail.com</a>
-      </div>
-    </div>
-  </section>
-
-  <div class="section-rule"></div>
-
-  <section class="projects" id="work">
-    <p class="section-label">Selected work</p>
-
-    {projects.map((project, i) => (
-      <div class="project-row">
-        <span class="project-num">{String(i + 1).padStart(2, '0')}</span>
-        <div class="project-body">
-          <p class="project-type">{project.type}</p>
-          <h2 class="project-name">{project.name}</h2>
-          <p class="project-desc">{project.description}</p>
-          <div class="project-stack">
-            {project.tags.map((tag) => <span class="tag">{tag}</span>)}
-          </div>
+<Base title="Navaneeth Krishnan, full-stack developer in Toronto">
+  <div class="wrap">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-sheet grid-paper">
+        <dl class="hero-fields">
+          <div class="field"><dt>Name</dt><dd>Navaneeth Krishnan</dd></div>
+          <div class="field"><dt>Trade</dt><dd>Full-stack developer</dd></div>
+          <div class="field"><dt>Based in</dt><dd>Toronto, Ontario</dd></div>
+          <div class="field"><dt>Trained in</dt><dd>Physics, anthropology</dd></div>
+        </dl>
+        <div class="hero-stamp grid-paper">
+          <span class="stamp press">Open to roles <small>full-time</small></span>
         </div>
-        <a
-          class="project-link"
-          href={project.link}
-          {...(project.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-        >
-          {project.linkText} <span class="arrow">↗</span>
-        </a>
       </div>
-    ))}
-  </section>
 
-  <div class="section-rule"></div>
+      <h1 id="hero-title" class="hero-title">I build software for the people doing the actual work.</h1>
+      <p class="hero-lede">
+        A sorting floor, a body shop front desk, a design studio. I spend time where the work happens,
+        write down how it really gets done, then build the tool that fits. React, Next.js, TypeScript,
+        Supabase and the Claude API, shipped and in use.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-tag" href="mailto:vrnavaneeth135@gmail.com">Email me</a>
+        <a class="btn" href="/navaneeth-krishnan-resume.pdf">Résumé (PDF)</a>
+        <a class="btn" href="#work">See the work</a>
+      </div>
+    </section>
 
-  <section class="about" id="about">
-    <div>
-      <p class="section-label">About</p>
-      <p class="about-text">
-        I came to web development through physics and anthropology — two disciplines that share a core habit: looking at how systems actually behave, not how they're supposed to.
-      </p>
-      <p class="about-text">
-        That carries into how I build. I'm interested in <strong>automation that removes friction</strong>, <strong>AI integrations that do real work</strong>, and interfaces that respect the person using them.
-      </p>
-      <p class="about-text">
-        Based in Toronto. 2+ years shipping production software. Available for full-time roles.
-      </p>
-    </div>
-    <div class="stack-grid">
-      <p class="section-label">Stack</p>
-      {stack.map((group) => (
-        <div>
-          <p class="stack-row-label">{group.label}</p>
-          <div class="stack-items">
-            {group.items.map((item) => <span class="tag">{item}</span>)}
+    <section class="section" id="work" aria-labelledby="work-title">
+      <div class="section-head">
+        <h2 id="work-title">Work</h2>
+        <p>Three tools, each built around one place of work.</p>
+      </div>
+
+      <div class="sheets">
+        {featured.map((p, i) => {
+          const img = images[p.slug];
+          return (
+            <article class:list={['sheet', { flip: i % 2 === 1 }]} aria-labelledby={`p-${p.slug}`}>
+              <div class="sheet-text">
+                <h3 id={`p-${p.slug}`}><a href={`/work/${p.slug}`}>{p.name}</a></h3>
+                <p class="sheet-summary">{p.summary}</p>
+                <dl class="sheet-fields">
+                  <div class="field"><dt>Where</dt><dd>{p.where}</dd></div>
+                  <div class="field"><dt>Before</dt><dd>{p.before}</dd></div>
+                  <div class="field"><dt>Now</dt><dd>{p.now}</dd></div>
+                  <div class="field"><dt>Status</dt><dd>{p.status}</dd></div>
+                </dl>
+                <p class="sheet-stack">Built with {p.stack.join(', ')}.</p>
+                <a class="btn" href={`/work/${p.slug}`}>Read about {p.name}</a>
+              </div>
+              <div class="sheet-visual grid-paper grid-soft">
+                {img ? (
+                  <Image src={img.src} alt={img.alt} widths={[480, 800, 1200]} sizes="(min-width: 60rem) 36rem, 100vw" class="sheet-img" loading={i === 0 ? 'eager' : 'lazy'} />
+                ) : (
+                  <SkidLabel class="sheet-label" />
+                )}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+      <div class="also">
+        <h3 class="also-title">Also built</h3>
+        <ul>
+          {alsoBuilt.map((a) => (
+            <li>
+              <a href={a.href} rel="noopener noreferrer">{a.name}</a>
+              <span>{a.note}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="how-i-work" aria-labelledby="how-title">
+      <div class="section-head">
+        <h2 id="how-title">How I work</h2>
+      </div>
+      <ol class="steps">
+        {steps.map((s, i) => (
+          <li class="step">
+            <span class="step-n num" aria-hidden="true">{i + 1}</span>
+            <div>
+              <h4>{s.title}</h4>
+              <p>{s.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="section" id="tools" aria-labelledby="tools-title">
+      <div class="section-head">
+        <h2 id="tools-title">Tools</h2>
+        <p>What I reach for, and what I’ve shipped with.</p>
+      </div>
+      <dl class="tools">
+        {tools.map((t) => (
+          <div class="tool-row">
+            <dt>{t.group}</dt>
+            <dd><ul>{t.items.map((item) => <li>{item}</li>)}</ul></dd>
           </div>
-        </div>
-      ))}
-    </div>
-  </section>
+        ))}
+      </dl>
+      <p class="tools-note">
+        I also built and ran a content pipeline in n8n that wrote, designed and published daily posts to
+        Instagram and Facebook, with a canvas editor for last-minute fixes.
+      </p>
+    </section>
 
-  <div class="section-rule"></div>
-
-  <section class="contact" id="contact">
-    <h2 class="contact-heading">Got a problem<br>worth<br><span>solving?</span></h2>
-    <div class="contact-right">
-      <a href="mailto:vrnavaneeth135@gmail.com" class="contact-email">vrnavaneeth135@gmail.com</a>
-      <div class="contact-socials">
-        <a href="https://github.com/AliveOrdinary" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="https://linkedin.com/in/vrnavaneeth" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    <section class="section contact" id="contact" aria-labelledby="contact-title">
+      <h2 id="contact-title">Hiring a full-stack developer?</h2>
+      <p>I’m looking for a full-time role in Toronto or remote. Email is the fastest way to reach me.</p>
+      <div class="hero-actions">
+        <a class="btn btn-tag" href="mailto:vrnavaneeth135@gmail.com">vrnavaneeth135@gmail.com</a>
+        <a class="btn" href="/navaneeth-krishnan-resume.pdf">Résumé (PDF)</a>
+        <a class="btn" href="https://linkedin.com/in/vrnavaneeth" rel="noopener noreferrer">LinkedIn</a>
+        <a class="btn" href="https://github.com/AliveOrdinary" rel="noopener noreferrer">GitHub</a>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
+</Base>
 
-  <footer>
-    <span>NAVANEETH KRISHNAN — TORONTO</span>
-    <span>&copy; 2026</span>
-  </footer>
+<style>
+  /* Hero */
+  .hero { padding-top: clamp(1rem, 4vw, 2.5rem); }
+  .hero-sheet {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto;
+    border: 1.5px solid var(--ink); border-radius: 3px; background: var(--sheet);
+  }
+  .hero-fields { display: grid; grid-template-columns: repeat(3, minmax(min-content, max-content)) minmax(min-content, 1fr); margin: 0; }
+  .hero-fields .field { padding: 0.7rem 1rem 0.8rem; border-right: 1px solid var(--grid-strong); }
+  .hero-fields .field:last-child { border-right: 1.5px solid var(--ink); }
+  .hero-fields dd { font-size: var(--t-md); }
+  .hero-stamp { display: grid; place-items: center; padding: 0.75rem 1.25rem; }
+  .hero-stamp .stamp { font-size: var(--t-lg); }
 
-</BaseLayout>
+  .hero-title {
+    font-size: clamp(3rem, 8.4vw, 7.25rem);
+    font-stretch: 62%;
+    font-weight: 850;
+    line-height: 0.92;
+    letter-spacing: -0.012em;
+    max-width: 16ch;
+    margin: clamp(1.75rem, 5vw, 3rem) 0 1.5rem;
+  }
+  .hero-lede { font-size: var(--t-lg); line-height: 1.5; max-width: 36rem; color: var(--ink); }
+  .hero-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.75rem; }
+
+  @media (max-width: 72rem) {
+    .hero-sheet { grid-template-columns: 1fr; }
+    .hero-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .hero-fields .field { border-bottom: 1px solid var(--grid-strong); }
+    .hero-fields .field:nth-child(2n) { border-right: 0; }
+    .hero-fields .field:last-child { border-right: 0; }
+    .hero-stamp { justify-items: start; padding: 1.25rem; }
+  }
+
+  /* Project sheets */
+  .sheets { display: grid; gap: 2rem; }
+  .sheet {
+    display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    border: 1.5px solid var(--ink); border-radius: 3px; background: var(--sheet); overflow: hidden;
+  }
+  .sheet.flip .sheet-text { order: 2; border-left: 1.5px solid var(--ink); border-right: 0; }
+  .sheet-text { padding: clamp(1.25rem, 3vw, 2rem); border-right: 1.5px solid var(--ink); display: flex; flex-direction: column; gap: 1rem; align-items: flex-start; }
+  .sheet-text h3 { font-size: var(--t-2xl); font-stretch: 66%; font-weight: 850; }
+  .sheet-text h3 a { color: var(--ink); text-decoration: none; }
+  .sheet-text h3 a:hover { text-decoration: underline; text-decoration-color: var(--stamp); }
+  .sheet-summary { font-size: var(--t-lg); line-height: 1.4; margin: 0; }
+  .sheet-fields { display: grid; gap: 0.85rem; margin: 0.25rem 0 0; }
+  .sheet-fields .field dd { font-size: var(--t-sm); }
+  .sheet-stack { font-family: var(--display); font-stretch: 90%; font-size: var(--t-xs); color: var(--pencil); margin: 0; }
+  .sheet-text .btn { margin-top: auto; }
+  .sheet-visual { display: grid; place-items: center; padding: clamp(1rem, 3vw, 2rem); min-height: 18rem; }
+  .sheet-img { border: 1px solid var(--grid-strong); border-radius: 3px; box-shadow: 0 1px 0 var(--grid-strong); max-height: 30rem; width: auto; object-fit: contain; }
+  .sheet-label { width: 100%; max-width: 30rem; transform: rotate(-1.5deg); border: 1px solid var(--grid-strong); }
+
+  @media (max-width: 60rem) {
+    .sheet { grid-template-columns: 1fr; }
+    .sheet-text, .sheet.flip .sheet-text { order: 2; border: 0; border-top: 1.5px solid var(--ink); }
+    .sheet-visual { order: 1; min-height: 0; }
+  }
+
+  .also { margin-top: 3rem; }
+  .also-title { font-size: var(--t-lg); font-stretch: 80%; margin-bottom: 0.75rem; }
+  .also ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
+  .also li { display: grid; grid-template-columns: minmax(0, 18rem) minmax(0, 1fr); gap: 0.25rem 1.5rem; padding-top: 0.75rem; border-top: 1px solid var(--grid-strong); }
+  .also a { font-family: var(--display); font-stretch: 85%; font-weight: 700; }
+  .also span { color: var(--pencil); font-size: var(--t-sm); }
+  @media (max-width: 40rem) { .also li { grid-template-columns: 1fr; } }
+
+  /* Steps */
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem 3rem; }
+  .step { display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: 1rem; }
+  .step-n {
+    display: grid; place-items: center; width: 2.75rem; height: 2.75rem;
+    border: 1.5px solid var(--ink); border-radius: 3px; background: var(--sheet);
+    font-weight: 800; font-size: var(--t-lg);
+  }
+  .step h4 { margin: 0.35rem 0 0.5rem; }
+  .step p { font-size: var(--t-sm); color: var(--ink); }
+  @media (max-width: 48rem) { .steps { grid-template-columns: 1fr; } }
+
+  /* Tools */
+  .tools { margin: 0; border-top: 1.5px solid var(--ink); }
+  .tool-row { display: grid; grid-template-columns: minmax(0, 14rem) minmax(0, 1fr); gap: 0.5rem 2rem; padding: 0.9rem 0; border-bottom: 1px solid var(--grid-strong); }
+  .tool-row dt { font-family: var(--display); font-stretch: 85%; font-weight: 700; }
+  .tool-row dd { margin: 0; }
+  .tool-row ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.35rem 1.5rem; font-size: var(--t-sm); }
+  .tools-note { margin-top: 1.25rem; color: var(--pencil); font-size: var(--t-sm); }
+  @media (max-width: 40rem) { .tool-row { grid-template-columns: 1fr; } }
+
+  /* Contact */
+  .contact h2 { font-size: var(--t-3xl); font-stretch: 64%; font-weight: 850; line-height: 0.94; max-width: 12ch; margin-bottom: 1.25rem; }
+</style>

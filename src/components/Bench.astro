@@ -1,0 +1,37 @@
+---
+// A demo laid out on the bench: grid paper, a yellow hold tag naming it,
+// and a sentence saying what to try.
+interface Props { title: string; id?: string; }
+const { title, id } = Astro.props;
+---
+
+<section class="bench grid-paper" aria-labelledby={id ? `${id}-title` : undefined} id={id}>
+  <div class="bench-head">
+    <span class="hold-tag" aria-hidden="true">Try it</span>
+    <h3 id={id ? `${id}-title` : undefined}>{title}</h3>
+  </div>
+  <div class="bench-intro"><slot name="intro" /></div>
+  <div class="bench-body"><slot /></div>
+</section>
+
+<style>
+  .bench { border: 1.5px solid var(--ink); border-radius: 3px; padding: clamp(1rem, 3vw, 2rem); }
+  .bench-head { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .bench-head h3 { font-size: var(--t-xl); background: var(--sheet); padding: 0 0.25rem; }
+  .bench-intro { margin: 0.75rem 0 1.5rem; }
+  .bench-intro :global(p) { background: var(--sheet); display: inline; box-decoration-break: clone; -webkit-box-decoration-break: clone; padding: 0.1em 0.25rem; line-height: 1.75; }
+
+  /* A hanging hold tag: notched corners and a string hole */
+  .hold-tag {
+    position: relative;
+    display: inline-flex; align-items: center;
+    padding: 0.35rem 0.85rem 0.35rem 1.6rem;
+    background: var(--tag); color: var(--ink);
+    font-family: var(--display); font-stretch: 80%; font-weight: 800; font-size: var(--t-sm);
+    clip-path: polygon(0.7rem 0, 100% 0, 100% 100%, 0.7rem 100%, 0 calc(100% - 0.7rem), 0 0.7rem);
+  }
+  .hold-tag::before {
+    content: ''; position: absolute; left: 0.55rem; top: 50%; width: 0.5rem; height: 0.5rem;
+    border-radius: 50%; background: var(--sheet); border: 1.5px solid var(--tag-deep); transform: translateY(-50%);
+  }
+</style>

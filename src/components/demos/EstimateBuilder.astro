@@ -1,0 +1,318 @@
+---
+// The 613 estimate, live. Same line kinds, rates and money rules as the shop app;
+// totals come from a copy of the app's own totals module.
+---
+
+<div class="est" data-est>
+  <div class="est-work">
+    <div class="est-table" role="table" aria-label="Estimate lines">
+      <div class="est-row est-th" role="row">
+        <span role="columnheader">Description</span>
+        <span role="columnheader">Type</span>
+        <span role="columnheader" class="r">Qty / hrs</span>
+        <span role="columnheader" class="r">Rate / price</span>
+        <span role="columnheader" class="r">Amount</span>
+        <span role="columnheader"><span class="visually-hidden">Remove</span></span>
+      </div>
+      <div data-rows role="rowgroup"></div>
+    </div>
+    <button type="button" class="btn est-add" data-add>Add a line</button>
+
+    <div class="est-options">
+      <label class="est-check">
+        <input type="checkbox" data-insurance checked />
+        <span>Insurance job</span>
+      </label>
+      <label class="est-opt" data-deductible-wrap>
+        <span class="field-label">Customer’s deductible</span>
+        <input class="input" type="number" min="0" step="50" value="500" inputmode="decimal" data-deductible />
+      </label>
+      <label class="est-opt">
+        <span class="field-label">Discount</span>
+        <input class="input" type="number" min="0" step="10" value="0" inputmode="decimal" data-discount />
+      </label>
+    </div>
+    <div class="est-mini" aria-hidden="true"><span>Total incl. HST</span><b data-mini></b></div>
+  </div>
+
+  <aside class="est-doc" aria-label="Estimate totals" aria-live="polite">
+    <div class="doc-head">
+      <span class="doc-brand" aria-hidden="true"><i></i><i></i><i></i>613</span>
+      <span class="doc-kind">Estimate <b>EST-214</b></span>
+    </div>
+    <dl class="doc-totals" data-totals></dl>
+    <div class="doc-total"><span>Total</span><b data-total></b></div>
+    <dl class="doc-split" data-split></dl>
+
+    <div class="doc-approve">
+      <button type="button" class="btn btn-tag" data-approve>Approve this estimate</button>
+      <p class="doc-note" data-approved hidden></p>
+      <p class="doc-warn" data-warn hidden></p>
+      <button type="button" class="doc-reset" data-reset>Start over</button>
+    </div>
+  </aside>
+</div>
+
+<script>
+  import { jobTotals, KIND_LABEL, type LineKind } from '../../lib/demo/shop-totals';
+
+  type Line = { id: number; kind: LineKind; description: string; quantity: number; unit_price: number; markup_pct: number };
+
+  const RATES: Partial<Record<LineKind, number>> = { labour_body: 95, labour_paint: 105, labour_mechanical: 120 };
+  const PAINT_MARKUP = 15;
+  const KINDS: LineKind[] = ['labour_body', 'labour_paint', 'labour_mechanical', 'part', 'paint_materials', 'sublet'];
+  const money = new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD' });
+  const fmt = (n: number) => money.format(n).replace('CA', '');
+
+  // The shop's sample collision job (RO-214), as on the printed estimate.
+  const start = (): Line[] => [
+    ['labour_body', 'Remove and install front bumper cover', 2.5, 95],
+    ['part', 'Front bumper cover, primed', 1, 612.4],
+    ['part', 'Front bumper retainer kit', 1, 49.5],
+    ['labour_body', 'Repair left fender, 2 dents', 1.8, 95],
+    ['labour_paint', 'Refinish front bumper and blend left fender', 4.2, 105],
+    ['paint_materials', 'Paint and materials', 1, 238],
+    ['labour_mechanical', 'Reset and calibrate front radar sensor', 1, 120],
+    ['sublet', 'Four-wheel alignment', 1, 129.99],
+  ].map(([kind, description, quantity, unit_price], i) => ({
+    id: i + 1, kind: kind as LineKind, description: description as string,
+    quantity: quantity as number, unit_price: unit_price as number,
+    markup_pct: kind === 'paint_materials' ? PAINT_MARKUP : 0,
+  }));
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-est]')) {
+    const $ = <T extends Element>(s: string) => root.querySelector(s) as T;
+    const rowsEl = $<HTMLElement>('[data-rows]');
+    const insurance = $<HTMLInputElement>('[data-insurance]');
+    const deductible = $<HTMLInputElement>('[data-deductible]');
+    const deductibleWrap = $<HTMLElement>('[data-deductible-wrap]');
+    const discount = $<HTMLInputElement>('[data-discount]');
+    const totalsEl = $<HTMLElement>('[data-totals]');
+    const totalEl = $<HTMLElement>('[data-total]');
+    const splitEl = $<HTMLElement>('[data-split]');
+    const approveBtn = $<HTMLButtonElement>('[data-approve]');
+    const approvedEl = $<HTMLElement>('[data-approved]');
+    const warnEl = $<HTMLElement>('[data-warn]');
+
+    let lines = start();
+    let nextId = lines.length + 1;
+    let approved: number | null = null;
+
+    const lineAmount = (l: Line) => jobTotals({ discount: 0, hst_rate: 0, shop_supplies_pct: null, shop_supplies_cap: null, is_insurance: false, deductible: 0, insurer_pays: null, amount_paid: 0 }, [l]).subtotal;
+
+    function rowHtml(l: Line) {
+      const unit = l.kind.startsWith('labour') ? 'h' : '';
+      return `
+        <div class="est-row" role="row" data-id="${l.id}">
+          <label class="est-cell est-desc" role="cell"><span class="visually-hidden">Description</span>
+            <input class="input" type="text" value="${l.description.replace(/"/g, '&quot;')}" data-f="description" /></label>
+          <label class="est-cell" role="cell"><span class="visually-hidden">Type</span>
+            <select class="select" data-f="kind">${KINDS.map((k) => `<option value="${k}" ${k === l.kind ? 'selected' : ''}>${KIND_LABEL[k]}</option>`).join('')}</select></label>
+          <label class="est-cell r" role="cell"><span class="est-mlabel">Qty / hrs</span>
+            <span class="est-unit"><input class="input r" type="number" min="0" step="0.1" inputmode="decimal" value="${l.quantity}" data-f="quantity" />${unit ? `<i>${unit}</i>` : ''}</span></label>
+          <label class="est-cell r" role="cell"><span class="est-mlabel">Rate / price</span>
+            <input class="input r" type="number" min="0" step="0.01" inputmode="decimal" value="${l.unit_price}" data-f="unit_price" /></label>
+          <span class="est-cell r est-amount num" role="cell"><span class="est-mlabel">Amount</span><b data-amount>${fmt(lineAmount(l))}</b>${l.kind === 'paint_materials' ? `<small>incl. ${PAINT_MARKUP}% markup</small>` : ''}</span>
+          <span class="est-cell" role="cell"><button type="button" class="est-remove" data-remove aria-label="Remove ${l.description.replace(/"/g, '&quot;')}">×</button></span>
+        </div>`;
+    }
+
+    function renderRows() {
+      rowsEl.innerHTML = lines.map(rowHtml).join('');
+    }
+
+    function update() {
+      const t = jobTotals(
+        {
+          discount: Number(discount.value) || 0,
+          hst_rate: 13,
+          shop_supplies_pct: null,
+          shop_supplies_cap: null,
+          is_insurance: insurance.checked,
+          deductible: Number(deductible.value) || 0,
+          insurer_pays: null,
+          amount_paid: 0,
+          approved_total: approved,
+        },
+        lines,
+      );
+      const rows: [string, number, string?][] = [
+        [`Labour (${t.labourHours} h)`, t.labour],
+        ['Parts', t.parts],
+        ['Paint and materials', t.paintMaterials],
+        ['Sublet', t.sublet],
+      ];
+      if (t.discount > 0) rows.push(['Discount', -t.discount]);
+      rows.push(['Subtotal', t.subtotal, 'sub'], ['HST (13%)', t.hst]);
+      totalsEl.innerHTML = rows.map(([k, v, c]) => `<div class="${c ?? ''}"><dt>${k}</dt><dd class="num">${fmt(v)}</dd></div>`).join('');
+      totalEl.textContent = fmt(t.total);
+      $<HTMLElement>('[data-mini]').textContent = fmt(t.total);
+      splitEl.innerHTML = insurance.checked
+        ? `<div><dt>Insurance pays</dt><dd class="num">${fmt(t.insurerPays)}</dd></div><div class="sub"><dt>Customer pays (deductible)</dt><dd class="num">${fmt(t.customerPays)}</dd></div>`
+        : '';
+      deductibleWrap.hidden = !insurance.checked;
+
+      if (approved === null) {
+        approveBtn.hidden = false;
+        approveBtn.textContent = `Approve at ${fmt(t.total)}`;
+        approvedEl.hidden = true;
+        warnEl.hidden = true;
+      } else {
+        approveBtn.hidden = true;
+        approvedEl.hidden = false;
+        approvedEl.innerHTML = `Approved at <b>${fmt(approved)}</b>. Now change a line: the invoice can go up to <b>${fmt(t.estimateLimit ?? 0)}</b> before the customer has to OK it again.`;
+        warnEl.hidden = !t.overEstimate;
+        if (t.overEstimate) warnEl.innerHTML = `<b>${fmt(t.total - (t.estimateLimit ?? 0))} over the 10% limit.</b> Under Ontario law the shop can’t bill more than 10% over an approved estimate without the customer’s OK. The app flags this before the invoice is made.`;
+      }
+
+      for (const l of lines) {
+        const cell = rowsEl.querySelector(`[data-id="${l.id}"] [data-amount]`);
+        if (cell) cell.textContent = fmt(lineAmount(l));
+      }
+    }
+
+    rowsEl.addEventListener('input', (e) => {
+      const el = e.target as HTMLInputElement | HTMLSelectElement;
+      const row = el.closest<HTMLElement>('[data-id]');
+      const f = el.dataset.f as keyof Line | undefined;
+      if (!row || !f) return;
+      const line = lines.find((l) => l.id === Number(row.dataset.id));
+      if (!line) return;
+      if (f === 'kind') {
+        const kind = el.value as LineKind;
+        line.kind = kind;
+        line.markup_pct = kind === 'paint_materials' ? PAINT_MARKUP : 0;
+        if (RATES[kind]) line.unit_price = RATES[kind]!;
+        const focusKind = true;
+        renderRows();
+        if (focusKind) rowsEl.querySelector<HTMLSelectElement>(`[data-id="${line.id}"] [data-f="kind"]`)?.focus();
+      } else if (f === 'description') {
+        line.description = el.value;
+      } else {
+        (line[f] as number) = Math.max(0, Number(el.value) || 0);
+      }
+      update();
+    });
+
+    rowsEl.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest('[data-remove]');
+      if (!btn) return;
+      const id = Number(btn.closest<HTMLElement>('[data-id]')!.dataset.id);
+      lines = lines.filter((l) => l.id !== id);
+      renderRows();
+      update();
+      root.querySelector<HTMLButtonElement>('[data-add]')!.focus();
+    });
+
+    $<HTMLButtonElement>('[data-add]').addEventListener('click', () => {
+      const l: Line = { id: nextId++, kind: 'part', description: 'New part', quantity: 1, unit_price: 0, markup_pct: 0 };
+      lines.push(l);
+      renderRows();
+      update();
+      rowsEl.querySelector<HTMLInputElement>(`[data-id="${l.id}"] [data-f="description"]`)?.select();
+    });
+
+    for (const el of [insurance, deductible, discount]) el.addEventListener('input', update);
+
+    approveBtn.addEventListener('click', () => {
+      approved = Number(totalEl.textContent!.replace(/[^0-9.]/g, ''));
+      update();
+      approvedEl.focus?.();
+    });
+
+    $<HTMLButtonElement>('[data-reset]').addEventListener('click', () => {
+      lines = start();
+      nextId = lines.length + 1;
+      approved = null;
+      insurance.checked = true;
+      deductible.value = '500';
+      discount.value = '0';
+      renderRows();
+      update();
+    });
+
+    renderRows();
+    update();
+  }
+</script>
+
+<style>
+  .est { display: grid; grid-template-columns: minmax(0, 1fr) 17.5rem; gap: 1.5rem; align-items: start; }
+  @media (max-width: 64rem) { .est { grid-template-columns: minmax(0, 1fr); } }
+
+  .est-work { background: var(--sheet); border: 1px solid var(--grid-strong); border-radius: 3px; padding: 1rem; }
+  :global(.est-row) {
+    display: grid; grid-template-columns: minmax(11rem, 1fr) 8.5rem 4.5rem 5.25rem 5.75rem 1.75rem;
+    gap: 0.5rem; align-items: start; padding: 0.4rem 0; border-bottom: 1px solid var(--grid);
+  }
+  .est-th { font-family: var(--display); font-stretch: 88%; font-weight: 600; font-size: var(--t-xs); color: var(--pencil); border-bottom: 1.5px solid var(--ink); padding-top: 0; }
+  :global(.est .r) { text-align: right; }
+  :global(.est-cell) { display: flex; flex-direction: column; min-width: 0; }
+  :global(.est-mlabel) { display: none; }
+  :global(.est-unit) { display: flex; align-items: center; gap: 0.25rem; }
+  :global(.est-unit input) { flex: 1; min-width: 0; }
+  :global(.est-unit i) { font-style: normal; font-family: var(--display); font-size: var(--t-xs); color: var(--pencil); }
+  :global(.est-amount) { padding-top: 0.55rem; font-size: var(--t-sm); }
+  :global(.est-amount small) { font-size: 0.7rem; color: var(--pencil); font-weight: 400; }
+  :global(.est-remove) {
+    width: 2rem; height: 2.5rem; border: 0; background: none; color: var(--pencil);
+    font-size: 1.3rem; cursor: pointer; border-radius: 2px;
+  }
+  :global(.est-remove:hover) { color: var(--reject); background: var(--pad); }
+
+  @media (max-width: 44rem) {
+    .est-th { display: none; }
+    :global(.est-row) {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 2rem; gap: 0.5rem 0.75rem; padding: 0.9rem 0;
+      grid-template-areas: "desc desc rm" "kind qty qty" "rate amt amt";
+    }
+    :global(.est-row > :nth-child(1)) { grid-area: desc; }
+    :global(.est-row > :nth-child(2)) { grid-area: kind; justify-content: flex-end; }
+    :global(.est-row > :nth-child(3)) { grid-area: qty; }
+    :global(.est-row > :nth-child(4)) { grid-area: rate; }
+    :global(.est-row > :nth-child(5)) { grid-area: amt; }
+    :global(.est-row > :nth-child(6)) { grid-area: rm; }
+    :global(.est-mlabel) { display: block; font-family: var(--display); font-stretch: 88%; font-size: var(--t-xs); color: var(--pencil); text-align: left; }
+    :global(.est-cell.r) { text-align: left; }
+    :global(.est .input.r) { text-align: left; }
+    :global(.est-amount) { padding-top: 0; }
+  }
+
+  .est-add { margin-top: 0.9rem; }
+  .est-mini { display: none; }
+  @media (max-width: 64rem) {
+    .est-mini {
+      display: flex; justify-content: space-between; align-items: baseline;
+      position: sticky; bottom: 0; margin: 1rem -1rem -1rem; padding: 0.7rem 1rem;
+      background: #111; color: #fff; font-family: var(--display); font-style: italic; font-weight: 700; z-index: 2;
+    }
+    .est-mini b { color: #fdce07; font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+  }
+  .est-options { display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; align-items: end; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--grid-strong); }
+  .est-check { display: flex; align-items: center; gap: 0.5rem; font-family: var(--display); font-stretch: 90%; font-weight: 600; min-height: 2.5rem; cursor: pointer; }
+  .est-check input { width: 1.15rem; height: 1.15rem; accent-color: var(--ink); }
+  .est-opt { display: flex; flex-direction: column; gap: 0.2rem; width: 10rem; }
+  .est-opt[hidden] { display: none; }
+
+  /* The totals, set like 613's printed estimate */
+  .est-doc { background: #fff; border: 1px solid var(--grid-strong); border-radius: 2px; padding: 1.1rem 1.1rem 1.25rem; box-shadow: 0 8px 22px -14px rgba(34, 38, 31, 0.45); font-family: var(--display); font-stretch: 100%; }
+  .doc-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 0.6rem; border-bottom: 3px solid #fdce07; margin-bottom: 0.75rem; }
+  .doc-brand { display: inline-flex; align-items: center; gap: 2px; font-weight: 900; font-style: italic; font-size: 1.35rem; letter-spacing: -0.02em; color: #111; }
+  .doc-brand i { display: inline-block; width: 4px; height: 1rem; background: #fdce07; transform: skewX(-20deg); margin-right: 1px; }
+  .doc-brand i:last-of-type { margin-right: 4px; }
+  .doc-kind { font-size: var(--t-xs); color: #555; text-align: right; }
+  .doc-kind b { display: block; color: #111; font-style: italic; font-size: var(--t-md); }
+  :global(.doc-totals), :global(.doc-split) { margin: 0; font-size: var(--t-sm); }
+  :global(.doc-totals div), :global(.doc-split div) { display: flex; justify-content: space-between; gap: 1rem; padding: 0.22rem 0; }
+  :global(.doc-totals dd), :global(.doc-split dd) { margin: 0; }
+  :global(.doc-totals .sub) { border-top: 1px solid #ccc; margin-top: 0.2rem; padding-top: 0.4rem; font-weight: 700; }
+  :global(.doc-split .sub) { font-weight: 700; }
+  .doc-total { display: flex; justify-content: space-between; align-items: baseline; background: #111; color: #fff; padding: 0.55rem 0.8rem; margin: 0.6rem 0; font-style: italic; font-weight: 800; }
+  .doc-total b { color: #fdce07; font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+  .doc-approve { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed #bbb; display: grid; gap: 0.6rem; font-family: var(--body); }
+  .doc-approve .btn { width: 100%; }
+  .doc-note, .doc-warn { font-size: var(--t-xs); line-height: 1.5; margin: 0; }
+  .doc-warn { color: var(--reject); border-left: 3px solid var(--reject); padding-left: 0.6rem; }
+  .doc-reset { justify-self: start; background: none; border: 0; padding: 0.3rem 0; font: inherit; font-family: var(--display); font-size: var(--t-xs); color: var(--stamp); text-decoration: underline; cursor: pointer; }
+  [hidden] { display: none !important; }
+</style>

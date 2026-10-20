@@ -1,0 +1,136 @@
+---
+import { Image } from 'astro:assets';
+import Case from '../../layouts/Case.astro';
+
+import tagger from '../../assets/amplifier/tagger.png';
+import upload from '../../assets/amplifier/upload.png';
+import gallery from '../../assets/amplifier/gallery.png';
+import questionnaire from '../../assets/amplifier/briefing-questionnaire.png';
+import briefGallery from '../../assets/amplifier/briefing-gallery.png';
+import dashboard from '../../assets/amplifier/dashboard.png';
+import analytics from '../../assets/amplifier/analytics.png';
+import vocabulary from '../../assets/amplifier/vocabulary.png';
+
+const spec = [
+  { label: 'For', value: 'A design studio’s reference library and client onboarding' },
+  { label: 'My role', value: 'Design and build, end to end' },
+  { label: 'When', value: '2025' },
+  { label: 'Used by', value: 'Designers tagging references; new clients filling in a brief' },
+  { label: 'AI', value: 'Claude Sonnet vision for tags, Claude Haiku for brief keywords' },
+  { label: 'Built with', value: 'Next.js 15, React 19, Supabase, Zod, Nodemailer, Web Crypto' },
+];
+
+---
+
+<Case
+  title="Amplifier: AI image tagging by Navaneeth Krishnan"
+  name="Amplifier"
+  summary="A design reference library that tags itself, and a client brief that searches it."
+  description="How I built Amplifier: Claude tags a studio's reference images and learns from corrections; a client questionnaire turns into a gallery of matching references."
+  spec={spec}
+  next={{ href: '/work/613-automotive', name: '613 Automotive' }}
+>
+  <section class="case-section">
+    <div class="wrap split">
+      <div class="prose">
+        <h2>The studio</h2>
+        <p>
+          Design studios save thousands of reference images and tag almost none of them, so the library is useless
+          exactly when it’s needed. Then every new client means long back-and-forth to pin down a direction, and a
+          mood board pulled by hand from that same untagged pile.
+        </p>
+        <p>Amplifier is two connected tools. The tagger builds the library. The brief makes it useful.</p>
+      </div>
+      <figure>
+        <Image src={tagger} alt="Tagging screen: the image, Claude’s suggested tags as removable pills, and Accept and next as the main action." widths={[640, 1000, 1400]} sizes="(min-width: 56rem) 34rem, 100vw" class="shot" />
+        <figcaption>The designer’s job is to check, not to tag from scratch. Enter accepts and moves on.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="case-section">
+    <div class="wrap">
+      <div class="split">
+        <div class="prose">
+          <h3>The tagger</h3>
+          <p>
+            Upload references in bulk. Claude looks at each image and suggests tags across the studio’s own
+            categories: industry, style, mood, colour and anything else they add. The designer sees every suggestion
+            as one flat row, removes what’s wrong, and accepts with a keystroke. The next image is already being
+            analysed while they review this one.
+          </p>
+          <p>
+            Every correction is recorded. The tagger works out which tags it keeps missing and which it over-uses,
+            and folds that back into its instructions, so it gets closer to the studio’s eye without any fine-tuning.
+          </p>
+        </div>
+        <div class="prose">
+          <h3>The brief</h3>
+          <p>
+            A new client answers a ten-step brand questionnaire. Claude Haiku pulls visual keywords from their
+            answers, those keywords search the tagged library with weights per category, and the client gets a
+            gallery of matching references to favourite. Answers, keywords and picks arrive at the studio as one
+            email.
+          </p>
+          <p>
+            If a search comes back thin, the match threshold loosens on its own. Progress saves in the browser, so a
+            client can stop and come back.
+          </p>
+        </div>
+      </div>
+      <div class="shots shots-2 shot-wide">
+        <figure>
+          <Image src={questionnaire} alt="Client brand questionnaire with a step indicator." widths={[640, 1000]} sizes="(min-width: 56rem) 34rem, 100vw" />
+          <figcaption>Ten steps: strategy, personality, visual identity, audience, vision.</figcaption>
+        </figure>
+        <figure>
+          <Image src={briefGallery} alt="Gallery of references matched to the client’s keywords, ranked by score." widths={[640, 1000]} sizes="(min-width: 56rem) 34rem, 100vw" />
+          <figcaption>References matched to the client’s answers, ranked by score.</figcaption>
+        </figure>
+        <figure>
+          <Image src={upload} alt="Upload screen flagging a likely duplicate, shown side by side, with an Upload anyway option." widths={[640, 1000]} sizes="(min-width: 56rem) 34rem, 100vw" />
+          <figcaption>Duplicates are caught by exact hash, by look, and by file name.</figcaption>
+        </figure>
+        <figure>
+          <Image src={analytics} alt="Learning analytics: accuracy per category and the most common corrections." widths={[640, 1000]} sizes="(min-width: 56rem) 34rem, 100vw" />
+          <figcaption>What the tagger gets wrong, per category, and what it has learned.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="case-section">
+    <div class="wrap">
+      <h2>Decisions</h2>
+      <div class="decisions" style="margin-top:1.5rem">
+        <div class="decision">
+          <h3>Cache the vocabulary, not the image</h3>
+          <p>The studio’s tag vocabulary is large and the same for every image, so it sits in a cached system prompt. Only the first request pays for it, which cut response time by roughly 60 to 70 percent.</p>
+        </div>
+        <div class="decision">
+          <h3>Categories are data, not schema</h3>
+          <p>Categories, tags and search weights live in one configuration both tools read. A studio adds a category and the tagger and the brief search both pick it up, with no migration.</p>
+        </div>
+        <div class="decision">
+          <h3>Duplicates three ways</h3>
+          <p>A SHA-256 hash for exact copies, a perceptual hash on an 8×8 greyscale thumbnail for near copies, and file names as a last check. Near matches are shown side by side for the designer to decide.</p>
+        </div>
+        <div class="decision">
+          <h3>A public form, treated as one</h3>
+          <p>The brief is open to anyone, so every input is validated with Zod, every route is rate-limited per IP, email templates are escaped, and client answers never sit in the same part of the prompt as instructions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="case-section">
+    <div class="wrap">
+      <h2 style="margin-bottom:1.25rem">More screens</h2>
+      <div class="shots shots-3">
+        <Image src={gallery} alt="Reference gallery with filters and search." widths={[480, 800]} sizes="(min-width: 56rem) 22rem, 50vw" />
+        <Image src={dashboard} alt="Dashboard: total images, vocabulary size, AI accuracy and storage." widths={[480, 800]} sizes="(min-width: 56rem) 22rem, 50vw" />
+        <Image src={vocabulary} alt="Vocabulary management: categories, tags and how often each is used." widths={[480, 800]} sizes="(min-width: 56rem) 22rem, 50vw" />
+      </div>
+    </div>
+  </section>
+</Case>
