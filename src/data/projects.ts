@@ -34,7 +34,7 @@ export const featured: Featured[] = [
     slug: 'amplifier',
     name: 'Amplifier',
     summary: 'A reference library Claude scores, and a visual brief that finds what a client actually likes, not just what they say.',
-    where: 'Amplifier, the small design studio I’m a partner in. Most of our clients are musicians and filmmakers.',
+    where: 'Amplifier, the small design studio I’m a partner in.',
     before: 'A tagged reference library nobody kept up, and first meetings that started from a few adjectives and a guess.',
     now: 'Clients spend about eight minutes choosing between images on their phone. The studio gets a prep page: what they said, what they chose, where the two disagree, and a starter moodboard.',
     status: 'Rebuilt October 2026, in testing with the studio',
