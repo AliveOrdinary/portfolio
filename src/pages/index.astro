@@ -4,12 +4,12 @@ import Base from '../layouts/Base.astro';
 import SkidLabel from '../components/SkidLabel.astro';
 import { featured, alsoBuilt, tools } from '../data/projects';
 import shop from '../assets/613/phone/07-in-the-bay-overview.png';
-import tagger from '../assets/amplifier/tagger.png';
+import prep from '../assets/amplifier/v2/studio/06-prep-headline-contradictions.png';
 
 const images: Record<string, { src: ImageMetadata; alt: string } | null> = {
   sortlog: null,
   '613-automotive': { src: shop, alt: '613 app on a phone: photos and files, the brake inspection with two urgent items, and the final quality check, all ten ticked.' },
-  amplifier: { src: tagger, alt: 'Amplifier tagging screen: the image on the left, Claude’s suggested tags as removable pills on the right, and an Accept and next button.' },
+  amplifier: { src: prep, alt: 'Amplifier prep page for a test brief: a headline on what the client asked for and what they chose, and contradictions with a question to ask each.' },
 };
 
 const steps = [

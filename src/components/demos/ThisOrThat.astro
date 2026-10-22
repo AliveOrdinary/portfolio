@@ -1,0 +1,293 @@
+---
+// A small version of Amplifier's visual brief. The cards are abstract compositions drawn
+// here from four numbers (one per dimension), so no one's artwork is used. Like the real
+// engine, each pair targets the dimension it is least sure about, keeps everything else the
+// same, and one pair comes back swapped to check the answer holds.
+---
+
+<div class="tot" data-tot>
+  <!-- Step 1: what you say -->
+  <div class="tot-step" data-step="say">
+    <p class="tot-lead">First, in words: what should it feel like? Pick a side where you have a view.</p>
+    <div class="tot-say" data-say></div>
+    <button type="button" class="btn btn-tag" data-start>Show me pairs</button>
+  </div>
+
+  <!-- Step 2: what you choose -->
+  <div class="tot-step" data-step="pairs" hidden>
+    <div class="tot-progress"><span data-count>Pair 1 of 8</span><span class="tot-hint">Pick fast. First instinct counts.</span></div>
+    <p class="tot-q">Which feels closer?</p>
+    <div class="tot-pair">
+      <button type="button" class="tot-card" data-side="0" aria-label="Choose the left image"></button>
+      <button type="button" class="tot-card" data-side="1" aria-label="Choose the right image"></button>
+    </div>
+    <p class="tot-keys" aria-hidden="true">Or use ← and → on a keyboard.</p>
+  </div>
+
+  <!-- Step 3: the prep page, in miniature -->
+  <div class="tot-step" data-step="result" hidden aria-live="polite">
+    <p class="tot-headline" data-headline></p>
+    <div class="tot-ask" data-ask hidden></div>
+    <div class="tot-legend" aria-hidden="true"><span><i class="o"></i> Said</span><span><i class="f"></i> Showed</span><span><i class="g"></i> Gap</span></div>
+    <div class="tot-rows" data-rows></div>
+    <dl class="tot-facts" data-facts></dl>
+    <p class="tot-note">In Amplifier, the numbers decide which gaps are worth raising and Claude writes the wording. Here the wording is fixed.</p>
+    <button type="button" class="tot-reset" data-reset>Try again</button>
+  </div>
+</div>
+
+<script>
+  type Dim = { key: string; left: string; right: string; ask: string };
+  const DIMS: Dim[] = [
+    { key: 'rich', left: 'Minimal', right: 'Rich', ask: 'When you say minimal, is it about few elements, or a feeling of calm?' },
+    { key: 'loud', left: 'Quiet', right: 'Loud', ask: 'Should it whisper or hold its ground? Is there room for one strong moment?' },
+    { key: 'cool', left: 'Warm', right: 'Cool', ask: 'Which colours feel like the project, and which feel wrong for it?' },
+    { key: 'geo', left: 'Organic', right: 'Geometric', ask: 'Do you picture soft, hand-made shapes, or a strict grid and hard edges?' },
+  ];
+  const PAIRS = 8;
+  const REPEAT_AT = 6; // pair index (0-based) that repeats pair 1, swapped
+
+  // Seeded random, so both cards in a pair share the same layout
+  function rng(seed: number) {
+    return () => {
+      seed |= 0; seed = (seed + 0x6d2b79f5) | 0;
+      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+  const unit = (v: number) => (v + 2) / 4; // -2..2 -> 0..1
+
+  /** Draws a card from four values in -2..2: rich, loud, cool, geo. */
+  function card(v: Record<string, number>, seed: number): string {
+    const r = rng(seed);
+    const W = 240, H = 300;
+    const hue = lerp(18, 218, unit(v.cool));
+    const sat = lerp(16, 78, unit(v.loud));
+    const bgL = lerp(93, 50, unit(v.loud));
+    const n = Math.round(lerp(1, 15, unit(v.rich)));
+    const pGeo = unit(v.geo);
+    const contrast = lerp(10, 42, unit(v.loud));
+    const base = 150 / Math.sqrt(n) + 12;
+    let shapes = '';
+    for (let i = 0; i < n; i++) {
+      const x = 30 + r() * (W - 60), y = 30 + r() * (H - 60);
+      const s = base * (0.6 + r() * 0.8);
+      const dark = r() < 0.6;
+      const L = Math.max(8, Math.min(96, bgL + (dark ? -contrast : contrast * 0.7)));
+      const hShift = (r() - 0.5) * 30;
+      const fill = `hsl(${(hue + hShift).toFixed(0)} ${sat.toFixed(0)}% ${L.toFixed(0)}%)`;
+      const geo = r() < pGeo;
+      const rot = (r() * 90 - 45).toFixed(0);
+      if (geo) {
+        if (r() < 0.6) shapes += `<rect x="${(x - s / 2).toFixed(1)}" y="${(y - s / 2).toFixed(1)}" width="${s.toFixed(1)}" height="${(s * (0.4 + r())).toFixed(1)}" fill="${fill}" transform="rotate(${Math.round(Number(rot) / 45) * 45} ${x.toFixed(1)} ${y.toFixed(1)})"/>`;
+        else shapes += `<polygon points="${x.toFixed(1)},${(y - s / 2).toFixed(1)} ${(x + s / 2).toFixed(1)},${(y + s / 2).toFixed(1)} ${(x - s / 2).toFixed(1)},${(y + s / 2).toFixed(1)}" fill="${fill}"/>`;
+      } else {
+        if (r() < 0.55) shapes += `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="${(s / 2).toFixed(1)}" ry="${(s / 2 * (0.6 + r() * 0.5)).toFixed(1)}" fill="${fill}" transform="rotate(${rot} ${x.toFixed(1)} ${y.toFixed(1)})"/>`;
+        else {
+          const k = s / 2;
+          shapes += `<path d="M${(x - k).toFixed(1)},${y.toFixed(1)} C${(x - k).toFixed(1)},${(y - k * 1.3).toFixed(1)} ${(x + k * 0.9).toFixed(1)},${(y - k).toFixed(1)} ${(x + k).toFixed(1)},${(y + k * 0.1).toFixed(1)} S${(x - k * 0.2).toFixed(1)},${(y + k * 1.2).toFixed(1)} ${(x - k).toFixed(1)},${y.toFixed(1)}Z" fill="${fill}"/>`;
+        }
+      }
+    }
+    const bg = `hsl(${hue.toFixed(0)} ${(sat * 0.8).toFixed(0)}% ${bgL.toFixed(0)}%)`;
+    return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="presentation"><rect width="${W}" height="${H}" fill="${bg}"/>${shapes}</svg>`;
+  }
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-tot]')) {
+    const $ = <T extends Element>(s: string) => root.querySelector(s) as T;
+    const steps = root.querySelectorAll<HTMLElement>('[data-step]');
+    const show = (name: string) => steps.forEach((s) => (s.hidden = s.dataset.step !== name));
+
+    let said: Record<string, number> = {};
+    let picks: { dim: string; choice: number; ms: number; pairId: number }[] = [];
+    let current: { dim: string; values: [number, number]; seed: number; base: Record<string, number>; pairId: number } | null = null;
+    let firstPair: typeof current = null;
+    let shownAt = 0;
+
+    function renderSay() {
+      $<HTMLElement>('[data-say]').innerHTML = DIMS.map((d) => `
+        <div class="tot-say-row" role="group" aria-label="${d.left} or ${d.right}">
+          ${[[-1, d.left], [0, 'Either'], [1, d.right]].map(([v, label]) =>
+            `<button type="button" class="tot-chip" data-dim="${d.key}" data-v="${v}" aria-pressed="${(said[d.key] ?? 0) === v}">${label}</button>`).join('')}
+        </div>`).join('');
+    }
+
+    function stats(key: string) {
+      const ps = picks.filter((p) => p.dim === key);
+      const n = ps.length;
+      const mean = n ? ps.reduce((a, p) => a + p.choice, 0) / n : 0;
+      return { n, mean };
+    }
+
+    /** The dimension we're least sure about: few picks, and the picks so far split. */
+    function nextDim(): string {
+      let best = DIMS[0].key, bestScore = -1;
+      for (const d of DIMS) {
+        const { n, mean } = stats(d.key);
+        const score = (1 / (n + 1)) * (1.2 - Math.abs(mean)) + Math.random() * 0.01;
+        if (score > bestScore) { bestScore = score; best = d.key; }
+      }
+      return best;
+    }
+
+    function newPair(index: number) {
+      if (index === REPEAT_AT && firstPair) {
+        // The first pair comes back with sides swapped
+        current = { ...firstPair, values: [firstPair.values[1], firstPair.values[0]], pairId: firstPair.pairId };
+      } else {
+        const dim = nextDim();
+        const base: Record<string, number> = {};
+        for (const d of DIMS) base[d.key] = (Math.random() * 2.4 - 1.2);
+        const flip = Math.random() < 0.5;
+        current = { dim, values: flip ? [1.7, -1.7] : [-1.7, 1.7], seed: Math.floor(Math.random() * 1e9), base, pairId: index };
+        if (index === 0) firstPair = current;
+      }
+      const cards = root.querySelectorAll<HTMLButtonElement>('.tot-card');
+      cards.forEach((c, i) => {
+        c.innerHTML = card({ ...current!.base, [current!.dim]: current!.values[i] }, current!.seed);
+      });
+      $<HTMLElement>('[data-count]').textContent = `Pair ${index + 1} of ${PAIRS}`;
+      shownAt = performance.now();
+    }
+
+    function choose(side: number) {
+      if (!current) return;
+      const v = current.values[side];
+      picks.push({ dim: current.dim, choice: v > 0 ? 1 : -1, ms: performance.now() - shownAt, pairId: current.pairId });
+      if (picks.length >= PAIRS) return finish();
+      newPair(picks.length);
+    }
+
+    function finish() {
+      current = null;
+      const rows = DIMS.map((d) => {
+        const s = stats(d.key);
+        const sv = said[d.key] ?? 0;
+        const gap = sv !== 0 && s.n > 0 && Math.sign(s.mean) !== Math.sign(sv) && Math.abs(s.mean - sv) >= 1;
+        return { d, s, sv, gap, size: Math.abs(s.mean - sv) };
+      });
+      const pct = (m: number) => ((m + 1) / 2) * 100;
+      $<HTMLElement>('[data-rows]').innerHTML = rows.map(({ d, s, sv, gap }) => {
+        const a = Math.min(pct(sv), pct(s.mean)), b = Math.max(pct(sv), pct(s.mean));
+        return `<div class="tot-row${gap ? ' is-gap' : ''}">
+          <span class="tot-end">${d.left}</span>
+          <div class="tot-track">
+            ${gap ? `<i class="tot-gapline" style="left:${a}%;width:${b - a}%"></i>` : ''}
+            ${sv !== 0 ? `<i class="tot-said" style="left:${pct(sv)}%"></i>` : ''}
+            ${s.n ? `<i class="tot-showed" style="left:${pct(s.mean)}%"></i>` : ''}
+          </div>
+          <span class="tot-end r">${d.right}</span>
+          <span class="tot-n">${s.n} ${s.n === 1 ? 'pair' : 'pairs'}</span>
+        </div>`;
+      }).join('');
+
+      const gaps = rows.filter((r) => r.gap).sort((x, y) => y.size - x.size);
+      const word = (d: Dim, v: number) => (v > 0 ? d.right : d.left).toLowerCase();
+      const er = (d: Dim, v: number) => {
+        const w = word(d, v);
+        return ({ rich: 'richer', minimal: 'more minimal', loud: 'louder', quiet: 'quieter', warm: 'warmer', cool: 'cooler', organic: 'more organic', geometric: 'more geometric' } as Record<string, string>)[w] ?? w;
+      };
+      const headline = $<HTMLElement>('[data-headline]');
+      const ask = $<HTMLElement>('[data-ask]');
+      if (gaps.length) {
+        const g = gaps[0];
+        let text = `You said ${word(g.d, g.sv)}, but chose ${er(g.d, g.s.mean)} work.`;
+        if (gaps[1]) text += ` You also said ${word(gaps[1].d, gaps[1].sv)}, and leaned ${er(gaps[1].d, gaps[1].s.mean)}.`;
+        headline.textContent = text;
+        ask.hidden = false;
+        ask.innerHTML = `<b>Ask:</b> ${g.d.ask}`;
+      } else {
+        const strongest = rows.filter((r) => r.s.n).sort((x, y) => Math.abs(y.s.mean) - Math.abs(x.s.mean))[0];
+        headline.textContent = strongest && Math.abs(strongest.s.mean) > 0
+          ? `What you said and what you chose line up. Your clearest lean: ${er(strongest.d, strongest.s.mean)}.`
+          : 'What you said and what you chose line up.';
+        ask.hidden = true;
+      }
+
+      const first = picks.find((p) => p.pairId === 0 && picks.indexOf(p) === 0);
+      const repeat = picks.find((p, i) => p.pairId === 0 && i === REPEAT_AT);
+      const same = first && repeat ? first.choice === repeat.choice : null;
+      const slow = [...picks].sort((a, b) => b.ms - a.ms)[0];
+      const typical = [...picks].map((p) => p.ms).sort((a, b) => a - b)[Math.floor(picks.length / 2)];
+      const dimName = (k: string) => { const d = DIMS.find((x) => x.key === k)!; return `${d.left} ↔ ${d.right}`; };
+      $<HTMLElement>('[data-facts]').innerHTML = `
+        <div class="field"><dt>Repeated pair</dt><dd>${same === null ? '–' : same ? 'Same answer when it came back swapped' : 'Changed when it came back swapped'}</dd></div>
+        <div class="field"><dt>Typical pick</dt><dd>${(typical / 1000).toFixed(1)} s</dd></div>
+        <div class="field"><dt>Slowest pick</dt><dd>${dimName(slow.dim)}, ${(slow.ms / 1000).toFixed(1)} s</dd></div>`;
+      show('result');
+    }
+
+    root.addEventListener('click', (e) => {
+      const el = e.target as HTMLElement;
+      const chip = el.closest<HTMLButtonElement>('.tot-chip');
+      if (chip) {
+        said[chip.dataset.dim!] = Number(chip.dataset.v);
+        root.querySelectorAll<HTMLButtonElement>(`.tot-chip[data-dim="${chip.dataset.dim}"]`).forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+        return;
+      }
+      if (el.closest('[data-start]')) { picks = []; firstPair = null; show('pairs'); newPair(0); root.querySelector<HTMLButtonElement>('.tot-card')?.focus(); return; }
+      const c = el.closest<HTMLButtonElement>('.tot-card');
+      if (c) { choose(Number(c.dataset.side)); return; }
+      if (el.closest('[data-reset]')) { said = {}; picks = []; renderSay(); show('say'); }
+    });
+
+    root.addEventListener('keydown', (e) => {
+      if (!current) return;
+      if (e.key === 'ArrowLeft') { e.preventDefault(); choose(0); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); choose(1); }
+    });
+
+    renderSay();
+  }
+</script>
+
+<style>
+  .tot { background: var(--sheet); border: 1px solid var(--grid-strong); border-radius: 3px; padding: clamp(1rem, 3vw, 1.5rem); }
+  [hidden] { display: none !important; }
+  .tot-lead { margin: 0 0 1rem; font-size: var(--t-sm); }
+  :global(.tot-say) { display: grid; gap: 0.5rem; margin-bottom: 1.25rem; }
+  :global(.tot-say-row) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.35rem; max-width: 30rem; }
+  :global(.tot-chip) {
+    font-family: var(--display); font-stretch: 90%; font-weight: 600; font-size: var(--t-sm);
+    min-height: 2.5rem; border-radius: 3px; cursor: pointer;
+    border: 1px solid var(--grid-strong); background: var(--sheet); color: var(--pencil);
+  }
+  :global(.tot-chip[aria-pressed="true"]) { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
+
+  .tot-progress { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; font-family: var(--display); font-stretch: 90%; font-size: var(--t-xs); color: var(--pencil); }
+  .tot-q { font-family: var(--display); font-stretch: 78%; font-weight: 750; font-size: var(--t-xl); margin: 0.5rem 0 1rem; }
+  .tot-pair { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(0.5rem, 2vw, 1.25rem); max-width: 34rem; }
+  .tot-card { padding: 0; border: 2px solid transparent; border-radius: 3px; background: none; cursor: pointer; line-height: 0; }
+  .tot-card:hover { border-color: var(--ink); }
+  .tot-card :global(svg) { width: 100%; height: auto; display: block; border-radius: 2px; }
+  .tot-keys { font-family: var(--display); font-size: var(--t-xs); color: var(--pencil); margin: 0.75rem 0 0; }
+
+  .tot-headline { font-size: var(--t-lg); line-height: 1.4; margin: 0 0 0.75rem; max-width: 34rem; }
+  .tot-ask { font-size: var(--t-sm); padding: 0.5rem 0.75rem; border-left: 3px solid var(--stamp); background: var(--pad); max-width: 34rem; margin-bottom: 1rem; }
+  .tot-legend { display: flex; gap: 1rem; font-family: var(--display); font-size: var(--t-xs); color: var(--pencil); margin: 0.5rem 0; }
+  .tot-legend i { display: inline-block; vertical-align: middle; margin-right: 0.25rem; }
+  .tot-legend .o { width: 0.6rem; height: 0.6rem; border: 1.5px solid var(--ink); border-radius: 50%; }
+  .tot-legend .f { width: 0.6rem; height: 0.6rem; background: var(--ink); border-radius: 50%; }
+  .tot-legend .g { width: 1rem; height: 3px; background: var(--stamp); }
+  :global(.tot-row) { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr) 5.5rem 3.5rem; gap: 0.75rem; align-items: center; padding: 0.45rem 0; border-bottom: 1px solid var(--grid); font-family: var(--display); font-size: var(--t-sm); }
+  :global(.tot-end.r) { text-align: right; }
+  :global(.tot-n) { font-size: var(--t-xs); color: var(--pencil); text-align: right; }
+  :global(.tot-track) { position: relative; height: 1rem; }
+  :global(.tot-track)::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--grid-strong); }
+  :global(.tot-gapline) { position: absolute; top: calc(50% - 1.5px); height: 3px; background: var(--stamp); }
+  :global(.tot-said), :global(.tot-showed) { position: absolute; top: 50%; width: 0.75rem; height: 0.75rem; border-radius: 50%; transform: translate(-50%, -50%); }
+  :global(.tot-said) { border: 1.5px solid var(--ink); background: var(--sheet); }
+  :global(.tot-showed) { background: var(--ink); }
+  :global(.tot-row.is-gap .tot-end) { font-weight: 700; }
+  @media (max-width: 30rem) {
+    :global(.tot-row) { grid-template-columns: 4.5rem minmax(0, 1fr) 4.5rem; }
+    :global(.tot-n) { display: none; }
+  }
+  .tot-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem 1rem; margin: 1rem 0; }
+  .tot-facts :global(dd) { font-size: var(--t-sm); }
+  @media (max-width: 36rem) { .tot-facts { grid-template-columns: 1fr; } }
+  .tot-note { font-size: var(--t-xs); color: var(--pencil); font-family: var(--display); }
+  .tot-reset { background: none; border: 0; padding: 0.3rem 0; font-family: var(--display); font-size: var(--t-xs); color: var(--stamp); text-decoration: underline; cursor: pointer; }
+</style>
