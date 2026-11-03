@@ -75,9 +75,9 @@
 }
 
 /* Chapters */
-.chapter { padding-top: clamp(1rem, 2vw, 1.5rem); scroll-margin-top: 5rem; }
+.chapter { padding-top: clamp(1rem, 2vw, 1.5rem); }
 .chapter + .chapter { margin-top: clamp(5rem, 10vw, 8.5rem); }
-@media (max-width: 60rem) { .chapter { scroll-margin-top: 8rem; } .chapter:first-child { margin-top: 2.5rem; } }
+@media (max-width: 60rem) { .chapter { scroll-margin-top: 2.75rem; } .chapter:first-child { margin-top: 2.5rem; } }
 .chapter-n { display: block; font-family: var(--mono); font-size: var(--m-label); color: var(--ash); margin-bottom: 0.75rem; }
 .case h2 { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: clamp(2.25rem, 4.5vw, 3.5rem); line-height: 1.05; margin-bottom: 1.5rem; }
 .insight { font-size: clamp(1.375rem, 2.2vw, 1.75rem); line-height: 1.35; font-weight: 500; max-width: 30ch; margin: 0 0 1.75rem; }

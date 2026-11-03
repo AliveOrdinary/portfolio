@@ -68,7 +68,8 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; scroll-padding-top: 1rem; }
+/* Anchor jumps clear the sticky nav (3.75rem) with 4rem to spare */
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 7.75rem; }
 body {
   margin: 0;
   background: var(--paper);
