@@ -1,0 +1,87 @@
+---
+// Amplifier: two reference cards standing side by side, identical except for one
+// dimension, over the phone where the client picks between them.
+import Callout from './Callout.astro';
+import { box, flat, pts, seg, iso, type P3 } from '../../lib/iso';
+
+const X = 40;          // the plane the cards stand on (they face lower right)
+const Z0 = 46;
+const H = 104;
+const CW = 80;         // card width along y
+const A = 104;         // card A spans y A..A+CW (left on screen)
+const B = 0;           // card B spans y B..B+CW (right on screen)
+
+const card = (y: number) => box(X - 3, y, Z0, 3, CW, H);
+const face = (y: number) => pts([X, y, Z0], [X, y + CW, Z0], [X, y + CW, Z0 + H], [X, y, Z0 + H]);
+
+function ring(cy: number, cz: number, r: number, n = 36) {
+  const p: P3[] = [];
+  for (let i = 0; i < n; i++) {
+    const t = (i / n) * Math.PI * 2;
+    p.push([X, cy + r * Math.cos(t), cz + r * Math.sin(t)]);
+  }
+  return pts(...p);
+}
+const rect = (y0: number, z0: number, d: number, h: number) => pts([X, y0, z0], [X, y0 + d, z0], [X, y0 + d, z0 + h], [X, y0, z0 + h]);
+const lines = (y: number) => [76, 68, 60].map((z, i) => seg([X, y + CW - 10, z], [X, y + (i === 2 ? 40 : 14), z]));
+
+// Card A: quiet. One open circle, lots of air.
+const aShape = ring(A + CW / 2, Z0 + 72, 18);
+// Card B: same layout, rich. Filled circle, inner rings, a block.
+const bShape = ring(B + CW / 2, Z0 + 72, 18);
+const bInner = [12, 6].map((r) => ring(B + CW / 2, Z0 + 72, r));
+const bBlock = rect(B + 8, Z0 + 86, 20, 14);
+
+// The phone, flat, in front of the cards
+const phone = box(96, 34, 0, 66, 124, 6);
+const screen = flat(102, 42, 6, 54, 108);
+const pickA = flat(130, 100, 6, 22, 42);
+const pickB = flat(130, 48, 6, 22, 42);
+const prompt = [seg([108, 140, 6], [108, 60, 6]), seg([116, 140, 6], [116, 90, 6])];
+
+// Dashed drop lines from each card to its button on the phone
+const drops = [
+  seg([X, A + CW / 2, Z0], [141, 121, 6]),
+  seg([X, B + CW / 2, Z0], [141, 69, 6]),
+];
+
+const at = (p: P3) => iso(p);
+const callouts = [
+  { at: at([X, A + 8, Z0 + H - 8]), to: [-120, -150] as [number, number], text: 'This', sub: 'Quiet', align: 'end' as const },
+  { at: at([X, B + 10, Z0 + H - 8]), to: [150, -150] as [number, number], text: 'That', sub: 'Loud', align: 'start' as const },
+  { at: at([X, (A + B + CW) / 2, Z0 + H + 6]), to: [-14, -196] as [number, number], text: 'One thing changes', sub: 'The rest stays the same', align: 'start' as const },
+  { at: at([162, 96, 3]), to: [196, 150] as [number, number], text: 'Which feels closer?', sub: 'About 20 pairs, 8 minutes', align: 'start' as const },
+];
+---
+
+<svg class="bp" viewBox="-172 -216 572 394" role="img" aria-labelledby="fig-pair-t">
+  <title id="fig-pair-t">Two image cards standing side by side over a phone. The left card holds one open circle and is labelled quiet; the right card has the same layout with a filled, ringed circle and a block, labelled loud. One thing changes, the rest stays the same. On the phone the client picks which feels closer, about 20 pairs in 8 minutes.</title>
+
+  <polygon class="bp-peri" points={phone.left} />
+  <polygon class="bp-corn" points={phone.right} />
+  <polygon class="bp-white" points={phone.top} />
+  <polygon class="bp-mist" points={screen} />
+  {prompt.map((l) => <line class="bp-thin" {...l} />)}
+  <polygon class="bp-white" points={pickA} />
+  <polygon class="bp-solid" points={pickB} />
+
+  {drops.map((d) => <line class="bp-guide" {...d} />)}
+
+  <!-- Card A -->
+  <polygon class="bp-corn" points={card(A).top} />
+  <polygon class="bp-peri" points={card(A).left} />
+  <polygon class="bp-white" points={face(A)} />
+  <polygon class="bp-ice" points={aShape} />
+  {lines(A).map((l) => <line class="bp-thin" {...l} />)}
+
+  <!-- Card B -->
+  <polygon class="bp-corn" points={card(B).top} />
+  <polygon class="bp-peri" points={card(B).left} />
+  <polygon class="bp-white" points={face(B)} />
+  <polygon class="bp-peri" points={bShape} />
+  {bInner.map((r, i) => <polygon class={i === 0 ? 'bp-corn' : 'bp-solid'} points={r} />)}
+  <polygon class="bp-solid" points={bBlock} />
+  {lines(B).map((l) => <line class="bp-thin" {...l} />)}
+
+  {callouts.map((c) => <Callout at={c.at} to={c.to} text={c.text} sub={c.sub} align={c.align} />)}
+</svg>

@@ -1,6 +1,8 @@
 ---
 import { Image } from 'astro:assets';
 import Case from '../../layouts/Case.astro';
+import Figure from '../../components/Figure.astro';
+import FigDocs from '../../components/figures/FigDocs.astro';
 import Bench from '../../components/Bench.astro';
 import EstimateBuilder from '../../components/demos/EstimateBuilder.astro';
 
@@ -52,11 +54,15 @@ const phones = [
   spec={spec}
   next={{ href: '/work/sortlog', name: 'Sortlog' }}
 >
+  <Figure n={1} name="One job, three papers" year="2026" slot="figure">
+    <FigDocs />
+  </Figure>
+
   <section class="case-section">
     <div class="wrap split">
       <div class="prose">
         <h2>The shop</h2>
-        <p>
+        <p class="dropcap">
           613 Automotive does collision repair, refinishing and mechanical work. When I started, they had no real
           paperwork: a few sample estimates someone had made in ChatGPT, totals worked out on a calculator, and a
           logo as a single JPEG.
@@ -157,7 +163,7 @@ const phones = [
           headings and totals, and 613 yellow kept for the one thing that matters on each page.
         </p>
       </div>
-      <div class="paper-row grid-paper grid-soft shot-wide">
+      <div class="paper-row shot-wide">
         {docs.map((d) => (
           <figure>
             <Image src={d.src} alt={d.alt} widths={[320, 640]} sizes="(min-width: 52rem) 15rem, 45vw" />
@@ -171,7 +177,7 @@ const phones = [
   <section class="case-section">
     <div class="wrap">
       <h2>Decisions</h2>
-      <div class="decisions" style="margin-top:1.5rem">
+      <div class="decisions">
         <div class="decision">
           <h3>Money is worked out in one place</h3>
           <p>One module, in whole cents, works out every total. The job screen, the jobs list and the PDFs all call it, so they can’t disagree. Its tests include the shop’s own sample estimate.</p>
@@ -194,7 +200,7 @@ const phones = [
 
   <section class="case-section">
     <div class="wrap">
-      <h2 style="margin-bottom:1.25rem">Where it is now</h2>
+      <h2>Where it is now</h2>
       <dl class="outcome">
         <div class="field"><dt>Status</dt><dd>In live testing at the shop since October 2026</dd></div>
         <div class="field"><dt>Covers</dt><dd>Estimate to paid, inspections, photos, four printed documents</dd></div>

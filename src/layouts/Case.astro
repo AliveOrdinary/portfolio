@@ -16,9 +16,15 @@ const { title, name, summary, description, spec, next } = Astro.props;
 <Base title={title} description={description} current="work">
   <article class="case">
     <header class="wrap case-head">
-      <a class="case-back" href="/#work">All work</a>
-      <h1>{name}</h1>
-      <p class="case-summary">{summary}</p>
+      <a class="case-back" href="/#work"><span aria-hidden="true">&larr;</span> All work</a>
+      <div class="case-intro">
+        <div class="case-title">
+          <p class="eyebrow case-eyebrow">Case study</p>
+          <h1>{name}</h1>
+          <p class="case-summary">{summary}</p>
+        </div>
+        <slot name="figure" />
+      </div>
       <dl class="case-spec">
         {spec.map((s) => (
           <div class="field">
@@ -33,8 +39,8 @@ const { title, name, summary, description, spec, next } = Astro.props;
 
     {next && (
       <nav class="wrap case-next" aria-label="Next project">
-        <span class="field-label">Next</span>
-        <a href={next.href}>{next.name}</a>
+        <div class="glyphs" aria-hidden="true">Next</div>
+        <a href={next.href}>{next.name} <span aria-hidden="true">&rarr;</span></a>
       </nav>
     )}
   </article>

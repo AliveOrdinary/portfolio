@@ -250,14 +250,14 @@
   :global(.tot-say) { display: grid; gap: 0.5rem; margin-bottom: 1.25rem; }
   :global(.tot-say-row) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.35rem; max-width: 30rem; }
   :global(.tot-chip) {
-    font-family: var(--display); font-stretch: 90%; font-weight: 600; font-size: var(--t-sm);
-    min-height: 2.5rem; border-radius: 3px; cursor: pointer;
+    font-family: var(--mono); font-size: var(--m-label); text-transform: uppercase;
+    min-height: 2.5rem; padding-inline: 0.25rem; border-radius: 3px; cursor: pointer;
     border: 1px solid var(--grid-strong); background: var(--sheet); color: var(--pencil);
   }
-  :global(.tot-chip[aria-pressed="true"]) { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
+  :global(.tot-chip[aria-pressed="true"]) { background: var(--blue); color: var(--white); border-color: var(--blue); }
 
   .tot-progress { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; font-family: var(--display); font-stretch: 90%; font-size: var(--t-xs); color: var(--pencil); }
-  .tot-q { font-family: var(--display); font-stretch: 78%; font-weight: 750; font-size: var(--t-xl); margin: 0.5rem 0 1rem; }
+  .tot-q { font-family: var(--serif); font-weight: 500; font-size: var(--t-xl); margin: 0.5rem 0 1rem; }
   .tot-pair { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(0.5rem, 2vw, 1.25rem); max-width: 34rem; }
   .tot-card { padding: 0; border: 2px solid transparent; border-radius: 3px; background: none; cursor: pointer; line-height: 0; }
   .tot-card:hover { border-color: var(--ink); }

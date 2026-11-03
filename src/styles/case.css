@@ -1,81 +1,130 @@
-/* Case study pages */
-.case-head { padding-top: clamp(1rem, 4vw, 2.5rem); }
-.case-back {
-  font-family: var(--display); font-stretch: 88%; font-weight: 600; font-size: var(--t-sm);
-  color: var(--pencil);
-}
-.case-head h1 {
-  font-size: clamp(3.25rem, 10vw, 8rem); font-stretch: 62%; font-weight: 850;
-  line-height: 0.9; margin: 1.25rem 0 1rem; letter-spacing: -0.012em;
-}
-.case-summary { font-size: var(--t-xl); line-height: 1.35; max-width: 40rem; }
+/* Case study pages: a chapter of the book */
+.case { counter-reset: fig 1; }
 
+.case-head { padding-top: clamp(2rem, 5vw, 3.5rem); }
+.case-back { font-family: var(--mono); font-size: var(--m-label); text-transform: uppercase; color: var(--ash); text-decoration: none; }
+.case-back:hover { color: var(--blue); }
+
+.case-intro {
+  display: grid; grid-template-columns: minmax(0, 27rem) minmax(0, 1fr);
+  gap: clamp(2rem, 6vw, 6rem); align-items: center; margin-top: 2rem;
+}
+.case-intro:not(:has(.fig)) { grid-template-columns: 1fr; }
+.case-eyebrow { color: var(--blue); margin-bottom: 1rem; }
+.case-head h1 {
+  font-family: var(--mono); font-weight: 400; text-transform: uppercase;
+  font-size: clamp(2.0625rem, 5vw, 2.75rem); line-height: 1; letter-spacing: 0;
+  margin: 0 0 1.25rem;
+  -webkit-font-smoothing: none;
+}
+.case-summary { font-size: var(--t-lg); line-height: 1.6; text-align: justify; hyphens: auto; }
+.case-intro .fig { width: 100%; }
+@media (max-width: 60rem) { .case-intro { grid-template-columns: 1fr; } }
+
+/* The spec: a thin card, rows split by hairlines */
 .case-spec {
   display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin: 2.25rem 0 0; border: 1.5px solid var(--ink); border-radius: 3px; background: var(--sheet);
+  margin: clamp(2.5rem, 6vw, 4rem) 0 0;
+  border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 4px; background: var(--paper);
 }
-.case-spec .field { padding: 0.75rem 1rem 0.9rem; border-right: 1px solid var(--grid-strong); border-bottom: 1px solid var(--grid-strong); }
+.case-spec .field { padding: 0.9rem 1rem 1rem; border-right: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
 .case-spec .field:nth-child(3n) { border-right: 0; }
 .case-spec .field:nth-last-child(-n + 3):nth-child(3n + 1),
 .case-spec .field:nth-last-child(-n + 3):nth-child(3n + 1) ~ .field { border-bottom: 0; }
 @media (max-width: 52rem) {
   .case-spec { grid-template-columns: 1fr 1fr; }
-  .case-spec .field { border-right: 1px solid var(--grid-strong) !important; border-bottom: 1px solid var(--grid-strong) !important; }
+  .case-spec .field { border-right: 1px solid var(--hairline) !important; border-bottom: 1px solid var(--hairline) !important; }
   .case-spec .field:nth-child(2n) { border-right: 0 !important; }
+  .case-spec .field:nth-last-child(-n + 2) { border-bottom: 0 !important; }
 }
 @media (max-width: 30rem) {
   .case-spec { grid-template-columns: 1fr; }
-  .case-spec .field { border-right: 0 !important; }
+  .case-spec .field { border-right: 0 !important; border-bottom: 1px solid var(--hairline) !important; }
+  .case-spec .field:last-child { border-bottom: 0 !important; }
 }
 
-/* Prose sections: text column with an optional side column */
-.case-section { margin-top: clamp(3.5rem, 8vw, 6rem); }
-.case-section > .wrap > h2 { margin-bottom: 1.25rem; }
+/* Sections: a ruled heading, then justified prose */
+.case-section { margin-top: clamp(5rem, 11vw, 10rem); }
+.case h2 { display: flex; align-items: baseline; gap: 1rem; font-size: var(--t-lg); margin-bottom: 1.5rem; }
+.case h2::after { content: ""; flex: 1; min-width: 2rem; height: 1px; background: var(--ink); transform: translateY(-0.3em); }
 .prose { max-width: var(--measure); }
-.prose h3 { margin: 2rem 0 0.6rem; font-size: var(--t-lg); font-stretch: 82%; }
-.prose ul, .prose ol { padding-left: 1.2rem; margin: 0 0 1em; max-width: var(--measure); }
-.prose li { margin-bottom: 0.45em; }
-.prose li::marker { color: var(--pencil); }
-.prose strong { font-weight: 650; }
+.wrap.prose { max-width: var(--max); }
+.wrap.prose > * { max-width: var(--measure); }
+.prose p { text-align: justify; hyphens: auto; }
+@media (max-width: 30rem) { .prose p { text-align: left; } }
+.prose h3 { margin: 2rem 0 0.6rem; font-size: var(--t-md); font-weight: 600; }
+.prose ul, .prose ol { padding-left: 0; margin: 0 0 1em; max-width: var(--measure); list-style: none; }
+.prose ol { counter-reset: item; }
+.prose li { position: relative; padding-left: 2.25rem; margin-bottom: 0.55em; }
+.prose ol > li { counter-increment: item; }
+.prose ol > li::before {
+  content: counter(item, decimal-leading-zero);
+  position: absolute; left: 0; top: 0.32em;
+  font-family: var(--mono); font-size: var(--m-cap); color: var(--ash);
+}
+.prose ul > li::before { content: "·"; position: absolute; left: 0.6rem; color: var(--ash); }
+.prose strong { font-weight: 600; }
 
-.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3.5rem); align-items: start; }
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 6rem); align-items: start; }
 @media (max-width: 56rem) { .split { grid-template-columns: 1fr; } }
 
-/* Decisions: each one a short entry with its reason */
-.decisions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border-top: 1.5px solid var(--ink); }
-.decision { padding: 1.25rem 1.5rem 1.5rem 0; border-bottom: 1px solid var(--grid-strong); }
-.decision:nth-child(2n) { padding-left: 1.5rem; padding-right: 0; border-left: 1px solid var(--grid-strong); }
-.decision h3 { font-size: var(--t-lg); font-stretch: 82%; margin-bottom: 0.5rem; }
-.decision p { font-size: var(--t-sm); }
+/* Every screenshot is a numbered figure */
+.case figure:not(.fig) { counter-increment: fig; }
+.case figure:not(.fig) figcaption::before { content: "FIG_0" counter(fig, decimal-leading-zero) "\00a0\00a0"; color: var(--ink); }
+
+/* Decisions: the IN/OUT card. A question-like title, then the answer. */
+.decisions {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0;
+  border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 4px; background: var(--paper);
+  counter-reset: decision;
+}
+.decision { padding: 1.25rem 1.5rem 1.5rem; border-bottom: 1px solid var(--hairline); counter-increment: decision; }
+.decision:nth-child(2n) { border-left: 1px solid var(--hairline); }
+.decision:nth-last-child(-n + 2):nth-child(2n + 1), .decision:nth-last-child(-n + 2):nth-child(2n + 1) ~ .decision { border-bottom: 0; }
+.decision:last-child:nth-child(2n + 1) { grid-column: 1 / -1; }
+.decision h3 {
+  font-family: var(--mono); font-weight: 400; text-transform: uppercase;
+  font-size: var(--m-label); line-height: 1.45; margin-bottom: 0.65rem;
+}
+.decision h3::before { content: "D_0" counter(decision) ":\00a0\00a0"; color: var(--ash); }
+.decision p { font-size: var(--t-sm); line-height: 1.6; text-align: justify; hyphens: auto; }
 @media (max-width: 52rem) {
   .decisions { grid-template-columns: 1fr; }
-  .decision, .decision:nth-child(2n) { padding: 1.25rem 0; border-left: 0; }
+  .decision, .decision:nth-child(2n) { border-left: 0; border-bottom: 1px solid var(--hairline) !important; }
+  .decision:last-child { border-bottom: 0 !important; }
 }
 
 /* Screens */
-.shots { display: grid; gap: 1.5rem; }
+.shots { display: grid; gap: 2rem 1.5rem; }
 .shots-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .shots-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .shots-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 @media (max-width: 56rem) { .shots-3, .shots-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 36rem) { .shots-2, .shots-3 { grid-template-columns: 1fr; } }
-.shots img { border: 1px solid var(--grid-strong); border-radius: 3px; background: var(--sheet); width: 100%; }
-.shot-wide { margin-top: 1.5rem; }
+.shots img, .case .shot, .phones img { border: 1px solid var(--hairline); border-radius: 0; background: var(--white); width: 100%; }
+.shot-wide { margin-top: 2.5rem; }
 
-/* Documents laid out like sheets on a bench */
-.paper-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(0.75rem, 2vw, 1.5rem); padding: clamp(1rem, 3vw, 2rem); border: 1.5px solid var(--ink); border-radius: 3px; }
-.paper-row figure img { box-shadow: 0 1px 0 var(--grid-strong), 0 6px 18px -10px rgba(34, 38, 31, 0.35); border: 1px solid var(--grid-strong); }
+/* Documents laid out on the drawing grid */
+.paper-row {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(0.75rem, 2vw, 1.5rem);
+  padding: clamp(1.25rem, 3vw, 2.25rem);
+  background-image: radial-gradient(circle, rgba(16, 61, 255, 0.16) 1px, transparent 1.25px);
+  background-size: 16px 16px;
+}
+.paper-row figure img { border: 1px solid var(--hairline); }
 @media (max-width: 52rem) { .paper-row { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
-/* Outcome strip */
-.outcome { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1.5px solid var(--ink); border-radius: 3px; background: var(--sheet); }
-.outcome .field { padding: 1rem 1.25rem 1.2rem; border-right: 1px solid var(--grid-strong); }
+/* Outcome strip: the same thin card, three across */
+.outcome { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 4px; background: var(--paper); }
+.outcome .field { padding: 1rem 1.25rem 1.2rem; border-right: 1px solid var(--hairline); }
 .outcome .field:last-child { border-right: 0; }
 .outcome dd { font-size: var(--t-md); }
-@media (max-width: 52rem) { .outcome { grid-template-columns: 1fr; } .outcome .field { border-right: 0; border-bottom: 1px solid var(--grid-strong); } .outcome .field:last-child { border-bottom: 0; } }
+@media (max-width: 52rem) { .outcome { grid-template-columns: 1fr; } .outcome .field { border-right: 0; border-bottom: 1px solid var(--hairline); } .outcome .field:last-child { border-bottom: 0; } }
 
-.case-next { margin-top: clamp(4rem, 8vw, 6rem); display: flex; flex-direction: column; gap: 0.25rem; }
+.case-next { margin-top: clamp(5rem, 11vw, 10rem); display: grid; gap: 1.5rem; justify-items: center; text-align: center; }
+.case-next .glyphs { width: 100%; margin: 0; }
 .case-next a {
-  font-family: var(--display); font-stretch: 64%; font-weight: 850; font-size: var(--t-2xl);
-  color: var(--ink); text-decoration-color: var(--stamp); line-height: 1;
+  font-family: var(--mono); text-transform: uppercase; font-size: clamp(1.375rem, 3vw, 2.0625rem);
+  color: var(--ink); text-decoration: none; line-height: 1;
 }
+.case-next a:hover { color: var(--blue); }

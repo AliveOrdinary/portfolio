@@ -1,0 +1,98 @@
+---
+// Sortlog: a skid on its pallet with the supplier label pulled off the load,
+// exploded out to the right with the phone's viewfinder around it.
+import Callout from './Callout.astro';
+import { box, pts, seg, iso, type P3 } from '../../lib/iso';
+import { code128 } from '../../lib/code128';
+import { LABEL } from '../../lib/label';
+
+// Pallet: three runners, five deck boards
+const runners = [0, 43, 86].map((y) => box(0, y, 0, 120, 14, 9));
+const deck = [0, 26, 52, 78, 104].map((x) => box(x, 0, 9, 16, 100, 4));
+
+// Cartons, 2 x 2 x 2, drawn bottom up and back to front
+const cartons: ReturnType<typeof box>[] = [];
+for (const z of [13, 49]) {
+  for (const [x, y] of [[2, 2], [62, 2], [2, 52], [62, 52]] as const) {
+    cartons.push(box(x, y, z, 58, 48, 36));
+  }
+}
+const tape = [13, 49].flatMap((z) => [seg([120, 2, z + 18], [120, 50, z + 18]), seg([120, 52, z + 18], [120, 100, z + 18])]);
+
+// The label on the plane x = X. Reading left to right runs toward smaller y.
+const MOUNT = 120;
+const X = 214;
+const L = { y0: 8, y1: 96, z0: 24, z1: 82 };
+const frame = (x: number) => pts([x, L.y0, L.z0], [x, L.y1, L.z0], [x, L.y1, L.z1], [x, L.y0, L.z1]);
+const divider = (z: number) => seg([X, L.y0, z], [X, L.y1, z]);
+const mid = (L.y0 + L.y1) / 2;
+
+function barcode(value: string, yLeft: number, width: number, z0: number, z1: number) {
+  const { bars, modules } = code128(value);
+  const s = width / modules;
+  return bars.map((b) => {
+    const a = yLeft - b.x * s;
+    const c = a - b.w * s;
+    return pts([X, a, z0], [X, c, z0], [X, c, z1], [X, a, z1]);
+  });
+}
+const partBars = barcode(LABEL.part, L.y1 - 4, 62, 66, 76);
+const qtyBars = barcode(LABEL.qty, L.y1 - 4, 30, 47, 55);
+const supBars = barcode(LABEL.supplier, mid - 3, 36, 47, 55);
+const serBars = barcode(LABEL.serial, L.y1 - 4, 40, 29, 37);
+const textLines = [
+  seg([X, L.y1 - 4, 79], [X, L.y1 - 30, 79]),
+  seg([X, L.y1 - 4, 59], [X, L.y1 - 18, 59]),
+  seg([X, mid - 3, 59], [X, mid - 20, 59]),
+  seg([X, L.y1 - 4, 41], [X, L.y1 - 18, 41]),
+  seg([X, mid - 3, 41], [X, mid - 26, 41]),
+  seg([X, mid - 3, 31], [X, mid - 34, 31]),
+];
+
+// Viewfinder brackets, a little outside the label
+const vf = { y0: L.y0 - 7, y1: L.y1 + 7, z0: L.z0 - 7, z1: L.z1 + 7 };
+const VX = X + 1;
+const k = 10;
+const brackets = [
+  pts([VX, vf.y1 - k, vf.z1], [VX, vf.y1, vf.z1], [VX, vf.y1, vf.z1 - k]),
+  pts([VX, vf.y0 + k, vf.z1], [VX, vf.y0, vf.z1], [VX, vf.y0, vf.z1 - k]),
+  pts([VX, vf.y1 - k, vf.z0], [VX, vf.y1, vf.z0], [VX, vf.y1, vf.z0 + k]),
+  pts([VX, vf.y0 + k, vf.z0], [VX, vf.y0, vf.z0], [VX, vf.y0, vf.z0 + k]),
+];
+
+const guides = ([[L.y0, L.z0], [L.y0, L.z1], [L.y1, L.z1], [L.y1, L.z0]] as const).map(([y, z]) => seg([MOUNT, y, z], [X, y, z]));
+
+const at = (p: P3) => iso(p);
+const lx = 268;
+const c = [
+  { at: at([X, L.y0 + 10, 71]), to: [lx, -6] as [number, number], text: 'Part no. (P)', sub: LABEL.part },
+  { at: at([X, mid - 10, 51]), to: [lx, 30] as [number, number], text: 'Supplier (V)', sub: LABEL.supplier },
+  { at: at([X, L.y0 + 30, 33]), to: [lx, 66] as [number, number], text: 'Serial (S)', sub: LABEL.serial },
+  { at: at([VX, vf.y0, vf.z0 + 2]), to: [lx, 102] as [number, number], text: 'One photo', sub: 'Read in the browser' },
+  { at: at([20, 100, 40]), to: [-96, 150] as [number, number], text: 'Skid 7 of 12', sub: 'Filed under its part', align: 'start' as const },
+];
+---
+
+<svg class="bp" viewBox="-104 -92 530 272" role="img" aria-labelledby="fig-skid-t">
+  <title id="fig-skid-t">A skid of eight cartons on a pallet, with its supplier label pulled off and shown to the right inside a camera viewfinder. Callouts mark the part number, supplier and serial barcodes, and note that one photo is read in the browser and the skid is filed under its part.</title>
+
+  {runners.map((r) => (<g><polygon class="bp-corn" points={r.left} /><polygon class="bp-ice" points={r.right} /><polygon class="bp-mist" points={r.top} /></g>))}
+  {deck.map((d) => (<g><polygon class="bp-peri" points={d.left} /><polygon class="bp-corn" points={d.right} /><polygon class="bp-ice" points={d.top} /></g>))}
+  {cartons.map((b) => (<g><polygon class="bp-corn" points={b.left} /><polygon class="bp-ice" points={b.right} /><polygon class="bp-white" points={b.top} /></g>))}
+  {tape.map((t) => <line class="bp-thin" {...t} />)}
+
+  <!-- Where the label came from -->
+  <polygon class="bp-none bp-guide" points={frame(MOUNT)} />
+  {guides.map((g) => <line class="bp-guide" {...g} />)}
+
+  <!-- The label, exploded -->
+  <polygon class="bp-white" points={frame(X)} />
+  <line class="bp-thin" {...divider(63)} />
+  <line class="bp-thin" {...divider(45)} />
+  <line class="bp-thin" {...seg([X, mid, L.z0], [X, mid, 63])} />
+  {textLines.map((t) => <line class="bp-thin" {...t} />)}
+  {[...partBars, ...qtyBars, ...supBars, ...serBars].map((b) => <polygon class="bp-ink" points={b} />)}
+  {brackets.map((b) => <polyline class="bp-none" points={b} style="stroke-width:2" />)}
+
+  {c.map((x) => <Callout at={x.at} to={x.to} text={x.text} sub={x.sub} align={x.align} />)}
+</svg>

@@ -1,6 +1,8 @@
 ---
 import { Image } from 'astro:assets';
 import Case from '../../layouts/Case.astro';
+import Figure from '../../components/Figure.astro';
+import FigSkid from '../../components/figures/FigSkid.astro';
 import Bench from '../../components/Bench.astro';
 import LabelReader from '../../components/demos/LabelReader.astro';
 import HoursToTimes from '../../components/demos/HoursToTimes.astro';
@@ -29,10 +31,14 @@ const shots = sortlogShots
   spec={spec}
   next={{ href: '/work/amplifier', name: 'Amplifier' }}
 >
+  <Figure n={1} name="Skid label" year="2026" slot="figure">
+    <FigSkid />
+  </Figure>
+
   <section class="case-section">
     <div class="wrap prose">
       <h2>The floor</h2>
-      <p>
+      <p class="dropcap">
         When a supplier’s parts are suspect, a containment crew sorts every skid at the customer’s plant before the
         parts go on the line. We check each part, tag the rejects, and at the end of every shift report what was
         sorted, what was rejected, and who worked how long.
@@ -95,7 +101,7 @@ const shots = sortlogShots
   {shots.length > 0 && (
     <section class="case-section">
       <div class="wrap">
-        <h2 style="margin-bottom:1.25rem">The app</h2>
+        <h2>The app</h2>
         <div class="shots shots-2">
           {shots.map((s) => (
             <figure>
@@ -111,7 +117,7 @@ const shots = sortlogShots
   <section class="case-section">
     <div class="wrap">
       <h2>Decisions</h2>
-      <div class="decisions" style="margin-top:1.5rem">
+      <div class="decisions">
         <div class="decision">
           <h3>Barcodes first, Claude second</h3>
           <p>Barcodes are read in the browser, free and instant. Only when a label is torn or blurred does the photo go to Claude Haiku, which is asked for JSON and told to leave a field empty rather than guess a digit.</p>
@@ -134,7 +140,7 @@ const shots = sortlogShots
 
   <section class="case-section">
     <div class="wrap">
-      <h2 style="margin-bottom:1.25rem">Where it is now</h2>
+      <h2>Where it is now</h2>
       <dl class="outcome">
         <div class="field"><dt>Status</dt><dd>Used every shift since late September 2026</dd></div>
         <div class="field"><dt>Replaced</dt><dd>A workbook per part, a daily hours sheet and a monthly one</dd></div>

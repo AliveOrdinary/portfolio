@@ -1,6 +1,8 @@
 ---
 import { Image } from 'astro:assets';
 import Case from '../../layouts/Case.astro';
+import Figure from '../../components/Figure.astro';
+import FigPair from '../../components/figures/FigPair.astro';
 import Bench from '../../components/Bench.astro';
 import ThisOrThat from '../../components/demos/ThisOrThat.astro';
 
@@ -40,6 +42,10 @@ const phones = [
   spec={spec}
   next={{ href: '/work/613-automotive', name: '613 Automotive' }}
 >
+  <Figure n={1} name="This or that" year="2026" slot="figure">
+    <FigPair />
+  </Figure>
+
   <section class="case-section">
     <div class="wrap">
       <figure>
@@ -52,7 +58,7 @@ const phones = [
   <section class="case-section">
     <div class="wrap prose">
       <h2>The problem</h2>
-      <p>
+      <p class="dropcap">
         Clients usually know what they like when they see it, but the words they use for it can point somewhere
         else: “minimal” can turn out to mean calm rather than empty. The first
         meeting is where that gets untangled, and we were walking in with a few adjectives and a guess.
@@ -175,7 +181,7 @@ const phones = [
   <section class="case-section">
     <div class="wrap">
       <h2>Decisions</h2>
-      <div class="decisions" style="margin-top:1.5rem">
+      <div class="decisions">
         <div class="decision">
           <h3>Definitions instead of a tag vocabulary</h3>
           <p>The first version’s tags were never maintained because creating them was a chore. A rubric is a handful of definitions the studio writes once. Claude does the scoring, and anchors and corrections keep it close to the studio’s eye.</p>
@@ -202,7 +208,7 @@ const phones = [
 
   <section class="case-section">
     <div class="wrap">
-      <h2 style="margin-bottom:1.25rem">Where it is now</h2>
+      <h2>Where it is now</h2>
       <dl class="outcome">
         <div class="field"><dt>Status</dt><dd>Rebuilt October 2026, in testing with the studio using test briefs</dd></div>
         <div class="field"><dt>Tested</dt><dd>Right side of each dimension 91–95% of the time, with simulated clients and 100+ images</dd></div>
@@ -214,6 +220,6 @@ const phones = [
 
 <style>
   .phones { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.75rem, 2vw, 1.5rem); max-width: 56rem; align-items: start; }
-  .phones :global(img) { border: 1px solid var(--grid-strong); border-radius: 3px; width: 100%; }
-  .credit { font-family: var(--display); font-stretch: 90%; font-size: var(--t-xs); color: var(--pencil); margin-top: 1rem; }
+  .phones :global(img) { border: 1px solid var(--hairline); border-radius: 0; width: 100%; }
+  .credit { font-family: var(--mono); font-size: var(--m-cap); text-transform: uppercase; color: var(--ash); margin-top: 1rem; }
 </style>

@@ -1,0 +1,19 @@
+---
+// A blueprint figure panel: a faint dotted grid, FIG_00N rotated up the left
+// edge, the object's name and year rotated down the right, no frame.
+interface Props {
+  n: number;
+  name: string;
+  year?: string;
+  class?: string;
+}
+const { n, name, year, class: className } = Astro.props;
+const num = `FIG_${String(n).padStart(3, '0')}`;
+---
+
+<figure class:list={['fig', className]}>
+  <span class="fig-n" aria-hidden="true">{num}</span>
+  <span class="fig-name" aria-hidden="true">[{name}{year ? ` · ${year}` : ''}]</span>
+  <div class="fig-art"><slot /></div>
+  {Astro.slots.has('caption') && <figcaption><span class="fig-cap-n">{num}</span> <slot name="caption" /></figcaption>}
+</figure>

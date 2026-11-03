@@ -1,0 +1,22 @@
+---
+// A blueprint callout inside an SVG figure: an arrowed leader from a point on
+// the drawing to an uppercase mono label. Coordinates are screen (viewBox) units.
+import { arrowHead } from '../../lib/iso';
+
+interface Props {
+  at: [number, number];        // where the arrow points
+  to: [number, number];        // where the label sits
+  text: string;
+  sub?: string;                // optional second line, in gray
+  align?: 'start' | 'end';     // label reads away from the leader
+}
+const { at, to, text, sub, align = 'start' } = Astro.props;
+const dx = align === 'start' ? 6 : -6;
+---
+
+<g class="bp-callout">
+  <line class="bp-leader" x1={to[0]} y1={to[1]} x2={at[0]} y2={at[1]} />
+  <path class="bp-arrow" d={arrowHead(at[0], at[1], at[0] - to[0], at[1] - to[1], 6)} />
+  <text class="bp-label" x={to[0] + dx} y={to[1] + 4} text-anchor={align}>{text}</text>
+  {sub && <text class="bp-sub" x={to[0] + dx} y={to[1] + 17} text-anchor={align}>{sub}</text>}
+</g>

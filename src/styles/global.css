@@ -1,176 +1,286 @@
-/* Bench sheet: engineering-pad paper, graphite text, a blue-violet ink stamp,
-   and a yellow hold tag for the one thing on a screen you should press. */
+/* Blueprint ink on a reading-room page: calm serif prose, labelled cobalt line
+   drawings, typewriter mono captions, and almost no chrome. One blue only. */
+
+@font-face {
+  font-family: "Departure Mono";
+  src: url("/fonts/DepartureMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
-  --pad: #eef1e7;
-  --pad-deep: #e2e7d8;
-  --sheet: #fbfcf8;
-  --grid: #cdd6c3;
-  --grid-strong: #b5c1a9;
-  --ink: #22261f;
-  --pencil: #565e51;
-  --faint: #7d8676;
-  --stamp: #3b3fa6;
-  --tag: #f2c12e;
-  --tag-deep: #d9a70f;
-  --ok: #2f7a4b;
-  --reject: #b8321f;
+  /* Page */
+  --paper: #fbfbfb;
+  --ink: #000000;
+  --blue: #103dff;        /* Blueprint Blue: wordmark, callouts, active states */
+  --ash: #6e6e6e;         /* metadata layer (a touch darker than #7d7d7d so 11px labels pass AA) */
+  --hairline: #e1e1e1;
+  --white: #ffffff;
 
-  --display: "Archivo Variable", "Archivo", "Arial Narrow", sans-serif;
-  --body: "Literata Variable", "Literata", Georgia, serif;
+  /* Drawing inks */
+  --schematic: #0043ff;
+  --periwinkle: #97acff;
+  --cornflower: #b6c8ff;
+  --ice: #e6ebff;
+  --mist: #f4f5f9;
 
-  /* Type scale */
-  --t-xs: 0.8125rem;   /* 13 */
+  /* Functional: only for a rejected part or a broken rule inside a demo */
+  --reject: #c0301c;
+
+  /* Older names the demos use, pointed at the new palette */
+  --pad: var(--mist);
+  --pad-deep: var(--ice);
+  --sheet: var(--white);
+  --grid: var(--hairline);
+  --grid-strong: #cfcfcf;
+  --pencil: var(--ash);
+  --faint: #9a9a9a;
+  --stamp: var(--blue);
+  --tag: var(--ice);
+  --tag-deep: var(--periwinkle);
+  --ok: var(--blue);
+
+  --serif: "EB Garamond Variable", "EB Garamond", Garamond, Georgia, serif;
+  --mono: "Departure Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --display: var(--mono);
+  --body: var(--serif);
+
+  /* Serif scale. EB Garamond has a small x-height, so 17px here reads like the
+     reference's 14px book face. */
+  --t-xs: 0.75rem;     /* 12, mono labels */
   --t-sm: 0.9375rem;   /* 15 */
-  --t-md: 1.0625rem;   /* 17 */
-  --t-lg: 1.3125rem;   /* 21 */
-  --t-xl: 1.75rem;     /* 28 */
-  --t-2xl: 2.5rem;     /* 40 */
-  --t-3xl: clamp(2.75rem, 7vw, 5.5rem);
+  --t-md: 1.0625rem;   /* 17, body */
+  --t-lg: 1.1875rem;   /* 19, headings */
+  --t-xl: 1.375rem;    /* 22 */
+  --t-2xl: 1.75rem;    /* 28 */
+  --t-3xl: 2.25rem;    /* 36 */
 
-  --gutter: clamp(1rem, 4vw, 3rem);
-  --max: 72rem;
-  --measure: 38rem;
-  --cell: 24px;
+  /* Mono scale. Departure Mono is drawn on an 11px grid. */
+  --m-cap: 0.6875rem;  /* 11, figure numbers, field labels */
+  --m-label: 0.75rem;  /* 12, buttons, footer */
+  --m-head: 0.875rem;  /* 14, eyebrows and chapter heads */
+
+  --gutter: clamp(1rem, 5vw, 4.5rem);
+  --max: 86rem;
+  --measure: 32rem;
+  --section: clamp(6rem, 14vw, 13rem);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-padding-top: 1rem; }
 body {
   margin: 0;
-  background: var(--pad);
+  background: var(--paper);
   color: var(--ink);
-  font-family: var(--body);
+  font-family: var(--serif);
   font-size: var(--t-md);
-  line-height: 1.62;
-  font-optical-sizing: auto;
+  line-height: 1.6;
+  font-feature-settings: "calt";
+  font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
 img { max-width: 100%; height: auto; display: block; }
-a { color: var(--stamp); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
-a:hover { text-decoration-thickness: 2px; }
-:focus-visible { outline: 3px solid var(--stamp); outline-offset: 3px; border-radius: 2px; }
-::selection { background: var(--tag); color: var(--ink); }
+a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+a:hover { color: var(--blue); }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 1px; }
+::selection { background: var(--ice); color: var(--ink); }
 
 h1, h2, h3, h4 {
-  font-family: var(--display);
-  font-weight: 800;
-  font-stretch: 70%;
-  line-height: 1.02;
-  letter-spacing: -0.005em;
+  font-family: var(--serif);
+  font-weight: 500;
+  line-height: 1.35;
   margin: 0;
   text-wrap: balance;
 }
-h2 { font-size: var(--t-2xl); }
-h3 { font-size: var(--t-xl); font-stretch: 78%; font-weight: 750; }
-h4 { font-size: var(--t-lg); font-stretch: 85%; font-weight: 700; line-height: 1.2; }
+h1 { font-size: var(--t-xl); }
+h2 { font-size: var(--t-lg); }
+h3 { font-size: var(--t-lg); }
+h4 { font-size: var(--t-md); font-weight: 600; }
 p { margin: 0 0 1em; max-width: var(--measure); }
 p:last-child { margin-bottom: 0; }
+strong { font-weight: 600; }
 
 .wrap { width: 100%; max-width: var(--max); margin-inline: auto; padding-inline: var(--gutter); }
 
-/* Grid paper: only where work happens (the hero sheet, project sheets, demos) */
-.grid-paper {
-  background-color: var(--sheet);
-  background-image:
-    linear-gradient(var(--grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-  background-size: var(--cell) var(--cell);
-  background-position: -1px -1px;
+/* Mono voice: everything mechanical */
+.mono, .eyebrow {
+  font-family: var(--mono);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+.eyebrow { font-size: var(--m-head); line-height: 1.43; color: var(--ink); }
+.cap { font-family: var(--mono); font-size: var(--m-cap); line-height: 1.4; text-transform: uppercase; color: var(--ash); }
+
+/* Book prose: justified, with a two-line drop cap where asked */
+.justify p, p.justify { text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+@media (max-width: 30rem) { .justify p, p.justify { text-align: left; } }
+.dropcap::first-letter {
+  float: left;
+  font-size: 3.35em;
+  line-height: 0.84;
+  padding: 0.06em 0.08em 0 0;
+  font-weight: 500;
+}
+@supports (initial-letter: 2) {
+  .dropcap::first-letter { float: none; font-size: inherit; line-height: inherit; padding: 0 0.08em 0 0; initial-letter: 2; }
 }
 
-/* Form vocabulary: a label sits above its value, like a filled-in field */
-.field { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+/* Form vocabulary: a gray mono label above an ink value */
+.field { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
 .field dt, .field-label {
-  font-family: var(--display);
-  font-stretch: 88%;
-  font-weight: 600;
-  font-size: var(--t-xs);
-  color: var(--pencil);
-  letter-spacing: 0.01em;
+  font-family: var(--mono);
+  font-size: var(--m-cap);
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--ash);
 }
-.field dd, .field-value { margin: 0; font-size: var(--t-sm); line-height: 1.45; }
+.field dd, .field-value { margin: 0; font-size: var(--t-sm); line-height: 1.5; }
 
-.num { font-family: var(--display); font-variant-numeric: tabular-nums; font-stretch: 92%; }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
 
-/* Buttons: the yellow tag is the one main action */
+/* Bevelled key: the only button there is */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
-  font-family: var(--display); font-stretch: 88%; font-weight: 700; font-size: var(--t-sm);
-  min-height: 2.75rem; padding: 0.5rem 1.1rem;
-  border: 1.5px solid var(--ink); border-radius: 3px;
-  background: var(--sheet); color: var(--ink); cursor: pointer; text-decoration: none;
+  font-family: var(--mono); font-size: var(--m-label); line-height: 1.33; text-transform: uppercase;
+  min-height: 2.25rem; padding: 0.35rem 0.85rem;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  box-shadow: inset 1px 1px 0 2px rgba(255, 255, 255, 0.75), inset -1px -1px 0 2px rgba(0, 0, 0, 0.1);
+  color: var(--ink); cursor: pointer; text-decoration: none;
 }
-.btn:hover { background: var(--pad-deep); }
-.btn-tag { background: var(--tag); border-color: var(--ink); }
-.btn-tag:hover { background: var(--tag-deep); }
+.btn:hover { color: var(--blue); border-color: var(--blue); }
+.btn:active { box-shadow: inset -1px -1px 0 2px rgba(255, 255, 255, 0.75), inset 1px 1px 0 2px rgba(0, 0, 0, 0.1); }
 .btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+.btn-tag { /* was the yellow primary; now the same key */ }
+.actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
 
 /* Inputs inside demos */
 .input, .select {
-  font: inherit; font-family: var(--display); font-stretch: 92%; font-size: var(--t-sm);
+  font: inherit; font-family: var(--mono); font-size: var(--m-label);
   font-variant-numeric: tabular-nums;
-  width: 100%; min-height: 2.5rem; padding: 0.35rem 0.55rem;
-  border: 1px solid var(--grid-strong); border-bottom: 1.5px solid var(--ink);
-  border-radius: 2px; background: var(--sheet); color: var(--ink);
+  width: 100%; min-height: 2.25rem; padding: 0.35rem 0.55rem;
+  border: 1px solid var(--grid-strong); border-bottom-color: var(--ink);
+  border-radius: 2px; background: var(--white); color: var(--ink);
 }
-.input:focus, .select:focus { outline: 3px solid var(--stamp); outline-offset: 0; }
+.input:focus, .select:focus { outline: 2px solid var(--blue); outline-offset: 0; }
 
-/* The stamp */
-.stamp {
-  --rot: -5deg;
-  display: inline-flex; align-items: center; gap: 0.5rem;
-  padding: 0.45rem 0.9rem 0.4rem;
-  border: 3px double var(--stamp); border-radius: 7px;
-  color: var(--stamp);
-  font-family: var(--display); font-stretch: 72%; font-weight: 800;
-  font-size: var(--t-lg); line-height: 1; letter-spacing: 0.02em;
-  transform: rotate(var(--rot));
-  filter: url(#ink);
-  mix-blend-mode: multiply;
+/* Masthead */
+.masthead { padding-block: clamp(1.5rem, 4vw, 2.5rem) 0; }
+.masthead-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem 2rem; flex-wrap: wrap; min-height: 5rem; }
+.wordmark {
+  font-family: var(--mono);
+  font-size: clamp(1.875rem, 5.4vw, 4.125rem);
+  line-height: 0.9;
+  color: var(--blue);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  -webkit-font-smoothing: none;
+}
+.wordmark span { display: inline-block; }
+.wordmark:hover { color: var(--blue); }
+.masthead-lede { margin: 0; text-align: right; font-size: var(--t-md); line-height: 1.7; }
+.masthead-lede b { display: block; font-weight: 500; }
+@media (max-width: 40rem) { .masthead-lede { text-align: left; } }
+
+/* Glyph divider: a row of double dashes, optionally with a mono label in it */
+.glyphs {
+  display: flex; align-items: center; gap: 1rem;
+  margin-block: 1.25rem 0;
+  font-family: var(--mono); font-size: var(--m-label); line-height: 1.33; text-transform: uppercase; color: var(--ash);
+}
+.glyphs::before, .glyphs::after {
+  content: ""; flex: 1; height: 1px;
+  background: repeating-linear-gradient(90deg, var(--ash) 0 5px, transparent 5px 7px, var(--ash) 7px 12px, transparent 12px 20px);
+}
+.glyphs:empty { gap: 0; }
+.glyphs:empty::after { display: none; }
+
+/* Ruled section header: title, a rule filling the row, and a mono note */
+.ruled { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 2rem; }
+.ruled > h2, .ruled > h3 { flex: none; }
+.ruled::after { content: ""; order: 1; flex: 1; height: 1px; background: var(--ink); transform: translateY(-0.3em); min-width: 2rem; }
+.ruled .ruled-note { order: 2; flex: none; font-family: var(--mono); font-size: var(--m-label); text-transform: uppercase; color: var(--ash); }
+@media (max-width: 36rem) { .ruled .ruled-note { display: none; } }
+
+/* Blueprint figure panel */
+.fig {
+  position: relative;
+  margin: 0;
+  padding: 2rem 2.25rem 1.75rem;
+  background-image: radial-gradient(circle, rgba(16, 61, 255, 0.16) 1px, transparent 1.25px);
+  background-size: 16px 16px;
+  background-position: 8px 8px;
+}
+.fig-n, .fig-name {
+  position: absolute; top: 2rem;
+  font-family: var(--mono); font-size: var(--m-cap); line-height: 1; text-transform: uppercase; color: var(--ash);
   white-space: nowrap;
 }
-.stamp small { font-weight: 600; font-size: 0.6em; font-stretch: 88%; letter-spacing: 0.01em; opacity: 0.85; }
-@media (prefers-reduced-motion: no-preference) {
-  .stamp.press { animation: press 420ms cubic-bezier(.2,.9,.3,1.25) 350ms both; }
-  @keyframes press {
-    from { opacity: 0; transform: rotate(var(--rot)) scale(1.35); }
-    60% { opacity: 1; }
-    to { opacity: 1; transform: rotate(var(--rot)) scale(1); }
-  }
+.fig-n { left: 0.5rem; writing-mode: vertical-rl; transform: rotate(180deg); }
+.fig-name { right: 0.5rem; writing-mode: vertical-rl; }
+.fig-art { display: grid; place-items: center; }
+.fig-art > svg, .fig-art > img { width: 100%; height: auto; }
+.fig figcaption { margin-top: 1rem; }
+@media (max-width: 40rem) {
+  .fig { margin-inline: calc(-1 * var(--gutter)); padding: 1.5rem 0.5rem 1.25rem; }
+  .fig-n, .fig-name { position: static; display: inline-block; writing-mode: horizontal-tb; transform: none; margin: 0 0 0.75rem 0.5rem; }
+  .fig figcaption { padding-inline: 0.5rem; }
+}
+.fig-cap-n { color: var(--ink); }
+
+/* Figures generally */
+figure { margin: 0; }
+figcaption {
+  font-family: var(--mono); font-size: var(--m-cap); line-height: 1.45; text-transform: uppercase;
+  color: var(--ash); margin-top: 0.6rem; max-width: var(--measure);
+}
+.shot { border: 0; border-radius: 0; background: var(--white); }
+
+/* SVG drawing inks */
+.bp { overflow: visible; font-family: var(--mono); }
+.bp polygon, .bp path, .bp line, .bp rect, .bp circle, .bp ellipse, .bp polyline {
+  stroke: var(--schematic); stroke-width: 1; stroke-linejoin: round; vector-effect: non-scaling-stroke;
+}
+.bp-face-t { fill: var(--mist); }
+.bp-face-l { fill: var(--cornflower); }
+.bp-face-r { fill: var(--ice); }
+.bp-white { fill: var(--white); }
+.bp-mist { fill: var(--mist); }
+.bp-ice { fill: var(--ice); }
+.bp-peri { fill: var(--periwinkle); }
+.bp-corn { fill: var(--cornflower); }
+.bp-solid { fill: var(--schematic); }
+.bp-none { fill: none; }
+.bp line.bp-thin, .bp .bp-thin { stroke-width: 1; opacity: 0.55; fill: none; }
+.bp .bp-guide { stroke-dasharray: 3 4; opacity: 0.7; fill: none; }
+.bp .bp-leader { stroke: var(--blue); }
+.bp .bp-arrow { fill: var(--blue); stroke: none; }
+.bp .bp-ink { fill: var(--schematic); stroke: none; }
+.bp-label { fill: var(--blue); font-size: 12px; text-transform: uppercase; }
+.bp-sub { fill: var(--ash); font-size: 10px; text-transform: uppercase; }
+@media (max-width: 40rem) {
+  .bp-label { font-size: 15px; }
+  .bp-sub { font-size: 12px; }
 }
 
-/* Site header */
-.site-head { padding-block: 1.25rem; }
-.site-head .wrap { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-.mark {
-  font-family: var(--display); font-weight: 800; font-stretch: 70%;
-  font-size: var(--t-lg); color: var(--ink); text-decoration: none; line-height: 1;
-}
-.site-nav { display: flex; gap: 1.25rem; flex-wrap: wrap; }
-.site-nav a {
-  font-family: var(--display); font-stretch: 88%; font-weight: 600; font-size: var(--t-sm);
-  color: var(--ink); text-decoration: none; padding-block: 0.4rem;
-}
-.site-nav a:hover, .site-nav a[aria-current="page"] { text-decoration: underline; text-decoration-color: var(--stamp); text-decoration-thickness: 2px; }
-
-/* Footer */
-.site-foot { margin-top: 6rem; padding-block: 2rem 2.5rem; border-top: 1.5px solid var(--ink); }
-.site-foot .wrap { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; font-family: var(--display); font-stretch: 88%; font-size: var(--t-sm); color: var(--pencil); }
-.site-foot a { color: var(--ink); }
-.foot-links { display: flex; gap: 1.25rem; }
+/* Typewriter footer */
+.site-foot { margin-top: var(--section); text-align: center; }
+.site-foot .ornament { font-family: var(--serif); font-size: var(--t-lg); letter-spacing: 0.4em; margin: 0 auto 2.5rem; max-width: none; }
+.foot-lines { display: grid; gap: 0.5rem; justify-items: center; font-family: var(--mono); font-size: var(--m-label); line-height: 1.33; text-transform: uppercase; }
+.foot-lines p { margin: 0; max-width: none; }
+.foot-lines a { color: var(--ink); text-decoration: none; }
+.foot-lines a:hover { color: var(--blue); text-decoration: underline; }
+.foot-lines .pipe { color: var(--ash); padding-inline: 0.6em; }
+.foot-lines .quiet { color: var(--ash); }
+.dither { height: 48px; margin-top: 5rem; background-repeat: repeat-x; background-position: bottom left; image-rendering: pixelated; }
 
 /* Section spacing */
-.section { margin-top: clamp(4rem, 9vw, 7rem); }
-.section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1.75rem; flex-wrap: wrap; }
-.section-head p { color: var(--pencil); margin: 0; }
-
-/* Figures */
-figure { margin: 0; }
-figcaption { font-family: var(--display); font-stretch: 90%; font-size: var(--t-xs); color: var(--pencil); margin-top: 0.5rem; max-width: var(--measure); line-height: 1.4; }
-.shot { border: 1px solid var(--grid-strong); border-radius: 3px; background: var(--sheet); overflow: hidden; }
+.section { margin-top: var(--section); }
 
 .visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .skip { position: absolute; left: -999px; top: 0.5rem; }
-.skip:focus { left: 0.5rem; background: var(--tag); color: var(--ink); padding: 0.5rem 0.8rem; z-index: 10; }
-.grid-soft { --grid: #e0e6d8; }
+.skip:focus { left: 0.5rem; background: var(--white); border: 1px solid var(--ink); color: var(--ink); padding: 0.5rem 0.8rem; z-index: 10; }
