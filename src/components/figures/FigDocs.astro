@@ -47,7 +47,7 @@ const [mx, my] = iso([193, 62, 52]);
   <title id="fig-docs-t">An exploded stack of three printed sheets for one job: an estimate at the bottom, a work order, and an invoice on top. A small block to the right labelled totals in whole cents sends a dashed arrow to the totals box on each sheet.</title>
 
   {sheets.map((s, i) => (
-    <g>
+    <g data-ex={`0,${levels[i] - i * 4}`}>
       <polygon class="bp-corn" points={s.body.left} />
       <polygon class="bp-ice" points={s.body.right} />
       <polygon class="bp-white" points={s.body.top} />
@@ -57,7 +57,7 @@ const [mx, my] = iso([193, 62, 52]);
       <line {...s.rule} />
       <polygon class={s.solid ? 'bp-solid' : 'bp-peri'} points={s.total} />
       {s.sign && <line {...s.sign} />}
-      {guidesAbove[i].map((g) => <line class="bp-guide" {...g} />)}
+      <g data-fade>{guidesAbove[i].map((g) => <line class="bp-guide" {...g} />)}</g>
     </g>
   ))}
 
@@ -65,12 +65,14 @@ const [mx, my] = iso([193, 62, 52]);
   <polygon class="bp-corn" points={M.right} />
   <polygon class="bp-ice" points={M.top} />
   {feeds.map((f) => (
-    <g>
+    <g data-fade>
       <line class="bp-guide" {...f.line} />
       <path class="bp-arrow" d={f.head} style="fill:var(--schematic);stroke:none" />
     </g>
   ))}
 
-  {callouts.map((c) => <Callout at={c.at} to={c.to} text={c.text} align="end" />)}
-  <Callout at={[mx, my + 3]} to={[mx - 60, my + 70]} text="Totals" sub="Whole cents, one module" />
+  <g class="bp-callouts">
+    {callouts.map((c) => <Callout at={c.at} to={c.to} text={c.text} align="end" />)}
+    <Callout at={[mx, my + 3]} to={[mx - 60, my + 70]} text="Totals" sub="Whole cents, one module" />
+  </g>
 </svg>

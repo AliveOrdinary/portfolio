@@ -58,7 +58,7 @@ const callouts = levels.map((z, i) => {
 <svg class="bp" viewBox="-112 -292 512 442" role="img" aria-labelledby="fig-method-t">
   <title id="fig-method-t">An exploded stack of four plates. At the bottom, skids on a sorting floor. Above it, a clipboard of notes and two sticky notes. Above that, a phone with a three-row app. On top, a table and a bar chart. Labelled: go where the work is, write down what happens, build the smallest thing, keep the numbers honest.</title>
 
-  <!-- Plate 1 and its skids -->
+  <g data-ex="0,0"><!-- Plate 1 and its skids -->
   <polygon class="bp-face-l" points={plate(levels[0]).left} />
   <polygon class="bp-face-r" points={plate(levels[0]).right} />
   <polygon class="bp-face-t" points={plate(levels[0]).top} />
@@ -70,9 +70,10 @@ const callouts = levels.map((z, i) => {
     </g>
   ))}
 
-  {guides.slice(0, 4).map((g) => <line class="bp-guide" {...g} />)}
+  </g>
+  <g data-fade>{guides.slice(0, 4).map((g) => <line class="bp-guide" {...g} />)}</g>
 
-  <!-- Plate 2: notes -->
+  <g data-ex="0,62"><!-- Plate 2: notes -->
   <polygon class="bp-face-l" points={plate(levels[1]).left} />
   <polygon class="bp-face-r" points={plate(levels[1]).right} />
   <polygon class="bp-face-t" points={plate(levels[1]).top} />
@@ -82,9 +83,10 @@ const callouts = levels.map((z, i) => {
   <polygon class="bp-corn" points={sticky2.left} /><polygon class="bp-peri" points={sticky2.right} /><polygon class="bp-ice" points={sticky2.top} />
   {stickyLines.map((l) => <line class="bp-thin" {...l} />)}
 
-  {guides.slice(4, 8).map((g) => <line class="bp-guide" {...g} />)}
+  </g>
+  <g data-fade>{guides.slice(4, 8).map((g) => <line class="bp-guide" {...g} />)}</g>
 
-  <!-- Plate 3: the tool -->
+  <g data-ex="0,124"><!-- Plate 3: the tool -->
   <polygon class="bp-face-l" points={plate(levels[2]).left} />
   <polygon class="bp-face-r" points={plate(levels[2]).right} />
   <polygon class="bp-face-t" points={plate(levels[2]).top} />
@@ -95,9 +97,10 @@ const callouts = levels.map((z, i) => {
   {rows.map((r) => <polygon class="bp-white" points={r} />)}
   <polygon class="bp-solid" points={go} />
 
-  {guides.slice(8, 12).map((g) => <line class="bp-guide" {...g} />)}
+  </g>
+  <g data-fade>{guides.slice(8, 12).map((g) => <line class="bp-guide" {...g} />)}</g>
 
-  <!-- Plate 4: numbers -->
+  <g data-ex="0,186"><!-- Plate 4: numbers -->
   <polygon class="bp-face-l" points={plate(levels[3]).left} />
   <polygon class="bp-face-r" points={plate(levels[3]).right} />
   <polygon class="bp-face-t" points={plate(levels[3]).top} />
@@ -112,5 +115,7 @@ const callouts = levels.map((z, i) => {
     </g>
   ))}
 
-  {callouts.map((c) => <Callout at={c.at} to={c.to} text={c.text} sub={c.sub} />)}
+  </g>
+
+  <g class="bp-callouts">{callouts.map((c) => <Callout at={c.at} to={c.to} text={c.text} sub={c.sub} />)}</g>
 </svg>

@@ -12,6 +12,7 @@ interface Props {
 const {
   title,
   description = 'Navaneeth Krishnan, full-stack developer in Toronto. I build software for the people doing the actual work.',
+  current = 'home',
 } = Astro.props;
 
 // The footer's dithered band: a 4x4 Bayer matrix, denser toward the bottom edge.
@@ -50,22 +51,30 @@ const dither = `url("data:image/svg+xml,${encodeURIComponent(
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="generator" content={Astro.generator} />
+    <script is:inline>
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('motion');
+    </script>
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
 
-    <header class="masthead">
+    <nav class="site-nav" aria-label="Main">
       <div class="wrap">
-        <div class="masthead-row">
-          <a href="/" class="wordmark" aria-label="Navaneeth Krishnan, home"><span>Navaneeth</span> <span>Krishnan</span></a>
-          <p class="masthead-lede">
-            Software for the people doing the actual work.
-            <b>Full-stack developer, Toronto</b>
-          </p>
+        <a href="/" class="nav-mark" aria-label="Navaneeth Krishnan, home"><span class="nav-full" aria-hidden="true">Navaneeth Krishnan</span><span class="nav-short" aria-hidden="true">NK</span></a>
+        <div class="nav-links">
+          <a href="/#work" aria-current={current === 'work' ? 'page' : undefined}>Work</a>
+          <a href="/#how-i-work" class="nav-wide">How I work</a>
+          <a href="/#tools" class="nav-wide">Tools</a>
+          <a href="/#contact">Contact</a>
+          <a href="/navaneeth-krishnan-resume.pdf">Résumé</a>
         </div>
-        <div class="glyphs" aria-hidden="true"></div>
       </div>
-    </header>
+    </nav>
+
+    <div class="ruler" data-ruler aria-hidden="true">
+      <span class="ruler-mark"></span>
+      <span class="ruler-n" data-ruler-n>000</span>
+    </div>
 
     <main id="main">
       <slot />
@@ -84,5 +93,8 @@ const dither = `url("data:image/svg+xml,${encodeURIComponent(
       </div>
       <div class="dither" style={`background-image:${dither}`} aria-hidden="true"></div>
     </footer>
+    <script>
+      import '../scripts/motion.ts';
+    </script>
   </body>
 </html>

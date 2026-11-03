@@ -46,24 +46,24 @@
   --display: var(--mono);
   --body: var(--serif);
 
-  /* Serif scale. EB Garamond has a small x-height, so 17px here reads like the
-     reference's 14px book face. */
-  --t-xs: 0.75rem;     /* 12, mono labels */
-  --t-sm: 0.9375rem;   /* 15 */
-  --t-md: 1.0625rem;   /* 17, body */
-  --t-lg: 1.1875rem;   /* 19, headings */
-  --t-xl: 1.375rem;    /* 22 */
-  --t-2xl: 1.75rem;    /* 28 */
-  --t-3xl: 2.25rem;    /* 36 */
+  /* Serif scale. EB Garamond has a small x-height, so body runs at 19px. */
+  --t-xs: 0.8125rem;   /* 13 */
+  --t-sm: 1.0625rem;   /* 17 */
+  --t-md: 1.1875rem;   /* 19, body */
+  --t-lg: 1.375rem;    /* 22 */
+  --t-xl: 1.75rem;     /* 28 */
+  --t-2xl: 2.25rem;    /* 36 */
+  --t-3xl: 3rem;       /* 48 */
+  --t-display: clamp(3.25rem, 8vw, 6.5rem); /* italic section titles */
 
-  /* Mono scale. Departure Mono is drawn on an 11px grid. */
-  --m-cap: 0.6875rem;  /* 11, figure numbers, field labels */
-  --m-label: 0.75rem;  /* 12, buttons, footer */
-  --m-head: 0.875rem;  /* 14, eyebrows and chapter heads */
+  /* Mono scale */
+  --m-cap: 0.8125rem;  /* 13, figure numbers, field labels */
+  --m-label: 0.875rem; /* 14, buttons, nav, footer */
+  --m-head: 1rem;      /* 16, chapter heads */
 
   --gutter: clamp(1rem, 5vw, 4.5rem);
-  --max: 86rem;
-  --measure: 32rem;
+  --max: 90rem;
+  --measure: 36rem;
   --section: clamp(6rem, 14vw, 13rem);
 }
 
@@ -93,8 +93,8 @@ h1, h2, h3, h4 {
   margin: 0;
   text-wrap: balance;
 }
-h1 { font-size: var(--t-xl); }
-h2 { font-size: var(--t-lg); }
+h1 { font-size: var(--t-2xl); line-height: 1.2; }
+h2 { font-size: var(--t-xl); }
 h3 { font-size: var(--t-lg); }
 h4 { font-size: var(--t-md); font-weight: 600; }
 p { margin: 0 0 1em; max-width: var(--measure); }
@@ -144,7 +144,7 @@ strong { font-weight: 600; }
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
   font-family: var(--mono); font-size: var(--m-label); line-height: 1.33; text-transform: uppercase;
-  min-height: 2.25rem; padding: 0.35rem 0.85rem;
+  min-height: 2.75rem; padding: 0.45rem 1rem;
   background: rgba(255, 255, 255, 0.5);
   border: 1px solid rgba(0, 0, 0, 0.5);
   border-radius: 4px;
@@ -167,24 +167,100 @@ strong { font-weight: 600; }
 }
 .input:focus, .select:focus { outline: 2px solid var(--blue); outline-offset: 0; }
 
-/* Masthead */
-.masthead { padding-block: clamp(1.5rem, 4vw, 2.5rem) 0; }
-.masthead-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem 2rem; flex-wrap: wrap; min-height: 5rem; }
-.wordmark {
-  font-family: var(--mono);
-  font-size: clamp(1.875rem, 5.4vw, 4.125rem);
-  line-height: 0.9;
-  color: var(--blue);
-  text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 0;
+/* Sticky nav: a thin mono bar that gains a hairline once you scroll */
+.site-nav {
+  position: sticky; top: 0; z-index: 20;
+  background: rgba(251, 251, 251, 0.88);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 200ms;
+}
+.site-nav.is-stuck { border-bottom-color: var(--hairline); }
+.site-nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 3.75rem; }
+.nav-mark, .nav-links a {
+  font-family: var(--mono); font-size: var(--m-label); text-transform: uppercase; color: var(--ink); text-decoration: none;
+}
+.nav-links { display: flex; gap: clamp(0.9rem, 2.5vw, 2rem); flex-wrap: wrap; }
+.nav-links a { padding-block: 0.6rem; }
+.nav-links a:hover, .nav-mark:hover, .nav-links a[aria-current="page"] { color: var(--blue); }
+.nav-short { display: none; }
+.nav-links a { white-space: nowrap; }
+@media (max-width: 40rem) {
+  .nav-links .nav-wide, .nav-full { display: none; }
+  .nav-short { display: inline; }
+}
+
+/* Hero name: pixel type stretched to the full measure.
+   Departure Mono advances 0.63em, NAVANEETH KRISHNAN is 18 characters. */
+.hero-name {
+  display: block;
+  font-family: var(--mono); font-weight: 400; text-transform: uppercase; letter-spacing: 0;
+  font-size: calc((min(100vw, var(--max)) - 2 * var(--gutter) - 1rem) / 11.4);
+  line-height: 0.92; color: var(--ink); white-space: nowrap;
   -webkit-font-smoothing: none;
 }
-.wordmark span { display: inline-block; }
-.wordmark:hover { color: var(--blue); }
-.masthead-lede { margin: 0; text-align: right; font-size: var(--t-md); line-height: 1.7; }
-.masthead-lede b { display: block; font-weight: 500; }
-@media (max-width: 40rem) { .masthead-lede { text-align: left; } }
+.hero-name span { display: inline-block; }
+@media (max-width: 40rem) {
+  .hero-name { font-size: calc((100vw - 2 * var(--gutter) - 0.5rem) / 5.75); white-space: normal; }
+  .hero-name span { display: block; }
+}
+
+/* Facts joined by plus signs */
+.plus-line { display: flex; flex-wrap: wrap; gap: 0.35rem 0; margin: 0; padding: 0; list-style: none; font-family: var(--mono); font-size: var(--m-label); text-transform: uppercase; }
+.plus-line li + li::before { content: "+"; padding-inline: 1.1em; color: var(--ash); }
+
+/* Places ticker: a band of pixel type between full-width hairlines */
+.ticker { overflow: hidden; border-block: 1px solid var(--hairline); padding-block: clamp(1rem, 2.5vw, 1.75rem); }
+.ticker-track { display: flex; width: max-content; }
+.ticker-run { display: flex; flex: none; align-items: center; font-family: var(--mono); text-transform: uppercase; font-size: clamp(2rem, 5.5vw, 4.5rem); line-height: 1; color: var(--blue); white-space: nowrap; -webkit-font-smoothing: none; }
+.ticker-run span::after { content: "+"; color: var(--ash); padding-inline: 0.6em; }
+.motion .ticker-track { animation: ticker 48s linear infinite; }
+.motion .ticker:hover .ticker-track { animation-play-state: paused; }
+@keyframes ticker { to { transform: translateX(-50%); } }
+
+/* Section titles: big italic serif over a full-width hairline */
+.title-row {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem 2rem; flex-wrap: wrap;
+  padding-bottom: clamp(1.25rem, 3vw, 2rem); margin-bottom: clamp(2rem, 5vw, 3.5rem);
+  border-bottom: 1px solid var(--ink);
+}
+.title { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: var(--t-display); line-height: 0.95; letter-spacing: -0.01em; }
+.title-note { font-family: var(--mono); font-size: var(--m-label); text-transform: uppercase; color: var(--ash); padding-bottom: 0.4em; }
+
+/* The drafting ruler on the right edge */
+.ruler {
+  position: fixed; right: 0.9rem; top: 50%; z-index: 15; transform: translateY(-50%);
+  height: 11rem; width: 2.25rem; pointer-events: none;
+  display: none;
+}
+.ruler::before {
+  content: ""; position: absolute; right: 0; top: 0; bottom: 0; width: 10px;
+  background:
+    repeating-linear-gradient(180deg, var(--ink) 0 1px, transparent 1px calc(11rem / 10)) right top / 10px 100% no-repeat,
+    repeating-linear-gradient(180deg, var(--ash) 0 1px, transparent 1px calc(11rem / 50)) right top / 5px 100% no-repeat;
+}
+.ruler-mark { position: absolute; right: 0; top: calc(var(--p, 0) * 100%); width: 18px; height: 1px; background: var(--blue); }
+.ruler-n { position: absolute; right: 20px; top: calc(var(--p, 0) * 100%); transform: translateY(-50%); font-family: var(--mono); font-size: 0.6875rem; color: var(--blue); }
+@media (min-width: 64rem) { .ruler { display: block; } }
+
+/* Reveal on scroll (only when motion is allowed) */
+.motion .reveal { opacity: 0; transform: translateY(1.5rem); transition: opacity 700ms ease, transform 900ms cubic-bezier(.2, .7, .2, 1); }
+.motion .reveal.in { opacity: 1; transform: none; }
+
+/* Drawings plot in: strokes draw like a pen plotter, then the inks fill */
+.motion .bp:not(.plot):not(.drawn) > :not(title) { opacity: 0; }
+.bp.plot :is(polygon, line, polyline, path) {
+  vector-effect: none;
+  stroke-dasharray: 1 1; stroke-dashoffset: 1;
+  fill-opacity: 0;
+  animation: bp-plot 900ms var(--d, 0ms) cubic-bezier(.4, 0, .2, 1) forwards, bp-fill 500ms calc(var(--d, 0ms) + 650ms) ease forwards;
+}
+.bp.plot :is([data-fade], .bp-callouts) :is(polygon, line, polyline, path) { animation: none; stroke-dasharray: none; stroke-dashoffset: 0; fill-opacity: 1; vector-effect: non-scaling-stroke; }
+.bp.plot .bp-guide { stroke-dasharray: 3 4; }
+@keyframes bp-plot { to { stroke-dashoffset: 0; } }
+@keyframes bp-fill { to { fill-opacity: 1; } }
+.bp [data-ex] { will-change: transform; }
+.bp .bp-callouts { transition: opacity 300ms ease; }
 
 /* Glyph divider: a row of double dashes, optionally with a mono label in it */
 .glyphs {
@@ -260,8 +336,8 @@ figcaption {
 .bp .bp-leader { stroke: var(--blue); }
 .bp .bp-arrow { fill: var(--blue); stroke: none; }
 .bp .bp-ink { fill: var(--schematic); stroke: none; }
-.bp-label { fill: var(--blue); font-size: 12px; text-transform: uppercase; }
-.bp-sub { fill: var(--ash); font-size: 10px; text-transform: uppercase; }
+.bp-label { fill: var(--blue); font-size: 13px; text-transform: uppercase; }
+.bp-sub { fill: var(--ash); font-size: 11px; text-transform: uppercase; }
 @media (max-width: 40rem) {
   .bp-label { font-size: 15px; }
   .bp-sub { font-size: 12px; }

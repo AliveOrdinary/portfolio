@@ -82,17 +82,21 @@ const c = [
   {tape.map((t) => <line class="bp-thin" {...t} />)}
 
   <!-- Where the label came from -->
-  <polygon class="bp-none bp-guide" points={frame(MOUNT)} />
-  {guides.map((g) => <line class="bp-guide" {...g} />)}
+  <g data-fade>
+    <polygon class="bp-none bp-guide" points={frame(MOUNT)} />
+    {guides.map((g) => <line class="bp-guide" {...g} />)}
+  </g>
 
-  <!-- The label, exploded -->
+  <!-- The label, exploded; collapsed it sits flat on the load -->
+  <g data-ex="-81.4,-47">
   <polygon class="bp-white" points={frame(X)} />
   <line class="bp-thin" {...divider(63)} />
   <line class="bp-thin" {...divider(45)} />
   <line class="bp-thin" {...seg([X, mid, L.z0], [X, mid, 63])} />
   {textLines.map((t) => <line class="bp-thin" {...t} />)}
   {[...partBars, ...qtyBars, ...supBars, ...serBars].map((b) => <polygon class="bp-ink" points={b} />)}
-  {brackets.map((b) => <polyline class="bp-none" points={b} style="stroke-width:2" />)}
+  </g>
+  <g data-fade>{brackets.map((b) => <polyline class="bp-none" points={b} style="stroke-width:2" />)}</g>
 
-  {c.map((x) => <Callout at={x.at} to={x.to} text={x.text} sub={x.sub} align={x.align} />)}
+  <g class="bp-callouts">{c.map((x) => <Callout at={x.at} to={x.to} text={x.text} sub={x.sub} align={x.align} />)}</g>
 </svg>

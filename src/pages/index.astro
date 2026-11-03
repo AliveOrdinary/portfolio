@@ -13,6 +13,16 @@ const figures: Record<string, { component: any; name: string }> = {
   amplifier: { component: FigPair, name: 'This or that' },
 };
 
+// Places the work happens, for the ticker. Every one of them is in a case study.
+const places = [
+  'Sorting floor',
+  'End of shift',
+  'Body shop front desk',
+  'In the bay',
+  'Design studio',
+  'First client meeting',
+];
+
 const steps = [
   {
     title: 'Go where the work is',
@@ -36,209 +46,227 @@ const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
 <Base title="Navaneeth Krishnan, full-stack developer in Toronto">
-  <div class="wrap">
-    <section class="hero" aria-labelledby="hero-title">
-      <div class="hero-text">
-        <p class="eyebrow hero-eyebrow">Open to full-time roles<span class="sep">·</span>Toronto or remote</p>
-        <h1 id="hero-title">I build software for the people doing the actual work.</h1>
-        <div class="justify">
-          <p class="dropcap">
-            A sorting floor, a body shop front desk, a design studio. I spend time where the work happens,
-            write down how it really gets done, then build the tool that fits. React, Next.js, TypeScript,
-            Supabase and the Claude API, shipped and in use.
-          </p>
-        </div>
-        <dl class="meter">
-          <div class="field"><dt>Name</dt><dd>Navaneeth Krishnan</dd></div>
-          <div class="field"><dt>Trade</dt><dd>Full-stack developer</dd></div>
-          <div class="field"><dt>Based in</dt><dd>Toronto, Ontario</dd></div>
-          <div class="field"><dt>Trained in</dt><dd>Physics, anthropology</dd></div>
-        </dl>
-        <div class="actions">
-          <a class="btn" href="mailto:vrnavaneeth135@gmail.com">Email me</a>
-          <a class="btn" href="/navaneeth-krishnan-resume.pdf">Résumé (PDF)</a>
-          <a class="btn" href="#work">See the work</a>
-        </div>
+  <section class="hero wrap" aria-labelledby="hero-title">
+    <div class="hero-top">
+      <h1 id="hero-title" class="hero-statement">I build software for the people doing the actual work.</h1>
+      <ul class="plus-line hero-facts">
+        <li>Full-stack developer</li>
+        <li>Toronto</li>
+        <li>Physics, anthropology</li>
+      </ul>
+    </div>
+    <p class="hero-name" aria-label="Navaneeth Krishnan"><span data-decode aria-hidden="true">Navaneeth</span> <span data-decode aria-hidden="true">Krishnan</span></p>
+  </section>
+
+  <div class="ticker" role="marquee" aria-label={`Where the work happens: ${places.join(', ')}`}>
+    <div class="ticker-track" aria-hidden="true">
+      {[0, 1].map(() => (
+        <div class="ticker-run">{[...places, ...places].map((p) => <span>{p}</span>)}</div>
+      ))}
+    </div>
+  </div>
+
+  <section class="intro wrap" aria-label="About">
+    <div class="intro-text">
+      <p class="eyebrow intro-eyebrow">Open to full-time roles<span class="sep">+</span>Toronto or remote</p>
+      <div class="justify">
+        <p class="dropcap">
+          A sorting floor, a body shop front desk, a design studio. I spend time where the work happens,
+          write down how it really gets done, then build the tool that fits. React, Next.js, TypeScript,
+          Supabase and the Claude API, shipped and in use.
+        </p>
       </div>
-      <Figure n={0} name="How I work" year="2026" class="hero-fig">
-        <FigMethod />
-      </Figure>
-    </section>
-
-    <div class="glyphs section-break" aria-hidden="true">Selected work, 2025–2026</div>
-
-    <section class="work" id="work" aria-labelledby="work-title">
-      <div class="ruled">
-        <h2 id="work-title">Work.</h2>
-        <span class="ruled-note">Three tools<span class="sep">·</span>three places of work</span>
+      <div class="actions">
+        <a class="btn" href="mailto:vrnavaneeth135@gmail.com">Email me</a>
+        <a class="btn" href="/navaneeth-krishnan-resume.pdf">Résumé (PDF)</a>
+        <a class="btn" href="#work">See the work</a>
       </div>
+    </div>
+    <Figure n={0} name="How I work" year="2026" class="intro-fig">
+      <FigMethod />
+    </Figure>
+  </section>
 
-      <div class="projects">
-        {featured.map((p, i) => {
-          const fig = figures[p.slug];
-          const Fig = fig.component;
-          return (
-            <article class:list={['project', { flip: i % 2 === 1 }]} aria-labelledby={`p-${p.slug}`}>
-              <div class="project-text">
-                <h3 id={`p-${p.slug}`} class="eyebrow"><span class="chapter">{pad(i + 1)}</span><a href={`/work/${p.slug}`}>{p.name}</a></h3>
-                <p class="project-summary">{p.summary}</p>
-                <dl class="project-fields">
-                  <div class="field"><dt>Where</dt><dd>{p.where}</dd></div>
-                  <div class="field"><dt>Before</dt><dd>{p.before}</dd></div>
-                  <div class="field"><dt>Now</dt><dd>{p.now}</dd></div>
-                  <div class="field"><dt>Status</dt><dd>{p.status}</dd></div>
-                </dl>
-                <p class="cap">Built with {p.stack.join(', ')}.</p>
-                <a class="btn" href={`/work/${p.slug}`}>Read about {p.name}</a>
+  <section class="section" id="work" aria-labelledby="work-title">
+    <div class="wrap">
+      <div class="title-row">
+        <h2 id="work-title" class="title reveal">Work</h2>
+        <span class="title-note">Three tools<span class="sep">+</span>three places of work</span>
+      </div>
+    </div>
+
+    <div class="rows">
+      {featured.map((p, i) => {
+        const fig = figures[p.slug];
+        const Fig = fig.component;
+        return (
+          <article class="row" aria-labelledby={`p-${p.slug}`}>
+            <div class="wrap row-grid">
+              <div class="row-story">
+                <span class="row-n">{pad(i + 1)}</span>
+                <h3 id={`p-${p.slug}`} class="row-name"><a href={`/work/${p.slug}`}>{p.name}</a></h3>
+                <p class="row-summary">{p.summary}</p>
+                <a class="btn" href={`/work/${p.slug}`}>Read the case study</a>
               </div>
-              <Figure n={i + 1} name={fig.name} year="2026" class="project-fig">
+              <Figure n={i + 1} name={fig.name} year="2026" class="row-fig">
                 <Fig />
               </Figure>
-            </article>
-          );
-        })}
-      </div>
+              <dl class="row-spec">
+                <div class="field"><dt>Where</dt><dd>{p.where}</dd></div>
+                <div class="field"><dt>Before</dt><dd>{p.before}</dd></div>
+                <div class="field"><dt>Now</dt><dd>{p.now}</dd></div>
+                <div class="field"><dt>Status</dt><dd>{p.status}</dd></div>
+                <div class="field"><dt>Built with</dt><dd>{p.stack.join(', ')}</dd></div>
+              </dl>
+            </div>
+          </article>
+        );
+      })}
+    </div>
 
-      <div class="also">
-        <h3 class="eyebrow">Also built</h3>
-        <ul class="leaders">
-          {alsoBuilt.map((a) => (
-            <li>
-              <span class="leader-row">
-                <a href={a.href} rel="noopener noreferrer">{a.name}</a>
-                <span class="dots" aria-hidden="true"></span>
-                <span class="cap">{a.domain}</span>
-              </span>
-              <span class="leader-note">{a.note}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-
-    <section class="section" id="how-i-work" aria-labelledby="how-title">
-      <div class="ruled">
-        <h2 id="how-title">How I work.</h2>
-        <span class="ruled-note">Four habits</span>
-      </div>
-      <ol class="chapters">
-        {steps.map((s, i) => (
+    <div class="wrap also">
+      <h3 class="eyebrow">Also built</h3>
+      <ul class="leaders">
+        {alsoBuilt.map((a) => (
           <li>
-            <h3 class="eyebrow"><span class="chapter">{pad(i + 1)}</span>{s.title}</h3>
-            <p>{s.body}</p>
+            <span class="leader-row">
+              <a href={a.href} rel="noopener noreferrer">{a.name}</a>
+              <span class="dots" aria-hidden="true"></span>
+              <span class="cap">{a.domain}</span>
+            </span>
+            <span class="leader-note">{a.note}</span>
           </li>
         ))}
-      </ol>
-    </section>
+      </ul>
+    </div>
+  </section>
 
-    <section class="section" id="tools" aria-labelledby="tools-title">
-      <div class="ruled">
-        <h2 id="tools-title">Tools.</h2>
-        <span class="ruled-note">What I reach for, and what I’ve shipped with</span>
-      </div>
-      <dl class="toc">
-        {tools.map((t, i) => (
-          <div class="toc-group">
-            <dt class="eyebrow"><span class="chapter">{pad(i + 1)}</span>{t.group}</dt>
-            <dd><ul>{t.items.map((item) => <li>{item}</li>)}</ul></dd>
-          </div>
-        ))}
-      </dl>
-      <p class="tools-note">
-        I also built and ran a content pipeline in n8n that wrote, designed and published daily posts to
-        Instagram and Facebook, with a canvas editor for last-minute fixes.
-      </p>
-    </section>
+  <section class="section wrap" id="how-i-work" aria-labelledby="how-title">
+    <div class="title-row">
+      <h2 id="how-title" class="title reveal">How I work</h2>
+      <span class="title-note">Four habits</span>
+    </div>
+    <ol class="chapters">
+      {steps.map((s, i) => (
+        <li class="reveal">
+          <h3 class="eyebrow"><span class="chapter">{pad(i + 1)}</span>{s.title}</h3>
+          <p>{s.body}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
 
-    <section class="section contact" id="contact" aria-labelledby="contact-title">
-      <h2 id="contact-title">Hiring a full-stack developer?</h2>
-      <p>I’m looking for a full-time role in Toronto or remote.<br />Email is the fastest way to reach me.</p>
-      <div class="actions">
-        <a class="btn" href="mailto:vrnavaneeth135@gmail.com">vrnavaneeth135@gmail.com</a>
-        <a class="btn" href="/navaneeth-krishnan-resume.pdf">Résumé (PDF)</a>
-      </div>
-      <p>Or find me on <a href="https://linkedin.com/in/vrnavaneeth" rel="noopener noreferrer">LinkedIn</a> and <a href="https://github.com/AliveOrdinary" rel="noopener noreferrer">GitHub</a>.</p>
-    </section>
-  </div>
+  <section class="section wrap" id="tools" aria-labelledby="tools-title">
+    <div class="title-row">
+      <h2 id="tools-title" class="title reveal">Tools</h2>
+      <span class="title-note">What I reach for, and what I’ve shipped with</span>
+    </div>
+    <dl class="toc">
+      {tools.map((t, i) => (
+        <div class="toc-group">
+          <dt class="eyebrow"><span class="chapter">{pad(i + 1)}</span>{t.group}</dt>
+          <dd><ul>{t.items.map((item) => <li>{item}</li>)}</ul></dd>
+        </div>
+      ))}
+    </dl>
+    <p class="tools-note">
+      I also built and ran a content pipeline in n8n that wrote, designed and published daily posts to
+      Instagram and Facebook, with a canvas editor for last-minute fixes.
+    </p>
+  </section>
+
+  <section class="section wrap contact" id="contact" aria-labelledby="contact-title">
+    <h2 id="contact-title" class="title reveal">Hiring a full-stack developer?</h2>
+    <p>I’m looking for a full-time role in Toronto or remote.<br />Email is the fastest way to reach me.</p>
+    <div class="actions">
+      <a class="btn" href="mailto:vrnavaneeth135@gmail.com">vrnavaneeth135@gmail.com</a>
+      <a class="btn" href="/navaneeth-krishnan-resume.pdf">Résumé (PDF)</a>
+    </div>
+    <p>Or find me on <a href="https://linkedin.com/in/vrnavaneeth" rel="noopener noreferrer">LinkedIn</a> and <a href="https://github.com/AliveOrdinary" rel="noopener noreferrer">GitHub</a>.</p>
+  </section>
 </Base>
 
 <style>
-  .sep { color: var(--ash); padding-inline: 0.6em; }
+  .sep { color: var(--ash); padding-inline: 0.8em; }
   .chapter { color: var(--ash); margin-right: 0.9em; }
 
-  /* Hero: a narrow justified column beside one large drawing */
-  .hero {
-    display: grid;
-    grid-template-columns: minmax(0, 27rem) minmax(0, 1fr);
-    gap: clamp(2rem, 6vw, 6rem);
-    align-items: center;
-    padding-top: clamp(2.5rem, 6vw, 5rem);
-  }
-  .hero-eyebrow { color: var(--blue); margin-bottom: 1.25rem; }
-  .hero h1 { font-size: var(--t-xl); margin-bottom: 1rem; }
-  .meter {
-    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.5rem;
-    margin: 1.75rem 0; padding-top: 1rem; border-top: 1px solid var(--ink);
-  }
-  .hero-fig { max-width: 44rem; justify-self: end; width: 100%; }
-  @media (max-width: 60rem) {
-    .hero { grid-template-columns: 1fr; }
-    .hero-fig { justify-self: stretch; }
-  }
+  /* Hero: a statement and facts, then the name across the full measure */
+  .hero { padding-top: clamp(2.5rem, 7vw, 6rem); }
+  .hero-top { display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem 3rem; flex-wrap: wrap; }
+  .hero-statement { font-size: clamp(1.75rem, 3.2vw, 2.75rem); line-height: 1.2; max-width: 24ch; }
+  .hero-facts { justify-content: flex-end; padding-bottom: 0.4em; }
+  .hero-name { margin: clamp(2.5rem, 6vw, 5rem) 0 clamp(2.5rem, 5vw, 4rem); max-width: none; }
+  @media (max-width: 40rem) { .hero-facts { justify-content: flex-start; } }
 
-  .section-break { margin-block: var(--section) 3rem; }
-
-  /* Projects: a short text column against a wide figure, alternating */
-  .projects { display: grid; gap: clamp(5rem, 10vw, 9rem); }
-  .project {
-    display: grid; grid-template-columns: minmax(0, 26rem) minmax(0, 1fr);
+  /* Intro: the paragraph and keys beside the how-I-work drawing */
+  .intro {
+    display: grid; grid-template-columns: minmax(0, 30rem) minmax(0, 1fr);
     gap: clamp(2rem, 6vw, 6rem); align-items: center;
+    padding-top: clamp(4rem, 9vw, 8rem);
   }
-  .project.flip { grid-template-columns: minmax(0, 1fr) minmax(0, 26rem); }
-  .project.flip .project-text { order: 2; }
-  .project-text { display: flex; flex-direction: column; gap: 1.1rem; align-items: flex-start; }
-  .project-text h3 a { color: var(--ink); text-decoration: none; }
-  .project-text h3 a:hover { color: var(--blue); }
-  .project-summary { font-size: var(--t-lg); line-height: 1.5; margin: 0; }
-  .project-fields { display: grid; gap: 0.9rem; margin: 0.25rem 0 0; padding-top: 1rem; border-top: 1px solid var(--ink); width: 100%; }
-  .project-fields dd { text-align: justify; hyphens: auto; }
-  .project-text .cap { margin: 0; }
-  .project-fig { width: 100%; }
-  @media (max-width: 60rem) {
-    .project, .project.flip { grid-template-columns: 1fr; }
-    .project.flip .project-text { order: 0; }
+  .intro-eyebrow { color: var(--ash); margin-bottom: 1.5rem; font-size: var(--m-label); }
+  .intro-text .actions { margin-top: 2rem; }
+  :global(.intro-fig) { width: 100%; max-width: 46rem; justify-self: end; }
+  @media (max-width: 60rem) { .intro { grid-template-columns: 1fr; } :global(.intro-fig) { justify-self: stretch; } }
+
+  /* Work: one ruled row per project, story | drawing | spec, hairlines edge to edge */
+  .rows { border-top: 1px solid var(--hairline); }
+  .row { border-bottom: 1px solid var(--hairline); }
+  .row-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.8fr) minmax(0, 1fr); }
+  .row-grid > * { padding-block: clamp(2.5rem, 5vw, 4.5rem); }
+  .row-story { display: flex; flex-direction: column; align-items: flex-start; gap: 1.25rem; padding-right: clamp(1.5rem, 3vw, 3rem); }
+  .row-n { font-family: var(--mono); font-size: var(--m-label); color: var(--ash); }
+  .row-name { font-size: var(--t-2xl); line-height: 1.1; }
+  .row-name a { color: var(--ink); text-decoration: none; }
+  .row-name a:hover { color: var(--blue); }
+  .row-summary { font-size: var(--t-md); margin: 0; }
+  .row-story .btn { margin-top: auto; }
+  :global(.row-fig) { border-inline: 1px solid var(--hairline); align-self: stretch; display: grid; align-content: center; }
+  .row-spec { margin: 0; display: grid; align-content: start; gap: 1.1rem; padding-left: clamp(1.5rem, 3vw, 3rem); }
+  .row-spec dd { font-size: var(--t-sm); }
+  @media (max-width: 72rem) {
+    .row-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); }
+    .row-story { grid-column: 1; }
+    :global(.row-fig) { grid-column: 2; grid-row: 1 / span 2; border-right: 0; }
+    .row-spec { grid-column: 1; grid-row: 2; padding-left: 0; padding-right: clamp(1.5rem, 3vw, 3rem); padding-top: 0; }
+  }
+  @media (max-width: 52rem) {
+    .row-grid { grid-template-columns: 1fr; }
+    .row-story, :global(.row-fig), .row-spec { grid-column: 1; grid-row: auto; padding-inline: 0; border: 0; }
+    :global(.row-fig) { padding-block: 1.5rem; }
+    .row-story { padding-bottom: 0.5rem; }
+    .row-spec { padding-top: 0.5rem; }
   }
 
   /* Also built: a leader-dotted index */
-  .also { margin-top: clamp(5rem, 10vw, 8rem); max-width: 44rem; }
-  .also h3 { margin-bottom: 0.75rem; }
-  .leaders { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; }
-  .leader-row { display: flex; align-items: baseline; gap: 0.6rem; line-height: 2; }
+  .also { margin-top: clamp(4rem, 8vw, 6rem); }
+  .also h3 { margin-bottom: 1rem; }
+  .leaders { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.25rem; max-width: 52rem; }
+  .leader-row { display: flex; align-items: baseline; gap: 0.6rem; line-height: 2; font-size: var(--t-lg); }
   .leader-row a { flex: none; }
   .dots { flex: 1; min-width: 1.5rem; border-bottom: 1px dotted var(--ash); transform: translateY(-0.3em); }
   .leader-row .cap { flex: none; }
+  .leader-note { display: block; font-size: var(--t-sm); color: var(--ash); max-width: 40rem; }
   @media (max-width: 30rem) { .leader-row { flex-wrap: wrap; gap: 0 0.6rem; } .dots { display: none; } }
-  .leader-note { display: block; font-size: var(--t-sm); color: var(--ash); max-width: 36rem; }
 
   /* How I work: chapter heads over justified prose */
-  .chapters { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2.5rem 4rem; }
-  .chapters h3 { margin-bottom: 0.75rem; min-height: 2.9em; }
-  .chapters p { font-size: var(--t-sm); text-align: justify; hyphens: auto; }
-  @media (max-width: 72rem) { .chapters { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (max-width: 40rem) { .chapters { grid-template-columns: 1fr; } .chapters h3 { min-height: 0; } }
+  .chapters { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3rem clamp(2rem, 6vw, 6rem); }
+  .chapters h3 { margin-bottom: 0.9rem; }
+  .chapters p { font-size: var(--t-md); text-align: justify; hyphens: auto; max-width: 34rem; }
+  @media (max-width: 44rem) { .chapters { grid-template-columns: 1fr; } }
 
   /* Tools: a three-column table of contents */
-  .toc { margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem 4rem; }
-  .toc dd { margin: 0.5rem 0 0; }
-  .toc ul { list-style: none; margin: 0; padding: 0; line-height: 2; font-size: var(--t-sm); }
+  .toc { margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3rem clamp(2rem, 5vw, 5rem); }
+  .toc dd { margin: 0.75rem 0 0; }
+  .toc ul { list-style: none; margin: 0; padding: 0; line-height: 2; font-size: var(--t-md); }
   .toc li::before { content: "·"; color: var(--ash); margin-right: 0.6em; }
-  .tools-note { margin-top: 2.5rem; color: var(--ash); font-size: var(--t-sm); }
+  .tools-note { margin-top: 3rem; color: var(--ash); }
   @media (max-width: 64rem) { .toc { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 40rem) { .toc { grid-template-columns: 1fr; } }
 
-  /* Contact: the centred early-access block */
-  .contact { display: grid; justify-items: center; text-align: center; gap: 1rem; }
-  .contact h2 { font-size: var(--t-lg); font-weight: 500; }
-  .contact p { margin: 0; font-size: var(--t-sm); line-height: 1.7; }
+  /* Contact: centred */
+  .contact { display: grid; justify-items: center; text-align: center; gap: 1.5rem; }
+  .contact .title { max-width: 14ch; }
+  .contact p { margin: 0; line-height: 1.7; }
   .contact .actions { justify-content: center; }
 </style>
