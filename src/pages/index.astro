@@ -82,7 +82,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
         <a class="btn" href="#work">See the work</a>
       </div>
     </div>
-    <Figure n={0} name="How I work" year="2026" class="intro-fig">
+    <Figure n={0} name="How I work" year="2026" class="intro-fig" legend={steps.map((s) => s.title)}>
       <FigMethod />
     </Figure>
   </section>

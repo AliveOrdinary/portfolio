@@ -4,6 +4,8 @@ import Case from '../../layouts/Case.astro';
 import Figure from '../../components/Figure.astro';
 import FigSkid from '../../components/figures/FigSkid.astro';
 import Bench from '../../components/Bench.astro';
+import Stats from '../../components/Stats.astro';
+import Journey from '../../components/Journey.astro';
 import LabelReader from '../../components/demos/LabelReader.astro';
 import HoursToTimes from '../../components/demos/HoursToTimes.astro';
 import { sortlogShots } from '../../data/sortlog-shots';
@@ -21,6 +23,57 @@ const shotFiles = import.meta.glob<{ default: ImageMetadata }>('../../assets/sor
 const shots = sortlogShots
   .map((s) => ({ ...s, src: shotFiles[`../../assets/sortlog/${s.file}`]?.default }))
   .filter((s) => s.src);
+
+const chapters = [
+  { id: 'floor', title: 'The floor' },
+  { id: 'label', title: 'One photo per skid' },
+  { id: 'shift', title: 'A shift, start to finish' },
+  { id: 'times', title: 'Hours into times' },
+  ...(shots.length ? [{ id: 'app', title: 'The app' }] : []),
+  { id: 'decisions', title: 'Decisions' },
+  { id: 'now', title: 'Where it is now' },
+  { id: 'next', title: 'What I’d change next' },
+  { id: 'reflection', title: 'Reflection' },
+];
+const n = (id: string) => `CH_${String(chapters.findIndex((c) => c.id === id) + 1).padStart(2, '0')}`;
+
+const stations = [
+  {
+    name: 'Who worked',
+    who: 'The site supervisor',
+    before: 'Names and times on paper notes.',
+    now: 'Everyone’s start and end time, entered once at the top of the page.',
+    where: 'End of shift, on the floor',
+  },
+  {
+    name: 'Skid labels',
+    who: 'The site supervisor',
+    before: 'Part numbers, quantities and serials copied by hand from each label into that part’s workbook.',
+    now: 'Photograph the labels. The barcodes are read in the browser and each skid is filed under its part.',
+    where: 'On the floor, with a phone camera',
+  },
+  {
+    name: 'Each skid',
+    who: 'The site supervisor',
+    before: 'Filled in by hand, one workbook per part.',
+    now: 'Hours, suspect and missing counts, the reject tag, defect photos and who sorted it. A skid that takes two days is picked up again the next morning.',
+    where: 'The day page, skid by skid',
+  },
+  {
+    name: 'Times',
+    who: 'The site supervisor',
+    before: 'Hours typed again into a daily hours sheet.',
+    now: 'Worked out per person and part from the skids, and editable. Anything that doesn’t add up is flagged, never fixed.',
+    where: 'The day page, under the skids',
+  },
+  {
+    name: 'Reports',
+    who: 'IQ’s office',
+    before: 'Typed again into a monthly sheet.',
+    now: 'IQ’s own format: a sorting report per customer group and per part as PDF and Excel, daily and monthly hours, or all of them as one zip.',
+    where: 'IQ’s office',
+  },
+];
 ---
 
 <Case
@@ -29,15 +82,18 @@ const shots = sortlogShots
   summary="Daily sorting reports and hours for a containment-sorting crew at IQ Automotive Services."
   description="How I built Sortlog: skid label photos in, IQ’s sorting reports and hours out, used every shift on the floor."
   spec={spec}
+  chapters={chapters}
   next={{ href: '/work/amplifier', name: 'Amplifier' }}
 >
   <Figure n={1} name="Skid label" year="2026" slot="figure">
     <FigSkid />
   </Figure>
 
-  <section class="case-section">
-    <div class="wrap prose">
-      <h2>The floor</h2>
+  <section class="chapter" id="floor">
+    <span class="chapter-n">{n('floor')}</span>
+    <h2>The floor</h2>
+    <p class="insight">Every number lived in more than one place.</p>
+    <div class="prose">
       <p class="dropcap">
         When a supplier’s parts are suspect, a containment crew sorts every skid at the customer’s plant before the
         parts go on the line. We check each part, tag the rejects, and at the end of every shift report what was
@@ -45,107 +101,137 @@ const shots = sortlogShots
       </p>
       <p>
         That reporting was Excel. One workbook per part, filled in by hand from the skid labels and paper notes.
-        Hours typed again into a daily hours sheet, then again into a monthly one. Every number lived in more than
-        one place.
+        Hours typed again into a daily hours sheet, then again into a monthly one.
       </p>
       <p>
         I work on this floor and I write these reports, so I built the tool I wanted at the end of my own shift.
       </p>
     </div>
+    <Stats items={[
+      { value: '3', label: 'Places each hour was typed before: the workbook, the daily sheet, the monthly sheet' },
+      { value: '1', label: 'Page for the whole end of a shift, top to bottom' },
+      { value: '0', label: 'Hours the app moves between people on its own' },
+      { value: 'Daily', label: 'In use every shift since late September 2026' },
+    ]} />
   </section>
 
-  <section class="case-section">
-    <div class="wrap">
-      <Bench title="Read a skid label" id="label-demo">
-        <p slot="intro">
-          At the end of a shift you photograph the labels of the skids you finished. The app reads every barcode,
-          works out which value is which, and files the skid under its part. Here’s a made-up label.
-        </p>
-        <LabelReader />
-      </Bench>
-    </div>
+  <section class="chapter" id="label">
+    <span class="chapter-n">{n('label')}</span>
+    <h2>One photo per skid</h2>
+    <p class="insight">Barcodes first, Claude second.</p>
+    <Bench title="Read a skid label" id="label-demo">
+      <p slot="intro">
+        At the end of a shift you photograph the labels of the skids you finished. The app reads every barcode,
+        works out which value is which, and files the skid under its part. Here’s a made-up label.
+      </p>
+      <LabelReader />
+    </Bench>
   </section>
 
-  <section class="case-section">
-    <div class="wrap prose">
-      <h2>What I built</h2>
-      <p>The end of a shift is one page, top to bottom.</p>
-      <ol>
-        <li><strong>Who worked,</strong> with everyone’s start and end time.</li>
-        <li><strong>Skids.</strong> Label photos in, skids filed under their part. For each one: hours, suspect and missing counts, the reject tag, defect photos, and who sorted it. A skid that takes two days is picked up again the next morning.</li>
-        <li><strong>Times,</strong> worked out per person and part from the skids, and editable.</li>
-        <li><strong>Reports,</strong> in IQ’s own format: a sorting report per customer group and per part as PDF and Excel, daily and monthly hours, or all of them as one zip.</li>
-      </ol>
+  <section class="chapter" id="shift">
+    <span class="chapter-n">{n('shift')}</span>
+    <h2>A shift, start to finish</h2>
+    <p class="insight">The end of a shift is one page, top to bottom.</p>
+    <Journey id="sortlog-journey" title="End of a shift: pick a station" stations={stations} />
+    <div class="prose">
       <p>
-        Around that: a reports page that answers “every part we’ve done for this customer and the total rejects”
-        for any date range; a skid board built from the customer’s skid list, oldest first, so shipping can be asked
-        for skids in order; and a company with sites, admins, managers and supervisors, where each company only
-        ever sees its own data.
+        Around that page: a reports page that answers “every part we’ve done for this customer and the total
+        rejects” for any date range; a skid board built from the customer’s skid list, oldest first, so shipping can
+        be asked for skids in order; and a company with sites, admins, managers and supervisors, where each company
+        only ever sees its own data.
       </p>
     </div>
   </section>
 
-  <section class="case-section">
-    <div class="wrap">
-      <Bench title="From skid hours to everyone’s times" id="times-demo">
-        <p slot="intro">
-          Nobody on the floor writes down when they started each part. They know how long a skid took and who was
-          on it. Change the hours or the crew and watch the day lay out. Push the bracket skid to 8 hours, then end
-          Lin’s shift at 9:00, and add Asha to the bracket skid.
-        </p>
-        <HoursToTimes />
-      </Bench>
-    </div>
+  <section class="chapter" id="times">
+    <span class="chapter-n">{n('times')}</span>
+    <h2>Hours into times</h2>
+    <p class="insight">Nobody on the floor writes down when they started each part.</p>
+    <Bench title="From skid hours to everyone’s times" id="times-demo">
+      <p slot="intro">
+        They know how long a skid took and who was on it. Change the hours or the crew and watch the day lay out.
+        Push the bracket skid to 8 hours, then end Lin’s shift at 9:00, and add Asha to the bracket skid.
+      </p>
+      <HoursToTimes />
+    </Bench>
   </section>
 
   {shots.length > 0 && (
-    <section class="case-section">
-      <div class="wrap">
-        <h2>The app</h2>
-        <div class="shots shots-2">
-          {shots.map((s) => (
-            <figure>
-              <Image src={s.src!} alt={s.alt} widths={[640, 1000, 1400]} sizes="(min-width: 56rem) 34rem, 100vw" />
-              <figcaption>{s.caption}</figcaption>
-            </figure>
-          ))}
-        </div>
+    <section class="chapter" id="app">
+      <span class="chapter-n">{n('app')}</span>
+      <h2>The app</h2>
+      <div class="shots shots-2">
+        {shots.map((s) => (
+          <figure>
+            <Image src={s.src!} alt={s.alt} widths={[640, 1000, 1400]} sizes="(min-width: 60rem) 30rem, 100vw" />
+            <figcaption>{s.caption}</figcaption>
+          </figure>
+        ))}
       </div>
     </section>
   )}
 
-  <section class="case-section">
-    <div class="wrap">
-      <h2>Decisions</h2>
-      <div class="decisions">
-        <div class="decision">
-          <h3>Barcodes first, Claude second</h3>
-          <p>Barcodes are read in the browser, free and instant. Only when a label is torn or blurred does the photo go to Claude Haiku, which is asked for JSON and told to leave a field empty rather than guess a digit.</p>
-        </div>
-        <div class="decision">
-          <h3>Point out problems, never fix them</h3>
-          <p>Hours are pay. The app never moves time between people or parts. It splits a skid evenly, keeps everyone inside their shift, and flags what doesn’t add up: past an end time, two parts at once, hours nobody has room for.</p>
-        </div>
-        <div class="decision">
-          <h3>Excel stays Excel</h3>
-          <p>The office lives in spreadsheets, so the reports do too: IQ’s layout and colours, with live formulas for good parts, totals and suspect rates. Correct one number and everything that depends on it follows.</p>
-        </div>
-        <div class="decision">
-          <h3>Built for more than one site</h3>
-          <p>Companies, sites and roles are separate in the database, with row-level security on every table. Adding a customer plant is a new site, not a new copy of the app.</p>
-        </div>
+  <section class="chapter" id="decisions">
+    <span class="chapter-n">{n('decisions')}</span>
+    <h2>Decisions</h2>
+    <div class="decisions">
+      <div class="decision">
+        <h3>Barcodes first, Claude second</h3>
+        <p>Barcodes are read in the browser, free and instant. Only when a label is torn or blurred does the photo go to Claude Haiku, which is asked for JSON and told to leave a field empty rather than guess a digit.</p>
+      </div>
+      <div class="decision">
+        <h3>Point out problems, never fix them</h3>
+        <p>Hours are pay. The app never moves time between people or parts. It splits a skid evenly, keeps everyone inside their shift, and flags what doesn’t add up: past an end time, two parts at once, hours nobody has room for.</p>
+      </div>
+      <div class="decision">
+        <h3>Excel stays Excel</h3>
+        <p>The office lives in spreadsheets, so the reports do too: IQ’s layout and colours, with live formulas for good parts, totals and suspect rates. Correct one number and everything that depends on it follows.</p>
+      </div>
+      <div class="decision">
+        <h3>Built for more than one site</h3>
+        <p>Companies, sites and roles are separate in the database, with row-level security on every table. Adding a customer plant is a new site, not a new copy of the app.</p>
       </div>
     </div>
   </section>
 
-  <section class="case-section">
-    <div class="wrap">
-      <h2>Where it is now</h2>
-      <dl class="outcome">
-        <div class="field"><dt>Status</dt><dd>Used every shift since late September 2026</dd></div>
-        <div class="field"><dt>Replaced</dt><dd>A workbook per part, a daily hours sheet and a monthly one</dd></div>
-        <div class="field"><dt>Ready for</dt><dd>More sites, each with its own supervisor and crew</dd></div>
-      </dl>
+  <section class="chapter" id="now">
+    <span class="chapter-n">{n('now')}</span>
+    <h2>Where it is now</h2>
+    <dl class="outcome">
+      <div class="field"><dt>Status</dt><dd>Used every shift since late September 2026</dd></div>
+      <div class="field"><dt>Replaced</dt><dd>A workbook per part, a daily hours sheet and a monthly one</dd></div>
+      <div class="field"><dt>Ready for</dt><dd>More sites, each with its own supervisor and crew</dd></div>
+    </dl>
+  </section>
+
+  <section class="chapter" id="next">
+    <span class="chapter-n">{n('next')}</span>
+    <h2>What I’d change next</h2>
+    <p class="draft-note">Draft: rewrite before publishing</p>
+    <div class="prose">
+      <p>
+        <strong>Bring on a second site.</strong> The data model is ready for it. What isn’t proven yet is whether
+        another supervisor, on another floor, closes out a shift the way I do.
+      </p>
+      <p>
+        <strong>Measure the fallback.</strong> Barcodes handle most labels, and Claude Haiku only sees the torn or
+        blurred ones. I’d like to count how often that happens and how often a field comes back empty, so the
+        trade-off is a number rather than a feeling.
+      </p>
+    </div>
+  </section>
+
+  <section class="chapter" id="reflection">
+    <span class="chapter-n">{n('reflection')}</span>
+    <h2>Reflection</h2>
+    <p class="draft-note">Draft: rewrite before publishing</p>
+    <div class="prose">
+      <p>
+        Building for my own shift made the first version easy to judge: either the report was done before I left
+        or it wasn’t. The harder call was the rule that the app never moves hours between people. Quietly
+        balancing the numbers would have been simpler. Flagging them means a supervisor has to look, and that is
+        the point: hours are pay.
+      </p>
     </div>
   </section>
 </Case>

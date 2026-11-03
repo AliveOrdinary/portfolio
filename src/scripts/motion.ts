@@ -191,3 +191,71 @@ if (!reduce) {
   reveals();
   figures();
 }
+
+// ---------------------------------------------------------------- chapter index
+// Marks the chapter you're reading in the sticky index (and keeps it in view on phones).
+function chapterIndex() {
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc]')];
+  if (!links.length) return;
+  const sections = links
+    .map((a) => document.getElementById(a.dataset.toc!))
+    .filter((s): s is HTMLElement => !!s);
+  let current = '';
+  const set = (id: string) => {
+    if (id === current) return;
+    current = id;
+    for (const a of links) {
+      const on = a.dataset.toc === id;
+      a.setAttribute('aria-current', on ? 'true' : 'false');
+      if (on && window.matchMedia('(max-width: 60rem)').matches) {
+        const strip = a.closest('ol');
+        if (strip) strip.scrollTo({ left: a.offsetLeft - 24, behavior: reduce ? 'auto' : 'smooth' });
+      }
+    }
+  };
+  const update = () => {
+    const line = window.innerHeight * 0.3;
+    let id = sections[0]?.id ?? '';
+    for (const s of sections) if (s.getBoundingClientRect().top <= line) id = s.id;
+    set(id);
+  };
+  update();
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+}
+
+// ---------------------------------------------------------------- journeys
+// Tabs on a track: click or use the arrow keys to move between stations.
+function journeys() {
+  document.querySelectorAll<HTMLElement>('[data-journey]').forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const panels = tabs.map((t) => document.getElementById(t.getAttribute('aria-controls')!)!);
+    const track = root.querySelector<HTMLElement>('.journey-track');
+    root.classList.add('is-live');
+    const select = (i: number, focus = false) => {
+      tabs.forEach((t, j) => {
+        const on = i === j;
+        t.setAttribute('aria-selected', String(on));
+        t.classList.toggle('is-past', j < i);
+        t.tabIndex = on ? 0 : -1;
+        panels[j].classList.toggle('is-on', on);
+      });
+      if (track && track.scrollWidth > track.clientWidth) track.scrollTo({ left: tabs[i].offsetLeft - 16, behavior: reduce ? 'auto' : 'smooth' });
+      if (focus) tabs[i].focus();
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(i));
+      t.addEventListener('keydown', (e) => {
+        const k = e.key;
+        if (k === 'ArrowRight' || k === 'ArrowDown') { e.preventDefault(); select((i + 1) % tabs.length, true); }
+        if (k === 'ArrowLeft' || k === 'ArrowUp') { e.preventDefault(); select((i - 1 + tabs.length) % tabs.length, true); }
+        if (k === 'Home') { e.preventDefault(); select(0, true); }
+        if (k === 'End') { e.preventDefault(); select(tabs.length - 1, true); }
+      });
+    });
+    select(0);
+  });
+}
+
+chapterIndex();
+journeys();

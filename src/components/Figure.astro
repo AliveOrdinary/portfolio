@@ -6,8 +6,10 @@ interface Props {
   name: string;
   year?: string;
   class?: string;
+  /** Callout text shown as a list under the drawing on phones, where SVG labels get small. */
+  legend?: string[];
 }
-const { n, name, year, class: className } = Astro.props;
+const { n, name, year, class: className, legend } = Astro.props;
 const num = `FIG_${String(n).padStart(3, '0')}`;
 ---
 
@@ -15,5 +17,10 @@ const num = `FIG_${String(n).padStart(3, '0')}`;
   <span class="fig-n" aria-hidden="true">{num}</span>
   <span class="fig-name" aria-hidden="true">[{name}{year ? ` · ${year}` : ''}]</span>
   <div class="fig-art"><slot /></div>
+  {legend && (
+    <ol class="fig-legend" aria-hidden="true">
+      {legend.map((l, i) => <li><span>{String(i + 1).padStart(2, '0')}</span>{l}</li>)}
+    </ol>
+  )}
   {Astro.slots.has('caption') && <figcaption><span class="fig-cap-n">{num}</span> <slot name="caption" /></figcaption>}
 </figure>

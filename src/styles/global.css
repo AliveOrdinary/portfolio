@@ -339,8 +339,13 @@ figcaption {
 .bp-label { fill: var(--blue); font-size: 13px; text-transform: uppercase; }
 .bp-sub { fill: var(--ash); font-size: 11px; text-transform: uppercase; }
 @media (max-width: 40rem) {
-  .bp-label { font-size: 15px; }
-  .bp-sub { font-size: 12px; }
+  .bp-label { font-size: 16px; }
+  .bp-sub { display: none; }
+}
+.fig-legend { display: none; }
+@media (max-width: 40rem) {
+  .fig-legend { display: grid; gap: 0.35rem; list-style: none; margin: 1rem 0 0; padding: 0 0.5rem; font-family: var(--mono); font-size: var(--m-cap); text-transform: uppercase; }
+  .fig-legend span { color: var(--blue); margin-right: 0.9em; }
 }
 
 /* Typewriter footer */

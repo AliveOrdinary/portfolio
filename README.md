@@ -21,6 +21,11 @@ npm run build    # into dist/
 - `src/components/Figure.astro`: the blueprint figure panel (dotted grid, rotated `FIG_00N` and name labels)
 - `src/components/figures/`: the isometric line drawings, built from `src/lib/iso.ts`
   - `FigMethod` (home hero), `FigSkid` (Sortlog), `FigDocs` (613), `FigPair` (Amplifier)
+- `src/components/Journey.astro`, `Stats.astro`: the clickable journey and the big-number row used in the case studies
+- `src/layouts/Case.astro`: case-study layout; each page passes its `chapters` for the sticky chapter index
+- `src/scripts/motion.ts`: drawings plotting in and exploding on scroll, name decode, reveals, ruler, chapter index, journeys
+
+Chapters marked with a `draft-note` ("Draft: rewrite before publishing") in the case studies are placeholders to rewrite.
 
 ## Design
 

@@ -4,6 +4,8 @@ import Case from '../../layouts/Case.astro';
 import Figure from '../../components/Figure.astro';
 import FigDocs from '../../components/figures/FigDocs.astro';
 import Bench from '../../components/Bench.astro';
+import Stats from '../../components/Stats.astro';
+import Journey from '../../components/Journey.astro';
 import EstimateBuilder from '../../components/demos/EstimateBuilder.astro';
 
 import jobHeader from '../../assets/613/desktop/07-job-header.png';
@@ -44,6 +46,64 @@ const phones = [
   { src: pQc, alt: 'Final quality check on a phone, ten items ticked.' },
   { src: pDocs, alt: 'Invoice sheet on a phone: open to print, download PDF, or share.' },
 ];
+
+const chapters = [
+  { id: 'shop', title: 'The shop' },
+  { id: 'estimate', title: 'Build an estimate' },
+  { id: 'job', title: 'A job, estimate to paid' },
+  { id: 'bay', title: 'On a phone in the bay' },
+  { id: 'documents', title: 'Four documents' },
+  { id: 'decisions', title: 'Decisions' },
+  { id: 'now', title: 'Where it is now' },
+  { id: 'next', title: 'What I’d change next' },
+  { id: 'reflection', title: 'Reflection' },
+];
+const n = (id: string) => `CH_${String(chapters.findIndex((c) => c.id === id) + 1).padStart(2, '0')}`;
+
+const stations = [
+  {
+    name: 'Customer and vehicle',
+    who: 'The front desk',
+    before: 'No real paperwork.',
+    now: 'Type the VIN and the year, make, model and engine fill in from NHTSA’s free vehicle database.',
+    where: 'Front desk, on a computer',
+  },
+  {
+    name: 'Estimate',
+    who: 'The front desk',
+    before: 'Sample estimates made in ChatGPT, totals worked out on a calculator.',
+    now: 'Lines by type, each with its own rate; parts marked new or used and OEM or aftermarket; the insurer’s estimate attached as a PDF.',
+    where: 'Front desk, on a computer',
+  },
+  {
+    name: 'Drop-off',
+    who: 'The front desk, with a phone',
+    before: 'Nothing on record if a customer questions a scratch later.',
+    now: 'Odometer, existing damage, warning lights, belongings, and photos taken on a phone. Mostly taps instead of typing.',
+    where: 'At drop-off',
+  },
+  {
+    name: 'Approval',
+    who: 'The customer and the front desk',
+    before: 'Not recorded, though Ontario requires it.',
+    now: 'How the customer approved (signed the estimate, by phone, and so on) is recorded, and the work order is created.',
+    where: 'Front desk',
+  },
+  {
+    name: 'In the bay',
+    who: 'Technicians',
+    before: 'No real paperwork.',
+    now: 'A 46-item mechanical inspection and a final quality check, filled in on a phone.',
+    where: 'In the bay, on a phone',
+  },
+  {
+    name: 'Invoice and payment',
+    who: 'The front desk',
+    before: 'Totals worked out on a calculator.',
+    now: 'The invoice locks the lines so the printed copy always matches. Payments can be split between customer and insurer.',
+    where: 'Front desk',
+  },
+];
 ---
 
 <Case
@@ -52,16 +112,19 @@ const phones = [
   summary="Estimates, work orders, inspections and invoices for a collision, paint and mechanical shop."
   description="How I built 613 Automotive's shop app: a job from estimate to paid, four printed documents, and inspections on a phone in the bay."
   spec={spec}
+  chapters={chapters}
   next={{ href: '/work/sortlog', name: 'Sortlog' }}
 >
   <Figure n={1} name="One job, three papers" year="2026" slot="figure">
     <FigDocs />
   </Figure>
 
-  <section class="case-section">
-    <div class="wrap split">
+  <section class="chapter" id="shop">
+    <span class="chapter-n">{n('shop')}</span>
+    <h2>The shop</h2>
+    <p class="insight">They asked for an invoice generator. What they needed was the whole life of a job.</p>
+    <div class="split">
       <div class="prose">
-        <h2>The shop</h2>
         <p class="dropcap">
           613 Automotive does collision repair, refinishing and mechanical work. When I started, they had no real
           paperwork: a few sample estimates someone had made in ChatGPT, totals worked out on a calculator, and a
@@ -73,145 +136,169 @@ const phones = [
           between the insurer and the customer’s deductible. Customers sign on paper.
         </p>
         <p>
-          They asked for an invoice generator. What they needed was the whole life of a job, from the first estimate
-          to the last payment, in one place, with paperwork they could hand to a customer without apologising for it.
+          So the app covers a job from the first estimate to the last payment, in one place, with paperwork they can
+          hand to a customer without apologising for it.
         </p>
       </div>
       <figure>
-        <Image src={jobHeader} alt="A job in the 613 app: RO-214, approved, with the progress bar from estimate to paid, the three documents, section chips, customer and vehicle, and the totals." widths={[640, 1000, 1400]} sizes="(min-width: 56rem) 34rem, 100vw" class="shot" />
+        <Image src={jobHeader} alt="A job in the 613 app: RO-214, approved, with the progress bar from estimate to paid, the three documents, section chips, customer and vehicle, and the totals." widths={[640, 1000, 1400]} sizes="(min-width: 60rem) 26rem, 100vw" class="shot" />
         <figcaption>A job, and where it is: estimate, approved, ready, invoiced, paid. Every customer and vehicle in these screens is made up.</figcaption>
+      </figure>
+    </div>
+    <Stats items={[
+      { value: '4', label: 'Printed documents from one job' },
+      { value: '46', label: 'Items in the mechanical inspection' },
+      { value: '10%', label: 'Ontario’s cap over an approved estimate' },
+      { value: '1', label: 'Module works out every total, in whole cents' },
+    ]} />
+  </section>
+
+  <section class="chapter" id="estimate">
+    <span class="chapter-n">{n('estimate')}</span>
+    <h2>Build an estimate</h2>
+    <p class="insight">Money is worked out in one place.</p>
+    <Bench title="Build an estimate" id="estimate-demo">
+      <p slot="intro">
+        This is the shop’s sample collision job. Change hours, prices or line types and the totals work themselves
+        out the way the app does it. Then approve the estimate and push a line up: Ontario caps the final bill at
+        10% over an approved estimate.
+      </p>
+      <EstimateBuilder />
+    </Bench>
+  </section>
+
+  <section class="chapter" id="job">
+    <span class="chapter-n">{n('job')}</span>
+    <h2>A job, estimate to paid</h2>
+    <p class="insight">A job follows the order the shop already works in.</p>
+    <Journey id="job-journey" title="One job: pick a station" stations={stations} />
+    <div class="shots shots-3">
+      <figure>
+        <Image src={vin} alt="Adding a vehicle: the VIN field says the VIN looks right and shows the decoded 2021 Toyota RAV4 XLE, with the fields filled in." widths={[480, 800]} sizes="(min-width: 60rem) 20rem, 50vw" />
+        <figcaption>The VIN fills in the vehicle.</figcaption>
+      </figure>
+      <figure>
+        <Image src={approve} alt="Approve estimate dialog asking how the customer approved it, with an Approve and create work order button." widths={[480, 800]} sizes="(min-width: 60rem) 20rem, 50vw" />
+        <figcaption>Approval records how the customer said yes.</figcaption>
+      </figure>
+      <figure>
+        <Image src={invoice} alt="Create invoice dialog warning that the odometer out is blank, which Ontario expects on the invoice." widths={[480, 800]} sizes="(min-width: 60rem) 20rem, 50vw" />
+        <figcaption>The invoice warns about what Ontario expects on it.</figcaption>
+      </figure>
+      <figure>
+        <Image src={dropoff} alt="Vehicle at drop-off: odometer, exterior damage chips, mechanical concerns and warning lights." widths={[480, 800]} sizes="(min-width: 60rem) 20rem, 50vw" />
+        <figcaption>Drop-off, mostly taps instead of typing.</figcaption>
+      </figure>
+      <figure>
+        <Image src={payment} alt="Record payment dialog with amount, method, date and a reference field noting never to enter a full card number." widths={[480, 800]} sizes="(min-width: 60rem) 20rem, 50vw" />
+        <figcaption>Payments keep a reference, never a full card number.</figcaption>
       </figure>
     </div>
   </section>
 
-  <section class="case-section">
-    <div class="wrap">
-      <Bench title="Build an estimate" id="estimate-demo">
-        <p slot="intro">
-          This is the shop’s sample collision job. Change hours, prices or line types and the totals work themselves
-          out the way the app does it. Then approve the estimate and push a line up: Ontario caps the final bill at
-          10% over an approved estimate.
-        </p>
-        <EstimateBuilder />
-      </Bench>
+  <section class="chapter" id="bay">
+    <span class="chapter-n">{n('bay')}</span>
+    <h2>On a phone in the bay</h2>
+    <p class="insight">Technicians don’t sit at the front desk.</p>
+    <div class="prose">
+      <p>
+        On a phone, a job is one long page with a row of chips to jump between sections, the total pinned to the
+        bottom, and big tap targets.
+      </p>
+    </div>
+    <div class="phones">
+      {phones.map((p) => (
+        <Image src={p.src} alt={p.alt} widths={[320, 480]} sizes="(min-width: 60rem) 11rem, 45vw" />
+      ))}
     </div>
   </section>
 
-  <section class="case-section">
-    <div class="wrap">
-      <div class="prose">
-        <h2>What I built</h2>
-        <p>A job follows the order the shop already works in.</p>
-        <ol>
-          <li><strong>Customer and vehicle.</strong> Type the VIN and the year, make, model and engine fill in from NHTSA’s free vehicle database.</li>
-          <li><strong>Estimate.</strong> Lines by type, each with its own rate, parts marked new or used and OEM or aftermarket, the insurer’s estimate attached as a PDF.</li>
-          <li><strong>Drop-off.</strong> Odometer, existing damage, warning lights, belongings, and photos taken on a phone, so the shop is covered if a customer questions a scratch later.</li>
-          <li><strong>Approval.</strong> How the customer approved (signed the estimate, by phone, and so on) is recorded, because Ontario requires it.</li>
-          <li><strong>In the bay.</strong> A 46-item mechanical inspection and a final quality check, filled in on a phone.</li>
-          <li><strong>Invoice and payment.</strong> The invoice locks the lines so the printed copy always matches. Payments can be split between customer and insurer.</li>
-        </ol>
-      </div>
-      <div class="shots shots-3 shot-wide">
+  <section class="chapter" id="documents">
+    <span class="chapter-n">{n('documents')}</span>
+    <h2>Four documents</h2>
+    <p class="insight">Estimate, work order, invoice and inspection, all from the same data.</p>
+    <div class="prose">
+      <p>
+        They print with jsPDF, in the brand I made from their logo: the “613” lettering traced from the JPEG, the
+        stripes redrawn as clean shapes, Saira for headings and totals, and 613 yellow kept for the one thing that
+        matters on each page.
+      </p>
+    </div>
+    <div class="paper-row">
+      {docs.map((d) => (
         <figure>
-          <Image src={vin} alt="Adding a vehicle: the VIN field says the VIN looks right and shows the decoded 2021 Toyota RAV4 XLE, with the fields filled in." widths={[480, 800]} sizes="(min-width: 56rem) 22rem, 50vw" />
-          <figcaption>The VIN fills in the vehicle.</figcaption>
+          <Image src={d.src} alt={d.alt} widths={[320, 640]} sizes="(min-width: 60rem) 13rem, 45vw" />
+          <figcaption>{d.caption}</figcaption>
         </figure>
-        <figure>
-          <Image src={approve} alt="Approve estimate dialog asking how the customer approved it, with an Approve and create work order button." widths={[480, 800]} sizes="(min-width: 56rem) 22rem, 50vw" />
-          <figcaption>Approval records how the customer said yes.</figcaption>
-        </figure>
-        <figure>
-          <Image src={invoice} alt="Create invoice dialog warning that the odometer out is blank, which Ontario expects on the invoice." widths={[480, 800]} sizes="(min-width: 56rem) 22rem, 50vw" />
-          <figcaption>The invoice warns about what Ontario expects on it.</figcaption>
-        </figure>
-        <figure>
-          <Image src={dropoff} alt="Vehicle at drop-off: odometer, exterior damage chips, mechanical concerns and warning lights." widths={[480, 800]} sizes="(min-width: 56rem) 22rem, 50vw" />
-          <figcaption>Drop-off, mostly taps instead of typing.</figcaption>
-        </figure>
-        <figure>
-          <Image src={payment} alt="Record payment dialog with amount, method, date and a reference field noting never to enter a full card number." widths={[480, 800]} sizes="(min-width: 56rem) 22rem, 50vw" />
-          <figcaption>Payments keep a reference, never a full card number.</figcaption>
-        </figure>
-      </div>
+      ))}
     </div>
   </section>
 
-  <section class="case-section">
-    <div class="wrap">
-      <div class="prose">
-        <h2>On a phone in the bay</h2>
-        <p>
-          Technicians don’t sit at the front desk. On a phone, a job is one long page with a row of chips to jump
-          between sections, the total pinned to the bottom, and big tap targets.
-        </p>
+  <section class="chapter" id="decisions">
+    <span class="chapter-n">{n('decisions')}</span>
+    <h2>Decisions</h2>
+    <div class="decisions">
+      <div class="decision">
+        <h3>Money is worked out in one place</h3>
+        <p>One module, in whole cents, works out every total. The job screen, the jobs list and the PDFs all call it, so they can’t disagree. Its tests include the shop’s own sample estimate.</p>
       </div>
-      <div class="shots shots-5 shot-wide phones">
-        {phones.map((p) => (
-          <Image src={p.src} alt={p.alt} widths={[320, 480]} sizes="(min-width: 56rem) 13rem, 45vw" />
-        ))}
+      <div class="decision">
+        <h3>The law is part of the workflow</h3>
+        <p>Ontario wants a record of how an estimate was approved, a cap of 10% over it, and odometer readings on the invoice. The app asks for each at the moment it matters instead of leaving it to memory.</p>
+      </div>
+      <div class="decision">
+        <h3>Database rules are tested, not assumed</h3>
+        <p>The real migrations run in PGlite inside the test suite, so the row-level security that keeps data to the shop’s staff is checked on every change.</p>
+      </div>
+      <div class="decision">
+        <h3>A brand before an interface</h3>
+        <p>The shop had a logo and nothing else. Making the colours, type and logo files first meant the app and the paperwork look like the same business.</p>
       </div>
     </div>
   </section>
 
-  <section class="case-section">
-    <div class="wrap">
-      <div class="prose">
-        <h2>Four documents from one job</h2>
-        <p>
-          Estimate, work order, invoice and inspection all print from the same data with jsPDF, in the brand I made
-          from their logo: the “613” lettering traced from the JPEG, the stripes redrawn as clean shapes, Saira for
-          headings and totals, and 613 yellow kept for the one thing that matters on each page.
-        </p>
-      </div>
-      <div class="paper-row shot-wide">
-        {docs.map((d) => (
-          <figure>
-            <Image src={d.src} alt={d.alt} widths={[320, 640]} sizes="(min-width: 52rem) 15rem, 45vw" />
-            <figcaption>{d.caption}</figcaption>
-          </figure>
-        ))}
-      </div>
+  <section class="chapter" id="now">
+    <span class="chapter-n">{n('now')}</span>
+    <h2>Where it is now</h2>
+    <dl class="outcome">
+      <div class="field"><dt>Status</dt><dd>In live testing at the shop since October 2026</dd></div>
+      <div class="field"><dt>Covers</dt><dd>Estimate to paid, inspections, photos, four printed documents</dd></div>
+      <div class="field"><dt>Next</dt><dd>Emailing documents to customers</dd></div>
+    </dl>
+  </section>
+
+  <section class="chapter" id="next">
+    <span class="chapter-n">{n('next')}</span>
+    <h2>What I’d change next</h2>
+    <p class="draft-note">Draft: rewrite before publishing</p>
+    <div class="prose">
+      <p>
+        <strong>Email the documents.</strong> It’s already the next item: send the estimate and invoice straight
+        to the customer instead of printing or downloading them first.
+      </p>
+      <p>
+        <strong>Watch a full day of live testing.</strong> I’d sit at the front desk and note every moment
+        someone still reaches for a calculator or a sticky note. Those are the next features.
+      </p>
     </div>
   </section>
 
-  <section class="case-section">
-    <div class="wrap">
-      <h2>Decisions</h2>
-      <div class="decisions">
-        <div class="decision">
-          <h3>Money is worked out in one place</h3>
-          <p>One module, in whole cents, works out every total. The job screen, the jobs list and the PDFs all call it, so they can’t disagree. Its tests include the shop’s own sample estimate.</p>
-        </div>
-        <div class="decision">
-          <h3>The law is part of the workflow</h3>
-          <p>Ontario wants a record of how an estimate was approved, a cap of 10% over it, and odometer readings on the invoice. The app asks for each at the moment it matters instead of leaving it to memory.</p>
-        </div>
-        <div class="decision">
-          <h3>Database rules are tested, not assumed</h3>
-          <p>The real migrations run in PGlite inside the test suite, so the row-level security that keeps data to the shop’s staff is checked on every change.</p>
-        </div>
-        <div class="decision">
-          <h3>A brand before an interface</h3>
-          <p>The shop had a logo and nothing else. Making the colours, type and logo files first meant the app and the paperwork look like the same business.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="case-section">
-    <div class="wrap">
-      <h2>Where it is now</h2>
-      <dl class="outcome">
-        <div class="field"><dt>Status</dt><dd>In live testing at the shop since October 2026</dd></div>
-        <div class="field"><dt>Covers</dt><dd>Estimate to paid, inspections, photos, four printed documents</dd></div>
-        <div class="field"><dt>Next</dt><dd>Emailing documents to customers</dd></div>
-      </dl>
+  <section class="chapter" id="reflection">
+    <span class="chapter-n">{n('reflection')}</span>
+    <h2>Reflection</h2>
+    <p class="draft-note">Draft: rewrite before publishing</p>
+    <div class="prose">
+      <p>
+        The request was an invoice generator. Most of the work turned out to be the parts around the invoice: the
+        approval record, the drop-off photos, the 10% cap. Making the brand first felt like a detour at the time;
+        it’s what makes the printed paperwork look like it belongs to the shop.
+      </p>
     </div>
   </section>
 </Case>
 
 <style>
-  .phones { grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: start; }
+  .phones { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(0.5rem, 1.5vw, 1rem); align-items: start; }
   @media (max-width: 56rem) { .phones { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   @media (max-width: 36rem) { .phones { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 </style>
