@@ -209,36 +209,14 @@ strong { font-weight: 600; }
 /* Facts joined by plus signs */
 .plus-line { display: flex; flex-wrap: wrap; gap: 0.35rem 0; margin: 0; padding: 0; list-style: none; font-family: var(--mono); font-size: var(--m-label); text-transform: uppercase; }
 /* The separator between items: a small blue square, like a point on the drawing.
-   Used by the facts line, the ticker, section notes (.sep) and the case-study eyebrow. */
-.plus-line li + li::before, .ticker-run span::after, .sep::before, .case-eyebrow span + span::before {
+   Used by the facts line, section notes (.sep) and the case-study eyebrow. */
+.plus-line li + li::before, .sep::before, .case-eyebrow span + span::before {
   content: ""; display: inline-block; flex: none;
   width: 0.4em; height: 0.4em; margin-inline: 1em; vertical-align: 0.16em;
   background: var(--blue);
 }
 .plus-line li + li::before { align-self: center; }
 
-/* "Built for" ticker: a fixed label, then each place and what was built for it,
-   scrolling between full-width hairlines. Reads as a sentence. */
-.ticker {
-  display: flex; align-items: stretch; overflow: hidden; border-block: 1px solid var(--hairline);
-  font-family: var(--mono); text-transform: uppercase; font-size: clamp(1.25rem, 2.75vw, 2.25rem); line-height: 1;
-  -webkit-font-smoothing: none;
-}
-.ticker-label {
-  flex: none; display: flex; align-items: center; padding: 0 0.6em 0 var(--gutter);
-  border-right: 1px solid var(--hairline); background: var(--paper); color: var(--ink); white-space: nowrap;
-}
-.ticker-window { flex: 1; min-width: 0; overflow: hidden; padding-block: clamp(0.75rem, 1.6vw, 1.25rem); }
-.ticker-track { display: flex; width: max-content; }
-.ticker-run { display: flex; flex: none; align-items: center; white-space: nowrap; padding-left: 0.6em; }
-.ticker-run span { display: inline-flex; align-items: center; }
-.ticker-run em { font-style: normal; color: var(--blue); }
-.ticker-run i { font-style: normal; color: var(--ash); padding-inline: 0.5em; }
-.ticker-run b { font-weight: 400; color: var(--ink); }
-.ticker-run span::after { width: 0.28em; height: 0.28em; margin-inline: 0.9em; }
-.motion .ticker-track { animation: ticker 70s linear infinite; }
-.motion .ticker:hover .ticker-track { animation-play-state: paused; }
-@keyframes ticker { to { transform: translateX(-50%); } }
 
 /* Section titles: big italic serif over a full-width hairline */
 .title-row {

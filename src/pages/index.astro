@@ -13,11 +13,11 @@ const figures: Record<string, { component: any; name: string }> = {
   amplifier: { component: FigPair, name: 'This or that' },
 };
 
-// The ticker reads as a sentence: "Built for" the place, then what was built there.
-const builtFor = [
-  { place: 'The sorting floor', project: 'Sortlog' },
-  { place: 'A body shop front desk', project: '613 Automotive' },
-  { place: 'A design studio', project: 'Amplifier' },
+// The band under the name: each project, where it's used, and how far along it is.
+const projectIndex = [
+  { slug: 'sortlog', name: 'Sortlog', place: 'The sorting floor', status: 'Used every shift' },
+  { slug: '613-automotive', name: '613 Automotive', place: 'A body shop front desk', status: 'In live testing' },
+  { slug: 'amplifier', name: 'Amplifier', place: 'A design studio', status: 'In testing with the studio' },
 ];
 
 const steps = [
@@ -55,20 +55,19 @@ const pad = (n: number) => String(n).padStart(2, '0');
     <p class="hero-name" aria-label="Navaneeth Krishnan"><span data-decode aria-hidden="true">Navaneeth</span> <span data-decode aria-hidden="true">Krishnan</span></p>
   </section>
 
-  <div class="ticker" role="marquee" aria-label={`Built for ${builtFor.map((b) => `${b.place.toLowerCase()}: ${b.project}`).join('; ')}`}>
-    <span class="ticker-label" aria-hidden="true">Built for</span>
-    <div class="ticker-window" aria-hidden="true">
-      <div class="ticker-track">
-        {[0, 1].map(() => (
-          <div class="ticker-run">
-            {[...builtFor, ...builtFor].map((b) => (
-              <span><em>{b.place}</em><i>&rarr;</i><b>{b.project}</b></span>
-            ))}
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
+  <nav class="index" aria-label="Projects">
+    <ol class="index-row wrap">
+      {projectIndex.map((p, i) => (
+        <li>
+          <a href={`/work/${p.slug}`}>
+            <span class="index-head"><span class="index-n">{String(i + 1).padStart(2, '0')}</span>{p.name}<span class="index-arrow" aria-hidden="true">&rarr;</span></span>
+            <span class="index-place">{p.place}</span>
+            <span class="index-status">{p.status}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </nav>
 
   <section class="intro wrap" aria-label="About">
     <div class="intro-text">
@@ -203,6 +202,32 @@ const pad = (n: number) => String(n).padStart(2, '0');
     /* Stacked one per line, so no line starts with a separator */
     .hero-facts { flex-direction: column; gap: 0.35rem; }
     .hero-facts li + li::before { display: none; }
+  }
+
+  /* Project index: the three projects in a still, ruled band under the name */
+  .index { border-block: 1px solid var(--hairline); }
+  .index-row { list-style: none; margin-block: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .index-row li + li { border-left: 1px solid var(--hairline); }
+  .index-row a {
+    display: grid; gap: 0.35rem; height: 100%;
+    padding: clamp(1rem, 2vw, 1.4rem) clamp(1rem, 2vw, 1.75rem);
+    color: var(--ink); text-decoration: none;
+  }
+  .index-row li:first-child a { padding-left: 0; }
+  .index-head {
+    display: flex; align-items: baseline; gap: 0.75em;
+    font-family: var(--mono); text-transform: uppercase; font-size: clamp(1rem, 1.6vw, 1.375rem); line-height: 1.2;
+  }
+  .index-n { color: var(--ash); font-size: var(--m-label); }
+  .index-arrow { margin-left: auto; color: var(--ash); transition: transform 200ms ease, color 200ms; }
+  .index-place { font-size: var(--t-md); }
+  .index-status { font-family: var(--mono); font-size: var(--m-cap); text-transform: uppercase; color: var(--ash); }
+  .index-row a:hover .index-head, .index-row a:focus-visible .index-head { color: var(--blue); }
+  .index-row a:hover .index-arrow, .index-row a:focus-visible .index-arrow { color: var(--blue); transform: translateX(0.25em); }
+  @media (max-width: 48rem) {
+    .index-row { grid-template-columns: 1fr; }
+    .index-row li + li { border-left: 0; border-top: 1px solid var(--hairline); }
+    .index-row a { padding-inline: 0; }
   }
 
   /* Intro: the paragraph and keys beside the how-I-work drawing */
