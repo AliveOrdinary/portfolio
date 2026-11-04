@@ -6,6 +6,7 @@ import FigDocs from '../../components/figures/FigDocs.astro';
 import Bench from '../../components/Bench.astro';
 import Stats from '../../components/Stats.astro';
 import Journey from '../../components/Journey.astro';
+import ShotSlot from '../../components/ShotSlot.astro';
 import EstimateBuilder from '../../components/demos/EstimateBuilder.astro';
 
 import jobHeader from '../../assets/613/desktop/07-job-header.png';
@@ -27,9 +28,9 @@ import dInspect from '../../assets/613/documents/04-inspection-page-1.png';
 const spec = [
   { label: 'For', value: '613 Automotive, Kingston, Ontario' },
   { label: 'My role', value: 'Everything: research, brand, app, printed documents' },
-  { label: 'When', value: 'October 2026' },
+  { label: 'When', value: 'October to November 2026' },
   { label: 'Used by', value: 'The front desk on a computer, technicians on phones in the bay' },
-  { label: 'Status', value: 'In live testing at the shop' },
+  { label: 'Status', value: 'In live testing at the shop, changing with their feedback' },
   { label: 'Built with', value: 'Next.js 16, React 19, Supabase, jsPDF, Tailwind 4, Vitest' },
 ];
 
@@ -50,36 +51,37 @@ const phones = [
 const chapters = [
   { id: 'shop', title: 'The shop' },
   { id: 'estimate', title: 'Build an estimate' },
-  { id: 'job', title: 'A job, estimate to paid' },
+  { id: 'job', title: 'A job, check-in to paid' },
+  { id: 'quick', title: 'Quick sale' },
   { id: 'bay', title: 'On a phone in the bay' },
   { id: 'documents', title: 'Four documents' },
+  { id: 'feedback', title: 'What changed after feedback' },
   { id: 'decisions', title: 'Decisions' },
   { id: 'now', title: 'Where it is now' },
-  { id: 'next', title: 'What I’d change next' },
   { id: 'reflection', title: 'Reflection' },
 ];
 const n = (id: string) => `CH_${String(chapters.findIndex((c) => c.id === id) + 1).padStart(2, '0')}`;
 
 const stations = [
   {
-    name: 'Customer and vehicle',
+    name: 'Check-in',
     who: 'The front desk',
     before: 'No real paperwork.',
-    now: 'Type the VIN and the year, make, model and engine fill in from NHTSA’s free vehicle database.',
+    now: 'One screen: search by plate, name or phone, and tapping a car picks the customer too. A new car’s VIN fills in the year, make, model and engine from NHTSA. Odometer and the customer’s concern go on the same screen, and one button saves it all.',
     where: 'Front desk, on a computer',
   },
   {
     name: 'Estimate',
     who: 'The front desk',
     before: 'Sample estimates made in ChatGPT, totals worked out on a calculator.',
-    now: 'Lines by type, each with its own rate; parts marked new or used and OEM or aftermarket; the insurer’s estimate attached as a PDF.',
+    now: 'Lines by type, each with its own rate; parts marked new or used and OEM or aftermarket; the insurer’s estimate attached as a PDF. Common work is a one-tap saved item, and the car’s last job can be copied at today’s rates.',
     where: 'Front desk, on a computer',
   },
   {
     name: 'Drop-off',
     who: 'The front desk, with a phone',
     before: 'Nothing on record if a customer questions a scratch later.',
-    now: 'Odometer, existing damage, warning lights, belongings, and photos taken on a phone. Mostly taps instead of typing.',
+    now: 'Existing damage, warning lights, belongings, and photos taken on a phone. Mostly taps instead of typing.',
     where: 'At drop-off',
   },
   {
@@ -100,7 +102,7 @@ const stations = [
     name: 'Invoice and payment',
     who: 'The front desk',
     before: 'Totals worked out on a calculator.',
-    now: 'The invoice locks the lines so the printed copy always matches. Payments can be split between customer and insurer.',
+    now: 'The invoice locks the lines so the printed copy always matches. “Paid now” records the payment in the same step, and payments can be split between customer and insurer.',
     where: 'Front desk',
   },
 ];
@@ -169,10 +171,22 @@ const stations = [
 
   <section class="chapter" id="job">
     <span class="chapter-n">{n('job')}</span>
-    <h2>A job, estimate to paid</h2>
+    <h2>A job, check-in to paid</h2>
     <p class="insight">A job follows the order the shop already works in.</p>
     <Journey id="job-journey" title="One job: pick a station" stations={stations} />
     <div class="shots shots-3">
+      <ShotSlot
+        file="613/desktop/01-check-in.png"
+        alt="Check-in on one screen: search by plate, name or phone, the customer and car picked together, odometer in and the customer’s concern, and a Create estimate button."
+        caption="Check-in: customer, car and job in one save."
+        sizes="(min-width: 60rem) 20rem, 50vw"
+      />
+      <ShotSlot
+        file="613/desktop/02-saved-items.png"
+        alt="An estimate with a row of saved-item buttons above the lines, and a Copy from last job option."
+        caption="Saved items: common work in one tap."
+        sizes="(min-width: 60rem) 20rem, 50vw"
+      />
       <figure>
         <Image src={vin} alt="Adding a vehicle: the VIN field says the VIN looks right and shows the decoded 2021 Toyota RAV4 XLE, with the fields filled in." widths={[480, 800]} sizes="(min-width: 60rem) 20rem, 50vw" />
         <figcaption>The VIN fills in the vehicle.</figcaption>
@@ -196,20 +210,65 @@ const stations = [
     </div>
   </section>
 
+  <section class="chapter" id="quick">
+    <span class="chapter-n">{n('quick')}</span>
+    <h2>Quick sale</h2>
+    <p class="insight">Small walk-in jobs, invoiced and paid in one tap.</p>
+    <div class="prose">
+      <p>
+        Oil changes, alignments and the like don’t need an estimate. A quick sale takes the name, phone, plate, make
+        and model, the work (saved items are one-tap buttons) and how they paid, then saves the customer, car,
+        lines, invoice with HST and payment together. It goes through the usual approved, ready and invoiced
+        steps, so numbering, totals and records match every other job, and nothing is saved if any part fails.
+      </p>
+      <p>
+        <strong>Pay later.</strong> Friends and family often pay for small jobs later. A quick sale can be saved
+        without a payment: it waits as “Owed”, with its own filter and total on the jobs list, and is invoiced on the
+        day they actually pay. There’s no default, so every sale is either paid or deliberately left owing.
+      </p>
+    </div>
+    <div class="shots shots-3">
+      <ShotSlot
+        file="613/desktop/14-quick-sale.png"
+        alt="Quick sale form: name, phone, plate, make and model, saved-item buttons for the work, payment methods including Pay later, and one save button."
+        caption="A quick sale, start to paid."
+        sizes="(min-width: 60rem) 20rem, 50vw"
+      />
+      <ShotSlot
+        file="613/desktop/15-jobs-owed.png"
+        alt="Jobs list grouped by day, quick sales tagged Quick, and the Owed filter with its count and total."
+        caption="Owed sales wait under their own filter."
+        sizes="(min-width: 60rem) 20rem, 50vw"
+      />
+      <ShotSlot
+        file="613/desktop/16-saved-items-settings.png"
+        alt="Settings, Saved items: each item with its lines and rough total, with up and down buttons, Edit, Duplicate and Remove."
+        caption="The shop orders its own one-tap buttons."
+        sizes="(min-width: 60rem) 20rem, 50vw"
+      />
+    </div>
+  </section>
+
   <section class="chapter" id="bay">
     <span class="chapter-n">{n('bay')}</span>
     <h2>On a phone in the bay</h2>
     <p class="insight">Technicians don’t sit at the front desk.</p>
     <div class="prose">
       <p>
-        On a phone, a job is one long page with a row of chips to jump between sections, the total pinned to the
-        bottom, and big tap targets.
+        On a phone, a job is one long page with a row of chips to jump between sections and big tap targets. The
+        bar at the bottom shows the total and the next step: Approve, Mark ready, Invoice or Record payment.
       </p>
     </div>
     <div class="phones">
       {phones.map((p) => (
         <Image src={p.src} alt={p.alt} widths={[320, 480]} sizes="(min-width: 60rem) 11rem, 45vw" />
       ))}
+      <ShotSlot
+        file="613/phone/08-action-bar.png"
+        alt="A job on a phone with the bottom bar showing the total and the next step’s button."
+        widths={[320, 480]}
+        sizes="(min-width: 60rem) 11rem, 45vw"
+      />
     </div>
   </section>
 
@@ -234,6 +293,42 @@ const stations = [
     </div>
   </section>
 
+  <section class="chapter" id="feedback">
+    <span class="chapter-n">{n('feedback')}</span>
+    <h2>What changed after feedback</h2>
+    <p class="insight">Two weeks of live testing at the counter, and the app got shorter.</p>
+    <ol class="changelog">
+      <li>
+        <span class="cap">27 Oct</span>
+        <div>
+          <p class="changelog-said">Starting a job meant creating the customer, coming back to add the vehicle, then creating the job.</p>
+          <p>Check-in is now one screen and one save. New customers need only a name and a phone or email; the rest sits behind “More details”. While a job is an estimate, its page follows the counter’s order: concern, drop-off, photos, lines.</p>
+        </div>
+      </li>
+      <li>
+        <span class="cap">28 Oct</span>
+        <div>
+          <p class="changelog-said">Estimates and checkout needed to be faster.</p>
+          <p>Saved items, copying the car’s last job, “Paid now” on the invoice, and the next step in the phone’s bottom bar.</p>
+        </div>
+      </li>
+      <li>
+        <span class="cap">29 Oct</span>
+        <div>
+          <p class="changelog-said">Pages needed to answer a tap faster.</p>
+          <p>The app now runs in the same region as its database instead of across the continent, and every page shows a loading screen straight away.</p>
+        </div>
+      </li>
+      <li>
+        <span class="cap">31 Oct</span>
+        <div>
+          <p class="changelog-said">Walk-in jobs like oil changes don’t need an estimate, and friends and family often pay later.</p>
+          <p>Quick sale, then Pay later and the Owed filter. Saved items got their own page in Settings, ordered by the shop, and the jobs list opens on everything, newest first.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
   <section class="chapter" id="decisions">
     <span class="chapter-n">{n('decisions')}</span>
     <h2>Decisions</h2>
@@ -251,6 +346,10 @@ const stations = [
         <p>The real migrations run in PGlite inside the test suite, so the row-level security that keeps data to the shop’s staff is checked on every change.</p>
       </div>
       <div class="decision">
+        <h3>All or nothing at the counter</h3>
+        <p>Check-in and quick sale each save through one database function. Customer, car, job, invoice and payment are written together or not at all, so a failed save never leaves half a customer or burns a job number.</p>
+      </div>
+      <div class="decision">
         <h3>A brand before an interface</h3>
         <p>The shop had a logo and nothing else. Making the colours, type and logo files first meant the app and the paperwork look like the same business.</p>
       </div>
@@ -262,25 +361,9 @@ const stations = [
     <h2>Where it is now</h2>
     <dl class="outcome">
       <div class="field"><dt>Status</dt><dd>In live testing at the shop since October 2026</dd></div>
-      <div class="field"><dt>Covers</dt><dd>Estimate to paid, inspections, photos, four printed documents</dd></div>
+      <div class="field"><dt>Covers</dt><dd>Check-in to paid, quick sales, inspections, photos, four printed documents</dd></div>
       <div class="field"><dt>Next</dt><dd>Emailing documents to customers</dd></div>
     </dl>
-  </section>
-
-  <section class="chapter" id="next">
-    <span class="chapter-n">{n('next')}</span>
-    <h2>What I’d change next</h2>
-    <p class="draft-note">Draft: rewrite before publishing</p>
-    <div class="prose">
-      <p>
-        <strong>Email the documents.</strong> It’s already the next item: send the estimate and invoice straight
-        to the customer instead of printing or downloading them first.
-      </p>
-      <p>
-        <strong>Watch a full day of live testing.</strong> I’d sit at the front desk and note every moment
-        someone still reaches for a calculator or a sticky note. Those are the next features.
-      </p>
-    </div>
   </section>
 
   <section class="chapter" id="reflection">
@@ -290,8 +373,9 @@ const stations = [
     <div class="prose">
       <p>
         The request was an invoice generator. Most of the work turned out to be the parts around the invoice: the
-        approval record, the drop-off photos, the 10% cap. Making the brand first felt like a detour at the time;
-        it’s what makes the printed paperwork look like it belongs to the shop.
+        approval record, the drop-off photos, the 10% cap. Then live testing took steps away rather than adding
+        them: three screens to start a job became one, and a walk-in oil change became one tap. Making the brand
+        first felt like a detour at the time; it’s what makes the printed paperwork look like it belongs to the shop.
       </p>
     </div>
   </section>

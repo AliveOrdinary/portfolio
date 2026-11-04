@@ -86,6 +86,7 @@
 .chapter > * + .prose { margin-top: clamp(1.5rem, 3vw, 2.25rem); }
 .prose, .chapter > p { max-width: var(--measure); }
 .prose p, .chapter > p { text-align: justify; hyphens: auto; }
+.chapter > p.insight, .chapter > p.draft-note { text-align: left; hyphens: manual; }
 @media (max-width: 30rem) { .prose p, .chapter > p { text-align: left; } }
 .prose h3 { margin: 2rem 0 0.6rem; font-size: var(--t-md); font-weight: 600; }
 .prose ul, .prose ol, .chapter > ul { padding-left: 0; margin: 0 0 1em; max-width: var(--measure); list-style: none; }
@@ -98,6 +99,15 @@
   font-family: var(--mono); font-size: var(--m-cap); color: var(--ash);
 }
 .prose ul > li::before, .chapter > ul li::before { content: "·"; position: absolute; left: 0.6rem; color: var(--ash); }
+
+/* What changed after feedback: dated entries, what was asked, then what changed */
+.changelog { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--hairline); max-width: 52rem; }
+.changelog li { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 0.5rem 1.5rem; padding: 1.4rem 0; border-bottom: 1px solid var(--hairline); }
+.changelog .cap { color: var(--blue); font-size: var(--m-label); padding-top: 0.3em; }
+.changelog p { margin: 0; max-width: var(--measure); }
+.changelog p + p { margin-top: 0.5rem; }
+.changelog-said { font-style: italic; color: var(--ash); }
+@media (max-width: 36rem) { .changelog li { grid-template-columns: 1fr; } }
 
 /* Drafted chapters are flagged until rewritten */
 .draft-note {

@@ -26,8 +26,8 @@ export const featured: Featured[] = [
     summary: 'Estimates, work orders, inspections and invoices for a collision and mechanical shop.',
     where: 'The front desk and the bays of a body, paint and mechanical shop in Kingston, Ontario.',
     before: 'No real paperwork. Sample estimates made in ChatGPT, totals worked out on a calculator.',
-    now: 'A job moves from estimate to paid in one place, prints four documents, and the inspection is filled in on a phone in the bay. I also redrew their logo into a brand for the app and paperwork.',
-    status: 'In live testing at the shop, October 2026',
+    now: 'Check-in on one screen, a job from estimate to paid in one place, four printed documents, the inspection on a phone in the bay, and one-tap quick sales for walk-ins. I also redrew their logo into a brand for the app and paperwork.',
+    status: 'In live testing at the shop since October 2026, changing with their feedback',
     stack: ['Next.js 16', 'Supabase', 'jsPDF', 'Tailwind 4', 'Vitest', 'NHTSA VIN decoder'],
   },
   {
@@ -36,9 +36,9 @@ export const featured: Featured[] = [
     summary: 'A reference library Claude scores, and a visual brief that finds what a client actually likes, not just what they say.',
     where: 'Amplifier, the small design studio I’m a partner in.',
     before: 'A tagged reference library nobody kept up, and first meetings that started from a few adjectives and a guess.',
-    now: 'Clients spend about eight minutes choosing between images on their phone. The studio gets a prep page: what they said, what they chose, where the two disagree, and a starter moodboard.',
-    status: 'Rebuilt October 2026, in testing with the studio',
-    stack: ['Next.js 16', 'Supabase and pgvector', 'Claude Sonnet', 'Voyage multimodal embeddings'],
+    now: 'Clients spend about eight minutes choosing between images on their phone, from a private link or the studio’s site. The studio gets a prep page: what they’re asking for, where their words and picks really differ, and a starter moodboard.',
+    status: 'Rebuilt October 2026, in testing with the studio; the site in progress with Francis',
+    stack: ['Next.js 16', 'Supabase and pgvector', 'Claude Sonnet and the Batch API', 'Voyage multimodal embeddings', 'A Chrome extension'],
   },
 ];
 
