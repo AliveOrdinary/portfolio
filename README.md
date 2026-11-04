@@ -36,14 +36,12 @@ Screenshots in the case studies are numbered automatically (`FIG_0NN`) by a CSS 
 
 The files in `src/lib/demo/` are copied from the apps. If the logic changes there, copy it again.
 
-## Screenshots still to add
+## Screenshot slots
 
-`src/components/ShotSlot.astro` holds a place for a screenshot that doesn't exist yet. Save the file at the path below
-and it appears on the page with the alt text shown (check the alt text matches what's in the picture). Until then,
-production shows nothing there, or the older screenshot it replaces, and `npm run dev` shows a dashed box naming
-the file.
-
-- `src/assets/amplifier/v2/site/01-home-desk.png`: The studio site’s home page: featured projects as channels on a mixing desk, with four taste faders.
+`src/components/ShotSlot.astro` holds a place for a screenshot that doesn't exist yet: give it the path under
+`src/assets/` and alt text. Once the file is saved there it appears on the page (check the alt text matches what's
+in the picture). Until then, production shows nothing there, or the older screenshot it replaces (`fallback`), and
+`npm run dev` shows a dashed box naming the file. Every slot is filled at the moment.
 
 ## Sortlog screenshots
 

@@ -259,8 +259,7 @@ const stations = [
       <p>
         The studio’s new public site is being built in collaboration with Francis, the designer, on top of Amplifier.
         Projects are written in Studio › Portfolio: details, images and video, and a case study made of text and
-        media blocks, with a French version beside each one. On the home page, featured projects sit on a mixing
-        desk, where four taste faders light up the work that fits.
+        media blocks, with a French version beside each one.
       </p>
       <p>
         Every page can also start a brief. A visitor gives their name, email and project type and goes straight
@@ -268,18 +267,13 @@ const stations = [
         serves the old site.
       </p>
     </div>
-    <div class="shots shots-2">
-      <ShotSlot
-        file="amplifier/v2/site/01-home-desk.png"
-        alt="The studio site’s home page: featured projects as channels on a mixing desk, with four taste faders."
-        caption="The home page’s mixing desk."
-      />
-      <ShotSlot
+    <ShotSlot
         file="amplifier/v2/site/02-start-a-brief.png"
         alt="Start a brief on the studio site: a short intro (a few questions and a run of images, about 8 minutes, no right or wrong answers), then fields for name, email and what they’re making, and a Start my brief button."
         caption="Starting a brief from the site."
+        widths={[800, 1400, 1933]}
+        sizes="(min-width: 60rem) 60rem, 100vw"
       />
-    </div>
   </section>
 
   <section class="chapter" id="feedback">
