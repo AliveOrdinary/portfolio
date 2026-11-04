@@ -221,7 +221,7 @@ const stations = [
         <li><strong>Embeddings</strong> (Voyage multimodal, stored in Postgres with pgvector) power “More like this” and catch near-duplicates on upload, alongside exact hash matching.</li>
         <li><strong>Coverage</strong> shows which ends of which dimensions need more images, because the brief needs every end filled.</li>
         <li><strong>Pinterest boards</strong> come in whole: the Chrome extension reads a board in the designer’s own browser and sends each pin, labelled with who imported it and the board’s name.</li>
-        <li><strong>Scoring in the background</strong> through Anthropic’s Message Batches API, at half price and usually within the hour, with “Scoring 38 of 144”, a bar and about how long is left.</li>
+        <li><strong>Scoring in the background</strong> through Anthropic’s Message Batches API, at half price and usually within the hour, with a count like “Scoring 0 of 79”, a bar and about how long is left.</li>
       </ul>
     </div>
     <div class="shots shots-2">
@@ -239,7 +239,7 @@ const stations = [
       </figure>
       <ShotSlot
         file="amplifier/v2/studio/11-scoring-progress.png"
-        alt="Library Review screen showing Scoring 38 of 144 with a progress bar and about how long is left."
+        alt="Library Review screen, all caught up, showing Scoring 0 of 79 with a progress bar and about 5 minutes left, and the details open: 79 images with Claude, sent a minute ago, in batches of up to 100 at half price."
         caption="Imports score in the background, with progress you can see."
       />
       <figure>

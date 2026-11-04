@@ -43,7 +43,6 @@ and it appears on the page with the alt text shown (check the alt text matches w
 production shows nothing there, or the older screenshot it replaces, and `npm run dev` shows a dashed box naming
 the file.
 
-- `src/assets/amplifier/v2/studio/11-scoring-progress.png`: Library Review screen showing Scoring 38 of 144 with a progress bar and about how long is left.
 - `src/assets/amplifier/v2/site/01-home-desk.png`: The studio site’s home page: featured projects as channels on a mixing desk, with four taste faders.
 - `src/assets/amplifier/v2/site/02-start-a-brief.png`: Start a brief on the studio site: name, email and project type, then straight into the visual brief.
 
