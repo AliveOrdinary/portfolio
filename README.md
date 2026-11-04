@@ -44,7 +44,6 @@ production shows nothing there, or the older screenshot it replaces, and `npm ru
 the file.
 
 - `src/assets/amplifier/v2/site/01-home-desk.png`: The studio site’s home page: featured projects as channels on a mixing desk, with four taste faders.
-- `src/assets/amplifier/v2/site/02-start-a-brief.png`: Start a brief on the studio site: name, email and project type, then straight into the visual brief.
 
 ## Sortlog screenshots
 
