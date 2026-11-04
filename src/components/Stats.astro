@@ -1,0 +1,15 @@
+---
+// A row of big numbers, each with a short line saying what it counts.
+// Every number on the site comes from the case study's own text.
+interface Props { items: { value: string; label: string }[]; }
+const { items } = Astro.props;
+---
+
+<dl class="stats" style={`--cols:${items.length}`}>
+  {items.map((s) => (
+    <div class="stat">
+      <dt>{s.label}</dt>
+      <dd>{s.value}</dd>
+    </div>
+  ))}
+</dl>

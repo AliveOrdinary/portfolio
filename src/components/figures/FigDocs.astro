@@ -1,0 +1,78 @@
+---
+// 613 Automotive: one job's estimate, work order and invoice exploded upward,
+// each totals box fed by the same totals module.
+import Callout from './Callout.astro';
+import { box, flat, seg, iso, arrowHead, type P3 } from '../../lib/iso';
+
+const W = 110;
+const D = 150;
+const T = 2;
+const levels = [0, 64, 128];
+const names = ['Estimate', 'Work order', 'Invoice'];
+
+const sheets = levels.map((z, i) => {
+  const zt = z + T;
+  return {
+    body: box(0, 0, z, W, D, T),
+    head: flat(0, 0, zt, W, 20),
+    logo: flat(8, 4, zt, 22, 12),
+    lines: [34, 44, 54, 64, 74, 84, 94, 104].map((y, j) => seg([10, y, zt], [j % 3 === 2 ? 64 : 100, y, zt])),
+    rule: seg([10, 114, zt], [100, 114, zt]),
+    total: flat(58, 122, zt, 42, 18),
+    sign: i === 0 ? seg([10, 136, zt], [44, 136, zt]) : null,
+    solid: i === 2,
+  };
+});
+
+const corners: [number, number][] = [[0, 0], [W, 0], [W, D], [0, D]];
+// guidesAbove[i]: the dashed corner lines rising from sheet i to the next one
+const guidesAbove = levels.map((z, i) => (i + 1 === levels.length ? [] : corners.map(([x, y]) => seg([x, y, z + T], [x, y, levels[i + 1]]))));
+
+// The totals module: a small block off to the right
+const M = box(176, 28, 52, 34, 34, 34);
+const from = iso([176, 45, 69]);
+const feeds = levels.map((z) => {
+  const to = iso([79, 131, z + T] as P3);
+  return { line: { x1: from[0], y1: from[1], x2: to[0], y2: to[1] }, head: arrowHead(to[0], to[1], to[0] - from[0], to[1] - from[1], 6) };
+});
+
+const callouts = levels.map((z, i) => {
+  const [ax, ay] = iso([0, D, z + T / 2]);
+  return { at: [ax - 3, ay] as [number, number], to: [ax - 44, ay] as [number, number], text: names[i] };
+});
+const [mx, my] = iso([193, 62, 52]);
+---
+
+<svg class="bp" viewBox="-282 -140 526 316" role="img" aria-labelledby="fig-docs-t">
+  <title id="fig-docs-t">An exploded stack of three printed sheets for one job: an estimate at the bottom, a work order, and an invoice on top. A small block to the right labelled totals in whole cents sends a dashed arrow to the totals box on each sheet.</title>
+
+  {sheets.map((s, i) => (
+    <g data-ex={`0,${levels[i] - i * 4}`}>
+      <polygon class="bp-corn" points={s.body.left} />
+      <polygon class="bp-ice" points={s.body.right} />
+      <polygon class="bp-white" points={s.body.top} />
+      <polygon class="bp-ice" points={s.head} />
+      <polygon class="bp-solid" points={s.logo} />
+      {s.lines.map((l) => <line class="bp-thin" {...l} />)}
+      <line {...s.rule} />
+      <polygon class={s.solid ? 'bp-solid' : 'bp-peri'} points={s.total} />
+      {s.sign && <line {...s.sign} />}
+      <g data-fade>{guidesAbove[i].map((g) => <line class="bp-guide" {...g} />)}</g>
+    </g>
+  ))}
+
+  <polygon class="bp-peri" points={M.left} />
+  <polygon class="bp-corn" points={M.right} />
+  <polygon class="bp-ice" points={M.top} />
+  {feeds.map((f) => (
+    <g data-fade>
+      <line class="bp-guide" {...f.line} />
+      <path class="bp-arrow" d={f.head} style="fill:var(--schematic);stroke:none" />
+    </g>
+  ))}
+
+  <g class="bp-callouts">
+    {callouts.map((c) => <Callout at={c.at} to={c.to} text={c.text} align="end" />)}
+    <Callout at={[mx, my + 3]} to={[mx - 60, my + 70]} text="Totals" sub="Whole cents, one module" />
+  </g>
+</svg>

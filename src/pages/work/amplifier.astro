@@ -1,7 +1,12 @@
 ---
 import { Image } from 'astro:assets';
 import Case from '../../layouts/Case.astro';
+import Figure from '../../components/Figure.astro';
+import FigPair from '../../components/figures/FigPair.astro';
 import Bench from '../../components/Bench.astro';
+import Stats from '../../components/Stats.astro';
+import Journey from '../../components/Journey.astro';
+import ShotSlot from '../../components/ShotSlot.astro';
 import ThisOrThat from '../../components/demos/ThisOrThat.astro';
 
 import prepHeadline from '../../assets/amplifier/v2/studio/06-prep-headline-contradictions.png';
@@ -19,16 +24,75 @@ import pSwipe from '../../assets/amplifier/v2/phone/03-warmup-swipe.png';
 const spec = [
   { label: 'For', value: 'Amplifier, the small design studio I’m a partner in' },
   { label: 'My role', value: 'Research, design and build' },
-  { label: 'When', value: 'Rebuilt October 2026 (first version 2025)' },
-  { label: 'Used by', value: 'Our three designers; clients on their phones, through a private link' },
-  { label: 'Status', value: 'In testing with the studio, using test briefs' },
-  { label: 'Built with', value: 'Next.js 16, Supabase (Postgres, row-level security, pgvector), Claude Sonnet, Voyage multimodal embeddings' },
+  { label: 'When', value: 'Rebuilt October to November 2026 (first version 2025)' },
+  { label: 'Used by', value: 'Our three designers; clients on their phones, through a private link or the studio’s site' },
+  { label: 'Status', value: 'Brief and library in testing with the studio; the site in progress with Francis' },
+  { label: 'Built with', value: 'Next.js 16, Supabase (Postgres, row-level security, pgvector), Claude Sonnet and the Message Batches API, Voyage multimodal embeddings, a Chrome extension' },
 ];
 
 const phones = [
   { src: pWelcome, alt: 'Brief on a phone: “Hi Maya.” with a short welcome and a note from the studio, and a Start button.' },
   { src: pQuestion, alt: 'Brief on a phone: “What are you making, and who is it for?” with the client’s answer typed in.' },
   { src: pSwipe, alt: 'Brief on a phone: “Keep or skip?”, warm-up image 4 of 12, with Skip and Keep buttons.' },
+];
+
+const chapters = [
+  { id: 'problem', title: 'The problem' },
+  { id: 'pairs', title: 'Which feels closer?' },
+  { id: 'brief', title: 'The brief' },
+  { id: 'prep', title: 'The prep page' },
+  { id: 'library', title: 'The library' },
+  { id: 'site', title: 'The studio site' },
+  { id: 'feedback', title: 'What changed after feedback' },
+  { id: 'decisions', title: 'Decisions' },
+  { id: 'now', title: 'Where it is now' },
+  { id: 'reflection', title: 'Reflection' },
+];
+const n = (id: string) => `CH_${String(chapters.findIndex((c) => c.id === id) + 1).padStart(2, '0')}`;
+
+const stations = [
+  {
+    name: 'A link, or the site',
+    who: 'The studio, or a visitor to the studio’s site',
+    before: 'A client questionnaire, turned into keywords.',
+    now: 'The studio sends a private link that expires after 30 days, or a visitor starts one from the site with a name, email and project type. No account, no app.',
+    where: 'The client’s phone',
+  },
+  {
+    name: 'Welcome and one question',
+    who: 'The client',
+    before: 'A few adjectives in a questionnaire.',
+    now: 'A short personal note, then one question in words: what are you making, and who is it for? The answer picks the images: about three quarters are the library images closest to it, the rest open to anything.',
+    where: 'The client’s phone',
+  },
+  {
+    name: 'Warm-up',
+    who: 'The client',
+    before: 'The brief could only match the words a client typed.',
+    now: 'Twelve images to keep or skip. Answers save in the background, so swipes feel instant.',
+    where: 'The client’s phone',
+  },
+  {
+    name: 'This or that',
+    who: 'The client',
+    before: 'Keywords matched against tags nobody kept up.',
+    now: 'About twenty pairs, each aimed at the dimension the system is least sure about, using two images close on everything else. A few come back with the sides swapped to check the answer holds.',
+    where: 'The client’s phone',
+  },
+  {
+    name: 'Early read',
+    who: 'The studio',
+    before: 'Keywords from the questionnaire.',
+    now: 'As soon as the client finishes: where each choice leans, how unsure it still is, and how many repeated pairs got the same answer.',
+    where: 'The studio’s brief page',
+  },
+  {
+    name: 'First meeting',
+    who: 'The studio and the client',
+    before: 'A few adjectives and a guess.',
+    now: 'The prep page, screen-shared: what they’re asking for, where their words and picks really differ with a question to ask, the taste profile, hesitations and a starter moodboard.',
+    where: 'The first meeting',
+  },
 ];
 ---
 
@@ -38,24 +102,22 @@ const phones = [
   summary="A reference library Claude scores, and a visual brief that finds what a client actually likes, not just what they say."
   description="How I rebuilt Amplifier: a design reference library scored against a rubric, an adaptive this-or-that brief for clients, and a prep page for the first meeting."
   spec={spec}
+  chapters={chapters}
   next={{ href: '/work/613-automotive', name: '613 Automotive' }}
 >
-  <section class="case-section">
-    <div class="wrap">
-      <figure>
-        <Image src={prepHeadline} alt="Prep page for a test brief: a one-paragraph headline about what the client asked for and what they chose, stats for the session, and three contradictions, each with a question to ask." widths={[800, 1400, 2000]} sizes="(min-width: 72rem) 66rem, 100vw" class="shot" loading="eager" />
-        <figcaption>The prep page for a test brief: what the client said, what they chose, and what to ask in the first meeting. The client and project are made up.</figcaption>
-      </figure>
-    </div>
-  </section>
+  <Figure n={1} name="This or that" year="2026" slot="figure">
+    <FigPair />
+  </Figure>
 
-  <section class="case-section">
-    <div class="wrap prose">
-      <h2>The problem</h2>
-      <p>
+  <section class="chapter" id="problem">
+    <span class="chapter-n">{n('problem')}</span>
+    <h2>The problem</h2>
+    <p class="insight">“Minimal” can turn out to mean calm rather than empty.</p>
+    <div class="prose">
+      <p class="dropcap">
         Clients usually know what they like when they see it, but the words they use for it can point somewhere
-        else: “minimal” can turn out to mean calm rather than empty. The first
-        meeting is where that gets untangled, and we were walking in with a few adjectives and a guess.
+        else. The first meeting is where that gets untangled, and we were walking in with a few adjectives and a
+        guess.
       </p>
       <p>
         The 2025 version of Amplifier tagged our reference library and turned a client questionnaire into keywords.
@@ -64,156 +126,251 @@ const phones = [
         library with definitions instead of tags, and learn what a client likes from what they choose.
       </p>
     </div>
+    <Stats items={[
+      { value: '~8 min', label: 'For a client to finish the brief on a phone' },
+      { value: '~20', label: 'This-or-that pairs, each aimed at what it’s least sure of' },
+      { value: '91–95%', label: 'Right side of each dimension, with simulated clients' },
+      { value: '30 days', label: 'Before a client’s private link expires' },
+    ]} />
+    <ShotSlot
+      file="amplifier/v2/studio/09-prep-asking-for.png"
+      alt="Prep page for a test brief, a tea shop brand identity: a one-paragraph headline, then What they’re asking for, with notes on the project, on Amul as a named reference, on their character and on what their picks add, and questions for the meeting."
+      caption="The prep page for a test brief opens with what they’re asking for. The client and project are made up."
+      widths={[800, 1400, 2000]}
+      sizes="(min-width: 60rem) 60rem, 100vw"
+      fallback={{ src: prepHeadline, alt: 'Prep page for a test brief: a one-paragraph headline about what the client asked for and what they chose, stats for the session, and three contradictions, each with a question to ask.', caption: 'The prep page for a test brief: what the client said, what they chose, and what to ask in the first meeting. The client and project are made up.' }}
+    />
   </section>
 
-  <section class="case-section">
-    <div class="wrap">
-      <Bench title="Which feels closer?" id="pair-demo">
-        <p slot="intro">
-          A small version of the brief. Say what you want in words, then pick between eight pairs. Each pair changes
-          one thing and keeps the rest the same, and the next pair goes after whatever it’s least sure about. The
-          images here are shapes drawn from numbers; the real brief uses the studio’s library.
-        </p>
-        <ThisOrThat />
-      </Bench>
+  <section class="chapter" id="pairs">
+    <span class="chapter-n">{n('pairs')}</span>
+    <h2>Which feels closer?</h2>
+    <p class="insight">Each pair changes one thing and keeps the rest the same.</p>
+    <Bench title="Which feels closer?" id="pair-demo">
+      <p slot="intro">
+        A small version of the brief. Say what you want in words, then pick between eight pairs. The next pair goes
+        after whatever it’s least sure about. The images here are shapes drawn from numbers; the real brief uses the
+        studio’s library.
+      </p>
+      <ThisOrThat />
+    </Bench>
+  </section>
+
+  <section class="chapter" id="brief">
+    <span class="chapter-n">{n('brief')}</span>
+    <h2>The brief</h2>
+    <p class="insight">About eight minutes on a phone. No account, no app.</p>
+    <Journey id="brief-journey" title="One brief, link to first meeting: pick a station" stations={stations} />
+    <div class="prose">
+      <p>
+        Now and then a quick “what caught your eye?” offers a few chips to tap, and the remaining questions in words
+        come at the end, then a thank-you with the meeting date. I tested the engine with simulated clients before
+        any real one saw it. With a library of 100+ images, it picks the right side of each dimension 91–95% of
+        the time.
+      </p>
     </div>
+    <div class="phones">
+      {phones.map((p) => (
+        <Image src={p.src} alt={p.alt} widths={[320, 520]} sizes="(min-width: 60rem) 15rem, 32vw" />
+      ))}
+    </div>
+    <figure>
+      <Image src={earlyRead} alt="Brief page in the studio: the private link (blurred), dates, and an early read showing where each dimension leans with a band for how unsure it is, and “3 of 3 repeated pairs got the same answer”." widths={[800, 1400, 2000]} sizes="(min-width: 60rem) 60rem, 100vw" class="shot" />
+      <figcaption>The studio sees an early read as soon as the client finishes: where each choice leans, how unsure it still is, and how many repeated pairs got the same answer.</figcaption>
+    </figure>
   </section>
 
-  <section class="case-section">
-    <div class="wrap">
-      <div class="prose">
-        <h2>The brief</h2>
-        <p>Each client gets a private link that expires after 30 days. No account, no app. On a phone, in about eight minutes:</p>
-        <ol>
-          <li><strong>A welcome</strong> with a short personal note from the studio.</li>
-          <li><strong>One question in words:</strong> what are you making, and who is it for?</li>
-          <li><strong>Twelve warm-up images</strong> to keep or skip. Answers save in the background, so swipes feel instant.</li>
-          <li><strong>About twenty this-or-that pairs.</strong> Each targets the dimension the system is least sure about, using two images that are close on everything else. A few pairs come back later with the sides swapped to check the answer holds, and now and then a quick “what caught your eye?” offers a few chips to tap.</li>
-          <li><strong>The remaining questions in words,</strong> then a thank-you with the meeting date.</li>
-        </ol>
-        <p>
-          I tested the engine with simulated clients before any real one saw it. With a library of 100+ images, it
-          picks the right side of each dimension 91–95% of the time.
-        </p>
-      </div>
-      <div class="phones shot-wide">
-        {phones.map((p) => (
-          <Image src={p.src} alt={p.alt} widths={[320, 520]} sizes="(min-width: 56rem) 18rem, 32vw" />
-        ))}
-      </div>
-      <figure class="shot-wide">
-        <Image src={earlyRead} alt="Brief page in the studio: the private link (blurred), dates, and an early read showing where each dimension leans with a band for how unsure it is, and “2 of 3 repeated pairs got the same answer”." widths={[800, 1400, 2000]} sizes="(min-width: 72rem) 66rem, 100vw" class="shot" />
-        <figcaption>The studio sees an early read as soon as the client finishes: where each choice leans, how unsure it still is, and how many repeated pairs got the same answer.</figcaption>
+  <section class="chapter" id="prep">
+    <span class="chapter-n">{n('prep')}</span>
+    <h2>The prep page</h2>
+    <p class="insight">Read the client as a whole, then compare looks.</p>
+    <div class="prose">
+      <p>When the client finishes, the prep page builds itself. It’s made to be screen-shared in the first meeting.</p>
+      <ul>
+        <li><strong>What they’re asking for</strong> comes first: a summary of the whole brief, notes on the project, on what a reference they name stands for (as something to check), on their character and on how their picks fit, and questions for the meeting. Editable like the rest.</li>
+        <li><strong>Said against showed,</strong> on every dimension of the rubric. Their words go on a visual scale only when they’re about the look, so feeling-words like “warm” or “quiet” stay off it, and placements Claude isn’t fairly sure of are left out.</li>
+        <li><strong>Differences, not just gaps.</strong> Each dimension says whether words and picks agree, differ, or differ in a way their story explains. Only real differences are listed, each with a question to ask, and ones resting on few pairs are marked “Early hint”.</li>
+        <li><strong>Hesitations:</strong> their slowest picks, and any answer that changed when a pair came back swapped.</li>
+        <li><strong>A starter moodboard</strong> from their picks and close matches. “Copy as layers” pastes it into Figma as separate layers, and images dropped onto the board go into the library too.</li>
+      </ul>
+    </div>
+    <div class="shots shots-2">
+      <figure>
+        <Image src={prepProfile} alt="Taste profile: on each dimension a ring for what the client said and a square for what they chose, a line where the gap is worth asking about, and how sure each placement is; below, what they consistently chose and passed over, with examples." widths={[640, 1000, 1400]} sizes="(min-width: 60rem) 30rem, 100vw" />
+        <figcaption>Said against showed, with the gaps worth asking about.</figcaption>
+      </figure>
+      <figure>
+        <Image src={prepHesitations} alt="Hesitations listing the slowest pairs and a changed answer, and a starter moodboard with Copy as layers, Download images and Add from library." widths={[640, 1000, 1400]} sizes="(min-width: 60rem) 30rem, 100vw" />
+        <figcaption>Where they hesitated, and a moodboard ready to paste into Figma.</figcaption>
       </figure>
     </div>
   </section>
 
-  <section class="case-section">
-    <div class="wrap">
-      <div class="prose">
-        <h2>The prep page</h2>
-        <p>When the client finishes, the prep page builds itself. It’s made to be screen-shared in the first meeting.</p>
-        <ul>
-          <li><strong>A headline:</strong> one paragraph on what they asked for, what they chose, and what to ask.</li>
-          <li><strong>Contradictions,</strong> picked by the numbers: only where what they said and what they chose differ enough, with enough confidence. Claude writes the wording and a question to ask, and the studio can edit it or regenerate it.</li>
-          <li><strong>Taste profile:</strong> what they said against what they showed on every dimension, plus the directions they consistently chose or passed over, with examples.</li>
-          <li><strong>Hesitations:</strong> their slowest picks, and any answer that changed when a pair came back swapped.</li>
-          <li><strong>A starter moodboard</strong> from their picks and close matches. “Copy as layers” pastes it into Figma as separate layers, and images dropped onto the board go into the library too.</li>
-        </ul>
+  <section class="chapter" id="library">
+    <span class="chapter-n">{n('library')}</span>
+    <h2>The library</h2>
+    <p class="insight">Instead of tags, the studio writes a rubric.</p>
+    <div class="prose">
+      <p>
+        Up to ten dimensions, each a spectrum between two ends, and each end described by what you can see, like
+        elements, colour, line and texture. Claude scores every image on every dimension.
+      </p>
+      <ul>
+        <li><strong>Anchors:</strong> library images pinned as examples of an end. Claude sees them every time it scores.</li>
+        <li><strong>Corrections</strong> are recorded and fed back into scoring. A designer’s edits are kept when an image is rescored, and changing a definition marks the old scores stale and offers a rescore.</li>
+        <li><strong>Embeddings</strong> (Voyage multimodal, stored in Postgres with pgvector) power “More like this” and catch near-duplicates on upload, alongside exact hash matching.</li>
+        <li><strong>Coverage</strong> shows which ends of which dimensions need more images, because the brief needs every end filled.</li>
+        <li><strong>Pinterest boards</strong> come in whole: the Chrome extension reads a board in the designer’s own browser and sends each pin, labelled with who imported it and the board’s name.</li>
+        <li><strong>Scoring in the background</strong> through Anthropic’s Message Batches API, at half price and usually within the hour, with a count like “Scoring 0 of 79”, a bar and about how long is left.</li>
+      </ul>
+    </div>
+    <div class="shots shots-2">
+      <figure>
+        <Image src={libScores} alt="Library grid with one image open: Claude’s description, its medium, and eight scores on spectrums such as Minimal to Rich and Quiet to Loud." widths={[640, 1000, 1400]} sizes="(min-width: 60rem) 30rem, 100vw" />
+        <figcaption>Every image scored on every dimension. Designer edits survive a rescore.</figcaption>
+      </figure>
+      <figure>
+        <Image src={rubric} alt="Rubric settings: each dimension with a left and right end, each end described by what you can see, slots for anchor images, and a count of corrections." widths={[640, 1000, 1400]} sizes="(min-width: 60rem) 30rem, 100vw" />
+        <figcaption>The rubric: each end defined by what you can see.</figcaption>
+      </figure>
+      <figure>
+        <Image src={libSimilar} alt="More like this: twenty library images ordered by similarity to the selected one." widths={[640, 1000, 1400]} sizes="(min-width: 60rem) 30rem, 100vw" />
+        <figcaption>“More like this”, closest first, from image embeddings.</figcaption>
+      </figure>
+      <ShotSlot
+        file="amplifier/v2/studio/11-scoring-progress.png"
+        alt="Library Review screen, all caught up, showing Scoring 0 of 79 with a progress bar and about 5 minutes left, and the details open: 79 images with Claude, sent a minute ago, in batches of up to 100 at half price."
+        caption="Imports score in the background, with progress you can see."
+      />
+      <figure>
+        <Image src={libCoverage} alt="Coverage: histograms of how approved images spread across each dimension, with thin ends flagged, and a count of images per medium." widths={[640, 1000, 1400]} sizes="(min-width: 60rem) 30rem, 100vw" />
+        <figcaption>Coverage: which ends need more images.</figcaption>
+      </figure>
+    </div>
+    <p class="credit">Library images are saved references by other designers, shown as they appear inside the studio’s tool.</p>
+  </section>
+
+  <section class="chapter" id="site">
+    <span class="chapter-n">{n('site')}</span>
+    <h2>The studio site</h2>
+    <p class="draft-note">In progress: not launched yet</p>
+    <p class="insight">One app now runs the studio’s site, the brief and the library.</p>
+    <div class="prose">
+      <p>
+        The studio’s new public site is being built in collaboration with Francis, the designer, on top of Amplifier.
+        Projects are written in Studio › Portfolio: details, images and video, and a case study made of text and
+        media blocks, with a French version beside each one.
+      </p>
+      <p>
+        Every page can also start a brief. A visitor gives their name, email and project type and goes straight
+        into their own visual brief, marked “From the site” in the studio. Until launch, amplifier.studio still
+        serves the old site.
+      </p>
+    </div>
+    <ShotSlot
+        file="amplifier/v2/site/02-start-a-brief.png"
+        alt="Start a brief on the studio site: a short intro (a few questions and a run of images, about 8 minutes, no right or wrong answers), then fields for name, email and what they’re making, and a Start my brief button."
+        caption="Starting a brief from the site."
+        widths={[800, 1400, 1933]}
+        sizes="(min-width: 60rem) 60rem, 100vw"
+      />
+  </section>
+
+  <section class="chapter" id="feedback">
+    <span class="chapter-n">{n('feedback')}</span>
+    <h2>What changed after feedback</h2>
+    <p class="insight">Using it with the studio changed what the report reads, and how the library keeps up.</p>
+    <ol class="changelog">
+      <li>
+        <span class="cap">22 Oct</span>
+        <div>
+          <p class="changelog-said">The studio takes on any client, not only artists.</p>
+          <p>Project types for brand identity, website, packaging, signage, campaigns, releases and events. A brief’s images now start from the client’s own answer to “What are you making?”, and whole Pinterest boards can be imported.</p>
+        </div>
+      </li>
+      <li>
+        <span class="cap">1 Nov</span>
+        <div>
+          <p class="changelog-said">Imports slowed the whole studio down.</p>
+          <p>One scoring run at a time, time limits on every call, and batches that carry links instead of image files. The library shows where scoring is up to, and an idle studio leaves the database alone.</p>
+        </div>
+      </li>
+      <li>
+        <span class="cap">1 Nov</span>
+        <div>
+          <p class="changelog-said">“Every project starts with a visual brief,” so the site needed a way in.</p>
+          <p>A start form on the site, with limits instead of an account.</p>
+        </div>
+      </li>
+      <li>
+        <span class="cap">2 Nov</span>
+        <div>
+          <p class="changelog-said">The report only placed the client’s words on the visual rubric and called the differences contradictions.</p>
+          <p>It now reads the whole brief first, keeps feeling-words off the visual scales, leaves out placements Claude isn’t fairly sure of, and only lists differences their story doesn’t explain.</p>
+        </div>
+      </li>
+      <li>
+        <span class="cap">3 Nov</span>
+        <div>
+          <p class="changelog-said">Some imported images sat at “scoring” forever.</p>
+          <p>Images whose adding was cut off part-way are finished automatically, and the ones that can’t be are listed in Review with Retry and Remove.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section class="chapter" id="decisions">
+    <span class="chapter-n">{n('decisions')}</span>
+    <h2>Decisions</h2>
+    <div class="decisions">
+      <div class="decision">
+        <h3>Definitions instead of a tag vocabulary</h3>
+        <p>The first version’s tags were never maintained because creating them was a chore. A rubric is a handful of definitions the studio writes once. Claude does the scoring, and anchors and corrections keep it close to the studio’s eye.</p>
       </div>
-      <div class="shots shots-2 shot-wide">
-        <figure>
-          <Image src={prepProfile} alt="Taste profile: for each dimension, a hollow dot for what the client said and a filled dot for what they chose, with gaps highlighted; below, confident directions with thumbnails." widths={[640, 1000, 1400]} sizes="(min-width: 56rem) 34rem, 100vw" />
-          <figcaption>Said against showed, on every dimension of the rubric.</figcaption>
-        </figure>
-        <figure>
-          <Image src={prepHesitations} alt="Hesitations listing the slowest pairs and a changed answer, and a starter moodboard with Copy as layers, Download images and Add from library." widths={[640, 1000, 1400]} sizes="(min-width: 56rem) 34rem, 100vw" />
-          <figcaption>Where they hesitated, and a moodboard ready to paste into Figma.</figcaption>
-        </figure>
+      <div class="decision">
+        <h3>A deterministic engine, tested before any client</h3>
+        <p>Choosing the next pair, tracking how sure it is and checking consistency are plain code, not a model. That meant I could run simulated clients through it and know it worked before a real client ever saw it.</p>
+      </div>
+      <div class="decision">
+        <h3>Read the whole client, then compare looks</h3>
+        <p>A difference between words and picks is only listed when the words are about the look, Claude is fairly sure where they sit, and their story doesn’t explain it. Ones resting on few pairs are marked “Early hint”, so a thin signal never reads as a finding.</p>
+      </div>
+      <div class="decision">
+        <h3>Half-price scoring that can’t pile up</h3>
+        <p>Imports are scored through Anthropic’s Message Batches API, with one run per studio at a time, time limits on every call, and batches recorded before they’re sent, so nothing is paid for twice. Embeddings come from thumbnails, in batches, so cost stays low as the library grows.</p>
+      </div>
+      <div class="decision">
+        <h3>Limits instead of accounts</h3>
+        <p>Clients never sign up. The studio sends a private link that expires after 30 days, and the site’s start form is checked on every request instead: two briefs a day per visitor (counted by a one-way hash, the address never stored), one open brief per email, twenty a day across the site, plus a hidden field and a timing check for bots.</p>
       </div>
     </div>
   </section>
 
-  <section class="case-section">
-    <div class="wrap">
-      <div class="prose">
-        <h2>The library</h2>
-        <p>
-          Instead of tags, the studio writes a rubric: up to ten dimensions, each a spectrum between two ends, and each
-          end described by what you can see, like elements, colour, line and texture. Claude scores every image on
-          every dimension.
-        </p>
-        <ul>
-          <li><strong>Anchors:</strong> library images pinned as examples of an end. Claude sees them every time it scores.</li>
-          <li><strong>Corrections</strong> are recorded and fed back into scoring. A designer’s edits are kept when an image is rescored, and changing a definition marks the old scores stale and offers a rescore.</li>
-          <li><strong>Embeddings</strong> (Voyage multimodal, stored in Postgres with pgvector) power “More like this” and catch near-duplicates on upload, alongside exact hash matching.</li>
-          <li><strong>Coverage</strong> shows which ends of which dimensions need more images, because the brief needs every end filled.</li>
-        </ul>
-      </div>
-      <div class="shots shots-2 shot-wide">
-        <figure>
-          <Image src={libScores} alt="Library grid with one image open: Claude’s description, its medium, and eight scores on spectrums such as Minimal to Rich and Quiet to Loud." widths={[640, 1000, 1400]} sizes="(min-width: 56rem) 34rem, 100vw" />
-          <figcaption>Every image scored on every dimension. Designer edits survive a rescore.</figcaption>
-        </figure>
-        <figure>
-          <Image src={rubric} alt="Rubric settings: each dimension with a left and right end, each end described by what you can see, slots for anchor images, and a count of corrections." widths={[640, 1000, 1400]} sizes="(min-width: 56rem) 34rem, 100vw" />
-          <figcaption>The rubric: each end defined by what you can see.</figcaption>
-        </figure>
-        <figure>
-          <Image src={libSimilar} alt="More like this: twenty library images ordered by similarity to the selected one." widths={[640, 1000, 1400]} sizes="(min-width: 56rem) 34rem, 100vw" />
-          <figcaption>“More like this”, closest first, from image embeddings.</figcaption>
-        </figure>
-        <figure>
-          <Image src={libCoverage} alt="Coverage: histograms of how approved images spread across each dimension, with thin ends flagged, and a count of images per medium." widths={[640, 1000, 1400]} sizes="(min-width: 56rem) 34rem, 100vw" />
-          <figcaption>Coverage: which ends need more images.</figcaption>
-        </figure>
-      </div>
-      <p class="credit">Library images are saved references by other designers, shown as they appear inside the studio’s tool.</p>
-    </div>
+  <section class="chapter" id="now">
+    <span class="chapter-n">{n('now')}</span>
+    <h2>Where it is now</h2>
+    <dl class="outcome">
+      <div class="field"><dt>Status</dt><dd>Brief and library in testing with the studio using test briefs; the site in progress with Francis</dd></div>
+      <div class="field"><dt>Tested</dt><dd>Right side of each dimension 91–95% of the time, with simulated clients and 100+ images</dd></div>
+      <div class="field"><dt>Next</dt><dd>The first real client briefs, and launching the site</dd></div>
+    </dl>
   </section>
 
-  <section class="case-section">
-    <div class="wrap">
-      <h2>Decisions</h2>
-      <div class="decisions" style="margin-top:1.5rem">
-        <div class="decision">
-          <h3>Definitions instead of a tag vocabulary</h3>
-          <p>The first version’s tags were never maintained because creating them was a chore. A rubric is a handful of definitions the studio writes once. Claude does the scoring, and anchors and corrections keep it close to the studio’s eye.</p>
-        </div>
-        <div class="decision">
-          <h3>A deterministic engine, tested before any client</h3>
-          <p>Choosing the next pair, tracking how sure it is and checking consistency are plain code, not a model. That meant I could run simulated clients through it and know it worked before a real client ever saw it.</p>
-        </div>
-        <div class="decision">
-          <h3>Numbers pick the contradictions; the model words them</h3>
-          <p>A contradiction only appears when the gap between what was said and what was chosen is big enough and the data confident enough. Claude writes the sentence and the question, so it can’t invent a contradiction that isn’t there.</p>
-        </div>
-        <div class="decision">
-          <h3>Embeddings from thumbnails, in batches</h3>
-          <p>Similarity and duplicate checks run on embeddings made from thumbnails, sent in batches, so the cost stays low as the library grows.</p>
-        </div>
-        <div class="decision">
-          <h3>A private link per client, not a public form</h3>
-          <p>Each client gets their own link that expires after 30 days. Clients never need an account, and there’s no open form for strangers to find or fill with spam.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="case-section">
-    <div class="wrap">
-      <h2 style="margin-bottom:1.25rem">Where it is now</h2>
-      <dl class="outcome">
-        <div class="field"><dt>Status</dt><dd>Rebuilt October 2026, in testing with the studio using test briefs</dd></div>
-        <div class="field"><dt>Tested</dt><dd>Right side of each dimension 91–95% of the time, with simulated clients and 100+ images</dd></div>
-        <div class="field"><dt>Next</dt><dd>The first real client briefs</dd></div>
-      </dl>
+  <section class="chapter" id="reflection">
+    <span class="chapter-n">{n('reflection')}</span>
+    <h2>Reflection</h2>
+    <div class="prose">
+      <p>
+        The first version taught me that a tag vocabulary nobody maintains is worse than none. The rebuild puts the
+        studio’s effort in the one place it pays off, writing definitions, and leaves the repetitive scoring to
+        Claude, kept honest by anchors, corrections and an engine I could test before anyone used it.
+      </p>
     </div>
   </section>
 </Case>
 
 <style>
-  .phones { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.75rem, 2vw, 1.5rem); max-width: 56rem; align-items: start; }
-  .phones :global(img) { border: 1px solid var(--grid-strong); border-radius: 3px; width: 100%; }
-  .credit { font-family: var(--display); font-stretch: 90%; font-size: var(--t-xs); color: var(--pencil); margin-top: 1rem; }
+  .phones { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.75rem, 2vw, 1.5rem); max-width: 48rem; align-items: start; }
+  .phones :global(img) { border: 1px solid var(--hairline); border-radius: 0; width: 100%; }
+  .credit { font-family: var(--mono); font-size: var(--m-cap); text-transform: uppercase; color: var(--ash); margin-top: 1rem; }
 </style>

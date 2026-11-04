@@ -1,0 +1,126 @@
+---
+// FIG_000: how I work, as an exploded stack. The floor at the bottom, the notes
+// taken there, the small tool built from them, and the numbers checked on top.
+import Callout from './Callout.astro';
+import { box, flat, seg, iso, type P3 } from '../../lib/iso';
+
+const W = 160; // plate width (x)
+const D = 120; // plate depth (y)
+const T = 5;   // plate thickness
+const GAP = 92;
+const levels = [0, GAP, GAP * 2, GAP * 3];
+
+const plate = (z: number) => box(0, 0, z, W, D, T);
+const corners: [number, number][] = [[0, 0], [W, 0], [W, D], [0, D]];
+
+// Layer 1: skids on the floor, back to front
+const skids = [
+  [16, 16], [62, 16], [108, 16],
+  [16, 66], [62, 66], [108, 66],
+].map(([x, y], i) => ({ ...box(x, y, levels[0] + T, 36, 36, i === 4 ? 14 : 26), k: x + y }))
+  .sort((a, b) => a.k - b.k);
+
+// Layer 2: a clipboard of notes and the sticky-note workaround
+const z2 = levels[1] + T;
+const notesSheet = flat(18, 14, z2, 74, 92);
+const noteLines = [26, 36, 46, 56, 66, 76, 86].map((y, i) => seg([26, y, z2], [i % 3 === 2 ? 64 : 82, y, z2]));
+const sticky = box(104, 24, z2, 32, 32, 1.5);
+const sticky2 = box(110, 66, z2, 32, 32, 1.5);
+const stickyLines = [34, 42].map((y) => seg([110, y, z2 + 1.5], [130, y, z2 + 1.5]));
+
+// Layer 3: the smallest tool, a phone with one job on it
+const z3 = levels[2] + T;
+const phone = box(54, 18, z3, 52, 86, 6);
+const screen = flat(59, 25, z3 + 6, 42, 66);
+const rows = [32, 46, 60].map((y) => flat(63, y, z3 + 6, 34, 9));
+const go = flat(63, 76, z3 + 6, 34, 10);
+
+// Layer 4: honest numbers, a table and the bars it adds up to
+const z4 = levels[3] + T;
+const table = flat(14, 14, z4, 70, 92);
+const tableRows = [30, 46, 62, 78, 94].map((y) => seg([14, y, z4], [84, y, z4]));
+const tableCol = seg([44, 14, z4], [44, 106, z4]);
+const bars = [18, 30, 24, 40].map((h, i) => box(100 + i * 12, 40, z4, 9, 40, h));
+
+// Guides between plates
+const guides = levels.slice(0, -1).flatMap((z, i) =>
+  corners.map(([x, y]) => seg([x, y, z + T], [x, y, levels[i + 1]])),
+);
+
+// Callouts anchor on the right corner of each plate's top
+const labels = ['Go where the work is', 'Write down what happens', 'Build the smallest thing', 'Keep the numbers honest'];
+const callouts = levels.map((z, i) => {
+  const [ax, ay] = iso([W, 0, z + T / 2] as P3);
+  return { at: [ax + 4, ay] as [number, number], to: [ax + 64, ay] as [number, number], text: `0${i + 1}`, sub: labels[i] };
+});
+---
+
+<svg class="bp" viewBox="-112 -292 512 442" role="img" aria-labelledby="fig-method-t">
+  <title id="fig-method-t">An exploded stack of four plates. At the bottom, skids on a sorting floor. Above it, a clipboard of notes and two sticky notes. Above that, a phone with a three-row app. On top, a table and a bar chart. Labelled: go where the work is, write down what happens, build the smallest thing, keep the numbers honest.</title>
+
+  <!-- The drawing itself, without its callouts: phones centre this and list the steps below -->
+  <g class="bp-body">
+
+  <g data-ex="0,0"><!-- Plate 1 and its skids -->
+  <polygon class="bp-face-l" points={plate(levels[0]).left} />
+  <polygon class="bp-face-r" points={plate(levels[0]).right} />
+  <polygon class="bp-face-t" points={plate(levels[0]).top} />
+  {skids.map((s) => (
+    <g>
+      <polygon class="bp-peri" points={s.left} />
+      <polygon class="bp-corn" points={s.right} />
+      <polygon class="bp-ice" points={s.top} />
+    </g>
+  ))}
+
+  </g>
+  <g data-fade>{guides.slice(0, 4).map((g) => <line class="bp-guide" {...g} />)}</g>
+
+  <g data-ex="0,62"><!-- Plate 2: notes -->
+  <polygon class="bp-face-l" points={plate(levels[1]).left} />
+  <polygon class="bp-face-r" points={plate(levels[1]).right} />
+  <polygon class="bp-face-t" points={plate(levels[1]).top} />
+  <polygon class="bp-white" points={notesSheet} />
+  {noteLines.map((l) => <line class="bp-thin" {...l} />)}
+  <polygon class="bp-corn" points={sticky.left} /><polygon class="bp-peri" points={sticky.right} /><polygon class="bp-ice" points={sticky.top} />
+  <polygon class="bp-corn" points={sticky2.left} /><polygon class="bp-peri" points={sticky2.right} /><polygon class="bp-ice" points={sticky2.top} />
+  {stickyLines.map((l) => <line class="bp-thin" {...l} />)}
+
+  </g>
+  <g data-fade>{guides.slice(4, 8).map((g) => <line class="bp-guide" {...g} />)}</g>
+
+  <g data-ex="0,124"><!-- Plate 3: the tool -->
+  <polygon class="bp-face-l" points={plate(levels[2]).left} />
+  <polygon class="bp-face-r" points={plate(levels[2]).right} />
+  <polygon class="bp-face-t" points={plate(levels[2]).top} />
+  <polygon class="bp-peri" points={phone.left} />
+  <polygon class="bp-corn" points={phone.right} />
+  <polygon class="bp-white" points={phone.top} />
+  <polygon class="bp-ice" points={screen} />
+  {rows.map((r) => <polygon class="bp-white" points={r} />)}
+  <polygon class="bp-solid" points={go} />
+
+  </g>
+  <g data-fade>{guides.slice(8, 12).map((g) => <line class="bp-guide" {...g} />)}</g>
+
+  <g data-ex="0,186"><!-- Plate 4: numbers -->
+  <polygon class="bp-face-l" points={plate(levels[3]).left} />
+  <polygon class="bp-face-r" points={plate(levels[3]).right} />
+  <polygon class="bp-face-t" points={plate(levels[3]).top} />
+  <polygon class="bp-white" points={table} />
+  {tableRows.map((l) => <line class="bp-thin" {...l} />)}
+  <line class="bp-thin" {...tableCol} />
+  {bars.map((b) => (
+    <g>
+      <polygon class="bp-peri" points={b.left} />
+      <polygon class="bp-corn" points={b.right} />
+      <polygon class="bp-ice" points={b.top} />
+    </g>
+  ))}
+
+  </g>
+
+  </g>
+
+  <g class="bp-callouts">{callouts.map((c) => <Callout at={c.at} to={c.to} text={c.text} sub={c.sub} />)}</g>
+</svg>

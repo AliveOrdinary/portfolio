@@ -8,18 +8,28 @@ interface Props {
   summary: string;
   description: string;
   spec: { label: string; value: string }[];
+  chapters: { id: string; title: string }[];
   next?: { href: string; name: string };
 }
-const { title, name, summary, description, spec, next } = Astro.props;
+const { title, name, summary, description, spec, chapters, next } = Astro.props;
+const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
 <Base title={title} description={description} current="work">
   <article class="case">
-    <header class="wrap case-head">
-      <a class="case-back" href="/#work">All work</a>
-      <h1>{name}</h1>
+    <header class="case-head wrap">
+      <a class="case-back" href="/#work"><span aria-hidden="true">&larr;</span> All work</a>
+      <p class="plus-line case-eyebrow" aria-hidden="true"><span>Case study</span><span>{chapters.length} chapters</span></p>
+      <h1 class="case-name" aria-label={name}><span data-decode aria-hidden="true">{name}</span></h1>
       <p class="case-summary">{summary}</p>
-      <dl class="case-spec">
+    </header>
+
+    <div class="case-figure wrap">
+      <slot name="figure" />
+    </div>
+
+    <div class="case-spec-band">
+      <dl class="case-spec wrap">
         {spec.map((s) => (
           <div class="field">
             <dt>{s.label}</dt>
@@ -27,14 +37,25 @@ const { title, name, summary, description, spec, next } = Astro.props;
           </div>
         ))}
       </dl>
-    </header>
+    </div>
 
-    <slot />
+    <div class="case-body wrap">
+      <nav class="case-toc" aria-label="Chapters">
+        <ol>
+          {chapters.map((c, i) => (
+            <li><a href={`#${c.id}`} data-toc={c.id}><span class="toc-n">{pad(i + 1)}</span>{c.title}</a></li>
+          ))}
+        </ol>
+      </nav>
+      <div class="case-main">
+        <slot />
+      </div>
+    </div>
 
     {next && (
       <nav class="wrap case-next" aria-label="Next project">
-        <span class="field-label">Next</span>
-        <a href={next.href}>{next.name}</a>
+        <div class="glyphs" aria-hidden="true">Next case study</div>
+        <a href={next.href}>{next.name} <span aria-hidden="true">&rarr;</span></a>
       </nav>
     )}
   </article>

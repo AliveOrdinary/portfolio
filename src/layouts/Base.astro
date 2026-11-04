@@ -1,6 +1,6 @@
 ---
-import '@fontsource-variable/archivo/wdth.css';
-import '@fontsource-variable/literata';
+import '@fontsource-variable/eb-garamond/wght.css';
+import '@fontsource-variable/eb-garamond/wght-italic.css';
 import '../styles/global.css';
 
 interface Props {
@@ -14,6 +14,26 @@ const {
   description = 'Navaneeth Krishnan, full-stack developer in Toronto. I build software for the people doing the actual work.',
   current = 'home',
 } = Astro.props;
+
+// The footer's dithered band: a 4x4 Bayer matrix, denser toward the bottom edge.
+const bayer = [
+  [0, 8, 2, 10],
+  [12, 4, 14, 6],
+  [3, 11, 1, 9],
+  [15, 7, 13, 5],
+];
+const CELL = 4;
+const ROWS = 12;
+let cells = '';
+for (let r = 0; r < ROWS; r++) {
+  const t = ((r + 0.5) / ROWS) ** 1.4;
+  for (let c = 0; c < 4; c++) {
+    if (bayer[r % 4][c] / 16 < t) cells += `<rect x='${c * CELL}' y='${r * CELL}' width='${CELL}' height='${CELL}'/>`;
+  }
+}
+const dither = `url("data:image/svg+xml,${encodeURIComponent(
+  `<svg xmlns='http://www.w3.org/2000/svg' width='${4 * CELL}' height='${ROWS * CELL}' shape-rendering='crispEdges' fill='#b4b4b4'>${cells}</svg>`,
+)}")`;
 ---
 
 <!doctype html>
@@ -26,37 +46,35 @@ const {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta name="theme-color" content="#eef1e7" />
+    <meta name="theme-color" content="#fbfbfb" />
+    <link rel="preload" href="/fonts/DepartureMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="generator" content={Astro.generator} />
+    <script is:inline>
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('motion');
+    </script>
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
 
-    <!-- Ink filter for the stamp: roughens its edges like rubber on paper -->
-    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-      <filter id="ink" x="-5%" y="-10%" width="110%" height="120%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="noise" />
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.6" xChannelSelector="R" yChannelSelector="G" result="rough" />
-        <feComponentTransfer in="noise" result="speckle">
-          <feFuncA type="discrete" tableValues="1 1 1 1 1 1 0 1 1 1" />
-        </feComponentTransfer>
-        <feComposite in="rough" in2="speckle" operator="in" />
-      </filter>
-    </svg>
-
-    <header class="site-head">
+    <nav class="site-nav" aria-label="Main">
       <div class="wrap">
-        <a href="/" class="mark" aria-label="Navaneeth Krishnan, home">Navaneeth Krishnan</a>
-        <nav class="site-nav" aria-label="Main">
+        <a href="/" class="nav-mark" aria-label="Navaneeth Krishnan, home"><span class="nav-full" aria-hidden="true">Navaneeth Krishnan</span><span class="nav-short" aria-hidden="true">NK</span></a>
+        <div class="nav-links">
           <a href="/#work" aria-current={current === 'work' ? 'page' : undefined}>Work</a>
-          <a href="/#how-i-work">How I work</a>
-          <a href="/#tools">Tools</a>
+          <a href="/#how-i-work" class="nav-wide">How I work</a>
+          <a href="/#tools" class="nav-wide">Tools</a>
           <a href="/#contact">Contact</a>
-        </nav>
+          <a href="/navaneeth-krishnan-resume.pdf">Résumé</a>
+        </div>
       </div>
-    </header>
+    </nav>
+
+    <div class="ruler" data-ruler aria-hidden="true">
+      <span class="ruler-mark"></span>
+      <span class="ruler-n" data-ruler-n>000</span>
+    </div>
 
     <main id="main">
       <slot />
@@ -64,14 +82,19 @@ const {
 
     <footer class="site-foot">
       <div class="wrap">
-        <span>Navaneeth Krishnan, Toronto</span>
-        <span class="foot-links">
-          <a href="mailto:vrnavaneeth135@gmail.com">Email</a>
-          <a href="/navaneeth-krishnan-resume.pdf">Résumé</a>
-          <a href="https://github.com/AliveOrdinary" rel="noopener noreferrer">GitHub</a>
-          <a href="https://linkedin.com/in/vrnavaneeth" rel="noopener noreferrer">LinkedIn</a>
-        </span>
+        <p class="ornament" aria-hidden="true">***</p>
+        <div class="foot-lines">
+          <p> <span class="pipe">|</span> Navaneeth Krishnan <span class="pipe">|</span> Full-stack developer <span class="pipe">|</span> Toronto, Ontario <span class="pipe">|</span> </p>
+          <p>
+             <span class="pipe">|</span> <a href="mailto:vrnavaneeth135@gmail.com">Email</a> <span class="pipe">|</span> <a href="/navaneeth-krishnan-resume.pdf">Résumé</a> <span class="pipe">|</span> <a href="https://github.com/AliveOrdinary" rel="noopener noreferrer">GitHub</a> <span class="pipe">|</span> <a href="https://linkedin.com/in/vrnavaneeth" rel="noopener noreferrer">LinkedIn</a> <span class="pipe">|</span> 
+          </p>
+          <p class="quiet">Set in EB Garamond and Departure Mono. Drawings by hand, in SVG.</p>
+        </div>
       </div>
+      <div class="dither" style={`background-image:${dither}`} aria-hidden="true"></div>
     </footer>
+    <script>
+      import '../scripts/motion.ts';
+    </script>
   </body>
 </html>

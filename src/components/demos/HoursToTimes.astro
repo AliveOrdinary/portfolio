@@ -39,12 +39,12 @@
       { id: 'lin', name: 'Lin', start: 7 * 60, end: 11 * 60 },
     ] as Person[],
     parts: [
-      { id: 'housing', name: 'Housing', colour: 'var(--stamp)', skids: [
+      { id: 'housing', name: 'Housing', colour: 'var(--blue)', skids: [
         { key: 'h1', hours: 3, crew: ['asha', 'marco'] },
         { key: 'h2', hours: 4.5, crew: ['asha', 'marco', 'lin'] },
       ] },
-      { id: 'bracket', name: 'Bracket', colour: '#7a5c00', skids: [{ key: 'b1', hours: 5, crew: ['marco', 'lin'] }] },
-      { id: 'oil', name: 'Oil removal', colour: 'var(--ok)', skids: [{ key: 'o1', hours: 2, crew: ['asha'] }] },
+      { id: 'bracket', name: 'Bracket', colour: '#0a1f7a', skids: [{ key: 'b1', hours: 5, crew: ['marco', 'lin'] }] },
+      { id: 'oil', name: 'Oil removal', colour: '#5b6170', skids: [{ key: 'o1', hours: 2, crew: ['asha'] }] },
     ] as Part[],
   });
 
@@ -161,7 +161,7 @@
   @media (max-width: 60rem) { .ht { grid-template-columns: minmax(0, 1fr); } }
   .ht-in, .ht-out { background: var(--sheet); border: 1px solid var(--grid-strong); border-radius: 3px; padding: 1rem 1.1rem; }
   .ht-block { border: 0; padding: 0; margin: 0 0 1.25rem; min-width: 0; }
-  .ht-block legend { font-family: var(--display); font-stretch: 85%; font-weight: 750; font-size: var(--t-md); padding: 0; margin-bottom: 0.5rem; }
+  .ht-block legend { font-family: var(--serif); font-weight: 600; font-size: var(--t-md); padding: 0; margin-bottom: 0.5rem; }
   :global(.ht-person) { display: grid; grid-template-columns: 3.5rem minmax(0, 1fr) auto minmax(0, 1fr); gap: 0.5rem; align-items: center; margin-bottom: 0.4rem; font-family: var(--display); font-size: var(--t-sm); }
   :global(.ht-name) { font-weight: 700; }
   :global(.ht-person input) { min-width: 0; padding-inline: 0.4rem; }
@@ -177,7 +177,7 @@
     min-height: 2.5rem; padding: 0 0.8rem; border-radius: 3px; cursor: pointer;
     border: 1px solid var(--grid-strong); background: var(--sheet); color: var(--pencil);
   }
-  :global(.ht-chip[aria-pressed="true"]) { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
+  :global(.ht-chip[aria-pressed="true"]) { background: var(--blue); color: var(--white); border-color: var(--blue); }
   .ht-reset { background: none; border: 0; padding: 0.3rem 0; font-family: var(--display); font-size: var(--t-xs); color: var(--stamp); text-decoration: underline; cursor: pointer; }
 
   /* Chart */
@@ -197,6 +197,10 @@
   :global(.ht-block-bar.late) { outline: 2px solid var(--reject); outline-offset: 1px; }
 
   .ht-table { width: 100%; border-collapse: collapse; font-family: var(--display); font-size: var(--t-sm); font-variant-numeric: tabular-nums; }
+  /* Mono runs wide: on small phones the table steps down a size, and its panel scrolls
+     sideways rather than pushing the page wider if it still doesn't fit. */
+  .ht-out { min-width: 0; overflow-x: auto; }
+  @media (max-width: 30rem) { .ht-table { font-size: var(--m-label); } }
   :global(.ht-table th) { text-align: left; font-weight: 600; font-size: var(--t-xs); color: var(--pencil); border-bottom: 1.5px solid var(--ink); padding: 0.3rem 0.4rem 0.3rem 0; }
   :global(.ht-table td) { padding: 0.35rem 0.4rem 0.35rem 0; border-bottom: 1px solid var(--grid); }
   :global(.ht-table .r) { text-align: right; }

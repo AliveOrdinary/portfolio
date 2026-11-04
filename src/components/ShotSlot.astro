@@ -1,0 +1,49 @@
+---
+// A screenshot that may not exist yet. Drop the file at src/assets/<file> and it
+// appears. Until then: the `fallback` screenshot if one is given (an older screen
+// it replaces), otherwise nothing in production and a dashed placeholder naming
+// the file in `npm run dev`.
+import { Image } from 'astro:assets';
+
+interface Props {
+  file: string;            // path under src/assets, e.g. "613/desktop/01-check-in.png"
+  alt: string;             // check this against the real screenshot once it's added
+  caption?: string;
+  sizes?: string;
+  widths?: number[];
+  class?: string;
+  fallback?: { src: ImageMetadata; alt: string; caption?: string };
+}
+const { file, alt, caption, sizes = '(min-width: 60rem) 30rem, 100vw', widths = [640, 1000, 1400], class: className, fallback } = Astro.props;
+
+const assets = import.meta.glob<{ default: ImageMetadata }>('../assets/**/*.{png,jpg,jpeg,webp}', { eager: true });
+const found = assets[`../assets/${file}`]?.default;
+const shown = found ? { src: found, alt, caption } : fallback;
+const dev = import.meta.env.DEV;
+---
+
+{shown ? (
+  <figure class={className}>
+    <Image src={shown.src} alt={shown.alt} widths={widths} sizes={sizes} />
+    {shown.caption && <figcaption>{shown.caption}</figcaption>}
+  </figure>
+) : dev ? (
+  <figure class:list={['shot-slot', className]} data-missing={file}>
+    <div class="shot-slot-box">
+      <span>Screenshot to add</span>
+      <code>src/assets/{file}</code>
+      <small>{alt}</small>
+    </div>
+    {caption && <figcaption>{caption}</figcaption>}
+  </figure>
+) : null}
+
+<style>
+  .shot-slot-box {
+    display: grid; gap: 0.5rem; align-content: center; min-height: 14rem; padding: 1.25rem;
+    border: 1px dashed var(--blue); background: var(--ice);
+    font-family: var(--mono); font-size: var(--m-cap); text-transform: uppercase; color: var(--blue);
+  }
+  .shot-slot-box code { font-family: var(--mono); font-size: var(--m-label); text-transform: none; color: var(--ink); word-break: break-all; }
+  .shot-slot-box small { text-transform: none; font-family: var(--serif); font-size: var(--t-xs); color: var(--ash); }
+</style>

@@ -1,0 +1,51 @@
+---
+// A journey drawn as a blueprint track: numbered stations on a dashed line.
+// Pick a station to see who is there, what happened before, what happens now,
+// and where it happens. Without JavaScript every station's panel is shown.
+interface Station {
+  name: string;
+  who: string;
+  before: string;
+  now: string;
+  where: string;
+}
+interface Props {
+  id: string;
+  title: string;
+  stations: Station[];
+}
+const { id, title, stations } = Astro.props;
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<div class="journey" data-journey id={id}>
+  <p class="journey-title">{title}</p>
+  <div class="journey-track" role="tablist" aria-label={title} style={`--n:${stations.length}`}>
+    {stations.map((s, i) => (
+      <button
+        type="button"
+        role="tab"
+        class="journey-stop"
+        id={`${id}-tab-${i}`}
+        aria-controls={`${id}-panel-${i}`}
+        aria-selected={i === 0 ? 'true' : 'false'}
+        tabindex={i === 0 ? 0 : -1}
+      >
+        <span class="journey-dot" aria-hidden="true"></span>
+        <span class="journey-n">{pad(i + 1)}</span>
+        <span class="journey-name">{s.name}</span>
+      </button>
+    ))}
+  </div>
+  {stations.map((s, i) => (
+    <div class="journey-panel" role="tabpanel" id={`${id}-panel-${i}`} aria-labelledby={`${id}-tab-${i}`}>
+      <p class="journey-head"><span class="journey-n">{pad(i + 1)}</span>{s.name}</p>
+      <dl class="journey-grid">
+        <div class="field"><dt>Who</dt><dd>{s.who}</dd></div>
+        <div class="field"><dt>Before</dt><dd>{s.before}</dd></div>
+        <div class="field journey-now"><dt>Now</dt><dd>{s.now}</dd></div>
+        <div class="field"><dt>Where</dt><dd>{s.where}</dd></div>
+      </dl>
+    </div>
+  ))}
+</div>
