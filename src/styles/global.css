@@ -363,7 +363,6 @@ figcaption {
 .foot-lines a { color: var(--ink); text-decoration: none; }
 .foot-lines a:hover { color: var(--blue); text-decoration: underline; }
 .foot-lines .pipe { color: var(--ash); padding-inline: 0.15em; }
-.foot-lines .quiet { color: var(--ash); }
 .dither { height: 48px; margin-top: 5rem; background-repeat: repeat-x; background-position: bottom left; image-rendering: pixelated; }
 
 /* Section spacing */
