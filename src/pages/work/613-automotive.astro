@@ -177,18 +177,18 @@ const stations = [
     <div class="shots shots-3">
       <ShotSlot
         file="613/desktop/01-check-in.png"
-        alt="Check-in on one screen: search by plate, name or phone, the customer and car picked together, odometer in and the customer’s concern, and a Create estimate button."
+        alt="Check-in on one screen: the customer picked, their car chosen, odometer in and what the customer wants done, and a Create estimate button."
         caption="Check-in: customer, car and job in one save."
         sizes="(min-width: 60rem) 20rem, 50vw"
       />
       <ShotSlot
         file="613/desktop/02-saved-items.png"
-        alt="An estimate with a row of saved-item buttons above the lines, and a Copy from last job option."
-        caption="Saved items: common work in one tap."
+        alt="An estimate’s line items with three lines just added from the Front brake pads and rotors saved item and an Undo, the row of saved-item buttons, and a link to copy the lines from this car’s last invoice."
+        caption="Saved items and the car’s last job, one tap each, with undo."
         sizes="(min-width: 60rem) 20rem, 50vw"
       />
       <figure>
-        <Image src={vin} alt="Adding a vehicle: the VIN field says the VIN looks right and shows the decoded 2021 Toyota RAV4 XLE, with the fields filled in." widths={[480, 800]} sizes="(min-width: 60rem) 20rem, 50vw" />
+        <Image src={vin} alt="Adding a vehicle: the VIN field says the VIN looks right and shows the decoded 2022 Hyundai Tucson Preferred, with the fields filled in." widths={[480, 800]} sizes="(min-width: 60rem) 20rem, 50vw" />
         <figcaption>The VIN fills in the vehicle.</figcaption>
       </figure>
       <figure>
@@ -196,15 +196,15 @@ const stations = [
         <figcaption>Approval records how the customer said yes.</figcaption>
       </figure>
       <figure>
-        <Image src={invoice} alt="Create invoice dialog warning that the odometer out is blank, which Ontario expects on the invoice." widths={[480, 800]} sizes="(min-width: 60rem) 20rem, 50vw" />
-        <figcaption>The invoice warns about what Ontario expects on it.</figcaption>
+        <Image src={invoice} alt="Create invoice dialog with odometer in and out, the invoice total, and Customer paid their share now ticked, with the method and a reference." widths={[480, 800]} sizes="(min-width: 60rem) 20rem, 50vw" />
+        <figcaption>“Paid now”: the invoice records the customer’s share in the same step.</figcaption>
       </figure>
       <figure>
         <Image src={dropoff} alt="Vehicle at drop-off: odometer, exterior damage chips, mechanical concerns and warning lights." widths={[480, 800]} sizes="(min-width: 60rem) 20rem, 50vw" />
         <figcaption>Drop-off, mostly taps instead of typing.</figcaption>
       </figure>
       <figure>
-        <Image src={payment} alt="Record payment dialog with amount, method, date and a reference field noting never to enter a full card number." widths={[480, 800]} sizes="(min-width: 60rem) 20rem, 50vw" />
+        <Image src={payment} alt="Record payment dialog with the insurer chosen, the amount, cheque as the method, the date, and a reference field noting never to enter a full card number." widths={[480, 800]} sizes="(min-width: 60rem) 20rem, 50vw" />
         <figcaption>Payments keep a reference, never a full card number.</figcaption>
       </figure>
     </div>
@@ -230,13 +230,13 @@ const stations = [
     <div class="shots shots-3">
       <ShotSlot
         file="613/desktop/14-quick-sale.png"
-        alt="Quick sale form: name, phone, plate, make and model, saved-item buttons for the work, payment methods including Pay later, and one save button."
+        alt="Quick sale form: name, phone, plate, make and model, saved-item buttons for the work, payment methods including Pay later, and a Paid · create invoice button."
         caption="A quick sale, start to paid."
         sizes="(min-width: 60rem) 20rem, 50vw"
       />
       <ShotSlot
         file="613/desktop/15-jobs-owed.png"
-        alt="Jobs list grouped by day, quick sales tagged Quick, and the Owed filter with its count and total."
+        alt="Jobs list grouped by day, with quick sales tagged Quick, an owed sale tagged Owed, and the Owed filter showing its count and total."
         caption="Owed sales wait under their own filter."
         sizes="(min-width: 60rem) 20rem, 50vw"
       />
@@ -265,7 +265,7 @@ const stations = [
       ))}
       <ShotSlot
         file="613/phone/08-action-bar.png"
-        alt="A job on a phone with the bottom bar showing the total and the next step’s button."
+        alt="A job on a phone with the bottom bar showing three lines, the total and an Approve button."
         widths={[320, 480]}
         sizes="(min-width: 60rem) 11rem, 45vw"
       />

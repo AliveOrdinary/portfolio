@@ -134,7 +134,7 @@ const stations = [
     ]} />
     <ShotSlot
       file="amplifier/v2/studio/09-prep-asking-for.png"
-      alt="Prep page for a test brief opening with What they’re asking for: a summary, notes on the project and a named reference, and questions for the meeting."
+      alt="Prep page for a test brief, a tea shop brand identity: a one-paragraph headline, then What they’re asking for, with notes on the project, on Amul as a named reference, on their character and on what their picks add, and questions for the meeting."
       caption="The prep page for a test brief opens with what they’re asking for. The client and project are made up."
       widths={[800, 1400, 2000]}
       sizes="(min-width: 60rem) 60rem, 100vw"
@@ -175,7 +175,7 @@ const stations = [
       ))}
     </div>
     <figure>
-      <Image src={earlyRead} alt="Brief page in the studio: the private link (blurred), dates, and an early read showing where each dimension leans with a band for how unsure it is, and “2 of 3 repeated pairs got the same answer”." widths={[800, 1400, 2000]} sizes="(min-width: 60rem) 60rem, 100vw" class="shot" />
+      <Image src={earlyRead} alt="Brief page in the studio: the private link (blurred), dates, and an early read showing where each dimension leans with a band for how unsure it is, and “3 of 3 repeated pairs got the same answer”." widths={[800, 1400, 2000]} sizes="(min-width: 60rem) 60rem, 100vw" class="shot" />
       <figcaption>The studio sees an early read as soon as the client finishes: where each choice leans, how unsure it still is, and how many repeated pairs got the same answer.</figcaption>
     </figure>
   </section>
@@ -195,12 +195,10 @@ const stations = [
       </ul>
     </div>
     <div class="shots shots-2">
-      <ShotSlot
-        file="amplifier/v2/studio/10-prep-profile.png"
-        alt="Taste profile: each dimension marked as agree, differ, or differs in a way their story explains, with Early hint on ones resting on few pairs."
-        caption="Said against showed, with what each difference means."
-        fallback={{ src: prepProfile, alt: 'Taste profile: for each dimension, a hollow dot for what the client said and a filled dot for what they chose, with gaps highlighted; below, confident directions with thumbnails.', caption: 'Said against showed, on every dimension of the rubric.' }}
-      />
+      <figure>
+        <Image src={prepProfile} alt="Taste profile: on each dimension a ring for what the client said and a square for what they chose, a line where the gap is worth asking about, and how sure each placement is; below, what they consistently chose and passed over, with examples." widths={[640, 1000, 1400]} sizes="(min-width: 60rem) 30rem, 100vw" />
+        <figcaption>Said against showed, with the gaps worth asking about.</figcaption>
+      </figure>
       <figure>
         <Image src={prepHesitations} alt="Hesitations listing the slowest pairs and a changed answer, and a starter moodboard with Copy as layers, Download images and Add from library." widths={[640, 1000, 1400]} sizes="(min-width: 60rem) 30rem, 100vw" />
         <figcaption>Where they hesitated, and a moodboard ready to paste into Figma.</figcaption>
