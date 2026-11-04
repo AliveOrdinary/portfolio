@@ -68,7 +68,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
   <section class="intro wrap" aria-label="About">
     <div class="intro-text">
-      <p class="eyebrow intro-eyebrow">Open to full-time roles<span class="sep">+</span>Toronto or remote</p>
+      <p class="eyebrow intro-eyebrow">Open to full-time roles<span class="sep"><span class="visually-hidden">, </span></span>Toronto or remote</p>
       <div class="justify">
         <p class="dropcap">
           A sorting floor, a body shop front desk, a design studio. I spend time where the work happens,
@@ -91,7 +91,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
     <div class="wrap">
       <div class="title-row">
         <h2 id="work-title" class="title reveal">Work</h2>
-        <span class="title-note">Three tools<span class="sep">+</span>three places of work</span>
+        <span class="title-note">Three tools<span class="sep"><span class="visually-hidden">, </span></span>three places of work</span>
       </div>
     </div>
 
@@ -187,7 +187,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
 </Base>
 
 <style>
-  .sep { color: var(--ash); padding-inline: 0.8em; }
   .chapter { color: var(--ash); margin-right: 0.9em; }
 
   /* Hero: a statement and facts, then the name across the full measure */
@@ -196,7 +195,11 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .hero-statement { font-size: clamp(1.75rem, 3.2vw, 2.75rem); line-height: 1.2; max-width: 24ch; }
   .hero-facts { justify-content: flex-end; padding-bottom: 0.4em; }
   .hero-name { margin: clamp(2.5rem, 6vw, 5rem) 0 clamp(2.5rem, 5vw, 4rem); max-width: none; }
-  @media (max-width: 40rem) { .hero-facts { justify-content: flex-start; } }
+  @media (max-width: 40rem) {
+    /* Stacked one per line, so no line starts with a separator */
+    .hero-facts { flex-direction: column; gap: 0.35rem; }
+    .hero-facts li + li::before { display: none; }
+  }
 
   /* Intro: the paragraph and keys beside the how-I-work drawing */
   .intro {
