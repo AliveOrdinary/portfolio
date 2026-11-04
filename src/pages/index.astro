@@ -13,14 +13,11 @@ const figures: Record<string, { component: any; name: string }> = {
   amplifier: { component: FigPair, name: 'This or that' },
 };
 
-// Places the work happens, for the ticker. Every one of them is in a case study.
-const places = [
-  'Sorting floor',
-  'End of shift',
-  'Body shop front desk',
-  'In the bay',
-  'Design studio',
-  'First client meeting',
+// The ticker reads as a sentence: "Built for" the place, then what was built there.
+const builtFor = [
+  { place: 'The sorting floor', project: 'Sortlog' },
+  { place: 'A body shop front desk', project: '613 Automotive' },
+  { place: 'A design studio', project: 'Amplifier' },
 ];
 
 const steps = [
@@ -58,11 +55,18 @@ const pad = (n: number) => String(n).padStart(2, '0');
     <p class="hero-name" aria-label="Navaneeth Krishnan"><span data-decode aria-hidden="true">Navaneeth</span> <span data-decode aria-hidden="true">Krishnan</span></p>
   </section>
 
-  <div class="ticker" role="marquee" aria-label={`Where the work happens: ${places.join(', ')}`}>
-    <div class="ticker-track" aria-hidden="true">
-      {[0, 1].map(() => (
-        <div class="ticker-run">{[...places, ...places].map((p) => <span>{p}</span>)}</div>
-      ))}
+  <div class="ticker" role="marquee" aria-label={`Built for ${builtFor.map((b) => `${b.place.toLowerCase()}: ${b.project}`).join('; ')}`}>
+    <span class="ticker-label" aria-hidden="true">Built for</span>
+    <div class="ticker-window" aria-hidden="true">
+      <div class="ticker-track">
+        {[0, 1].map(() => (
+          <div class="ticker-run">
+            {[...builtFor, ...builtFor].map((b) => (
+              <span><em>{b.place}</em><i>&rarr;</i><b>{b.project}</b></span>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   </div>
 
