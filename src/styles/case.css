@@ -6,7 +6,7 @@
 .case-back { font-family: var(--mono); font-size: var(--m-label); text-transform: uppercase; color: var(--ash); text-decoration: none; }
 .case-back:hover { color: var(--blue); }
 .case-eyebrow { margin: clamp(2rem, 5vw, 3.5rem) 0 1rem; display: flex; color: var(--ash); font-family: var(--mono); font-size: var(--m-label); text-transform: uppercase; }
-.case-eyebrow span + span::before { content: "+"; padding-inline: 1.1em; }
+.case-eyebrow span { display: inline-flex; align-items: center; }
 .case-name {
   font-family: var(--mono); font-weight: 400; text-transform: uppercase; letter-spacing: 0;
   font-size: clamp(1.75rem, 8.5vw, 7.5rem); line-height: 0.92;

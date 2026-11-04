@@ -208,16 +208,15 @@ strong { font-weight: 600; }
 
 /* Facts joined by plus signs */
 .plus-line { display: flex; flex-wrap: wrap; gap: 0.35rem 0; margin: 0; padding: 0; list-style: none; font-family: var(--mono); font-size: var(--m-label); text-transform: uppercase; }
-.plus-line li + li::before { content: "+"; padding-inline: 1.1em; color: var(--ash); }
+/* The separator between items: a small blue square, like a point on the drawing.
+   Used by the facts line, section notes (.sep) and the case-study eyebrow. */
+.plus-line li + li::before, .sep::before, .case-eyebrow span + span::before {
+  content: ""; display: inline-block; flex: none;
+  width: 0.4em; height: 0.4em; margin-inline: 1em; vertical-align: 0.16em;
+  background: var(--blue);
+}
+.plus-line li + li::before { align-self: center; }
 
-/* Places ticker: a band of pixel type between full-width hairlines */
-.ticker { overflow: hidden; border-block: 1px solid var(--hairline); padding-block: clamp(0.75rem, 1.6vw, 1.25rem); }
-.ticker-track { display: flex; width: max-content; }
-.ticker-run { display: flex; flex: none; align-items: center; font-family: var(--mono); text-transform: uppercase; font-size: clamp(1.25rem, 2.75vw, 2.25rem); line-height: 1; color: var(--blue); white-space: nowrap; -webkit-font-smoothing: none; }
-.ticker-run span::after { content: "+"; color: var(--ash); padding-inline: 0.6em; }
-.motion .ticker-track { animation: ticker 32s linear infinite; }
-.motion .ticker:hover .ticker-track { animation-play-state: paused; }
-@keyframes ticker { to { transform: translateX(-50%); } }
 
 /* Section titles: big italic serif over a full-width hairline */
 .title-row {

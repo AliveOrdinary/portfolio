@@ -13,16 +13,6 @@ const figures: Record<string, { component: any; name: string }> = {
   amplifier: { component: FigPair, name: 'This or that' },
 };
 
-// Places the work happens, for the ticker. Every one of them is in a case study.
-const places = [
-  'Sorting floor',
-  'End of shift',
-  'Body shop front desk',
-  'In the bay',
-  'Design studio',
-  'First client meeting',
-];
-
 const steps = [
   {
     title: 'Go where the work is',
@@ -58,17 +48,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
     <p class="hero-name" aria-label="Navaneeth Krishnan"><span data-decode aria-hidden="true">Navaneeth</span> <span data-decode aria-hidden="true">Krishnan</span></p>
   </section>
 
-  <div class="ticker" role="marquee" aria-label={`Where the work happens: ${places.join(', ')}`}>
-    <div class="ticker-track" aria-hidden="true">
-      {[0, 1].map(() => (
-        <div class="ticker-run">{[...places, ...places].map((p) => <span>{p}</span>)}</div>
-      ))}
-    </div>
-  </div>
 
   <section class="intro wrap" aria-label="About">
     <div class="intro-text">
-      <p class="eyebrow intro-eyebrow">Open to full-time roles<span class="sep">+</span>Toronto or remote</p>
+      <p class="eyebrow intro-eyebrow">Open to full-time roles<span class="sep"><span class="visually-hidden">, </span></span>Toronto or remote</p>
       <div class="justify">
         <p class="dropcap">
           A sorting floor, a body shop front desk, a design studio. I spend time where the work happens,
@@ -91,7 +74,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
     <div class="wrap">
       <div class="title-row">
         <h2 id="work-title" class="title reveal">Work</h2>
-        <span class="title-note">Three tools<span class="sep">+</span>three places of work</span>
+        <span class="title-note">Three tools<span class="sep"><span class="visually-hidden">, </span></span>three places of work</span>
       </div>
     </div>
 
@@ -187,7 +170,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
 </Base>
 
 <style>
-  .sep { color: var(--ash); padding-inline: 0.8em; }
   .chapter { color: var(--ash); margin-right: 0.9em; }
 
   /* Hero: a statement and facts, then the name across the full measure */
@@ -195,14 +177,18 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .hero-top { display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem 3rem; flex-wrap: wrap; }
   .hero-statement { font-size: clamp(1.75rem, 3.2vw, 2.75rem); line-height: 1.2; max-width: 24ch; }
   .hero-facts { justify-content: flex-end; padding-bottom: 0.4em; }
-  .hero-name { margin: clamp(2.5rem, 6vw, 5rem) 0 clamp(2.5rem, 5vw, 4rem); max-width: none; }
-  @media (max-width: 40rem) { .hero-facts { justify-content: flex-start; } }
+  .hero-name { margin: clamp(2.5rem, 6vw, 5rem) 0 0; max-width: none; }
+  @media (max-width: 40rem) {
+    /* Stacked one per line, so no line starts with a separator */
+    .hero-facts { flex-direction: column; gap: 0.35rem; }
+    .hero-facts li + li::before { display: none; }
+  }
 
   /* Intro: the paragraph and keys beside the how-I-work drawing */
   .intro {
     display: grid; grid-template-columns: minmax(0, 30rem) minmax(0, 1fr);
     gap: clamp(2rem, 6vw, 6rem); align-items: center;
-    padding-top: clamp(4rem, 9vw, 8rem);
+    padding-top: clamp(3rem, 7vw, 6rem);
   }
   .intro-eyebrow { color: var(--ash); margin-bottom: 1.5rem; font-size: var(--m-label); }
   .intro-text .actions { margin-top: 2rem; }
