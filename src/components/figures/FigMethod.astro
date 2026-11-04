@@ -58,6 +58,9 @@ const callouts = levels.map((z, i) => {
 <svg class="bp" viewBox="-112 -292 512 442" role="img" aria-labelledby="fig-method-t">
   <title id="fig-method-t">An exploded stack of four plates. At the bottom, skids on a sorting floor. Above it, a clipboard of notes and two sticky notes. Above that, a phone with a three-row app. On top, a table and a bar chart. Labelled: go where the work is, write down what happens, build the smallest thing, keep the numbers honest.</title>
 
+  <!-- The drawing itself, without its callouts: phones centre this and list the steps below -->
+  <g class="bp-body">
+
   <g data-ex="0,0"><!-- Plate 1 and its skids -->
   <polygon class="bp-face-l" points={plate(levels[0]).left} />
   <polygon class="bp-face-r" points={plate(levels[0]).right} />
@@ -114,6 +117,8 @@ const callouts = levels.map((z, i) => {
       <polygon class="bp-ice" points={b.top} />
     </g>
   ))}
+
+  </g>
 
   </g>
 

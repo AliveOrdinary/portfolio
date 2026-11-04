@@ -303,7 +303,7 @@ strong { font-weight: 600; }
 .fig-art > svg, .fig-art > img { width: 100%; height: auto; }
 .fig figcaption { margin-top: 1rem; }
 @media (max-width: 40rem) {
-  .fig { margin-inline: calc(-1 * var(--gutter)); padding: 1.5rem 0.5rem 1.25rem; }
+  .fig { margin-inline: calc(-1 * var(--gutter)); width: calc(100% + 2 * var(--gutter)) !important; max-width: none !important; padding: 1.5rem 0.5rem 1.25rem; }
   .fig-n, .fig-name { position: static; display: inline-block; writing-mode: horizontal-tb; transform: none; margin: 0 0 0.75rem 0.5rem; }
   .fig figcaption { padding-inline: 0.5rem; }
 }
@@ -344,6 +344,13 @@ figcaption {
   .bp-sub { display: none; }
 }
 .fig-legend { display: none; }
+/* Where a figure lists its steps underneath (phones), its callouts go and the
+   drawing moves to the middle. FigMethod's drawing spans x -104..139 in a
+   viewBox of -112..400, so its centre (17) shifts to the viewBox centre (144). */
+@media (max-width: 40rem) {
+  .fig:has(.fig-legend) .bp-callouts { display: none; }
+  .fig:has(.fig-legend) .bp-body { transform: translateX(127px); }
+}
 @media (max-width: 40rem) {
   .fig-legend { display: grid; gap: 0.35rem; list-style: none; margin: 1rem 0 0; padding: 0 0.5rem; font-family: var(--mono); font-size: var(--m-cap); text-transform: uppercase; }
   .fig-legend span { color: var(--blue); margin-right: 0.9em; }
