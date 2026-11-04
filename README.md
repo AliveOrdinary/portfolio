@@ -25,7 +25,7 @@ npm run build    # into dist/
 - `src/layouts/Case.astro`: case-study layout; each page passes its `chapters` for the sticky chapter index
 - `src/scripts/motion.ts`: drawings plotting in and exploding on scroll, name decode, reveals, ruler, chapter index, journeys
 
-Chapters marked with a `draft-note` ("Draft: rewrite before publishing") in the case studies are placeholders to rewrite.
+`draft-note` puts a small dashed status tag under a chapter title; Amplifier's studio-site chapter uses it for "In progress: not launched yet".
 
 ## Design
 

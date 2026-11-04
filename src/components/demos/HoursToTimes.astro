@@ -197,6 +197,10 @@
   :global(.ht-block-bar.late) { outline: 2px solid var(--reject); outline-offset: 1px; }
 
   .ht-table { width: 100%; border-collapse: collapse; font-family: var(--display); font-size: var(--t-sm); font-variant-numeric: tabular-nums; }
+  /* Mono runs wide: on small phones the table steps down a size, and its panel scrolls
+     sideways rather than pushing the page wider if it still doesn't fit. */
+  .ht-out { min-width: 0; overflow-x: auto; }
+  @media (max-width: 30rem) { .ht-table { font-size: var(--m-label); } }
   :global(.ht-table th) { text-align: left; font-weight: 600; font-size: var(--t-xs); color: var(--pencil); border-bottom: 1.5px solid var(--ink); padding: 0.3rem 0.4rem 0.3rem 0; }
   :global(.ht-table td) { padding: 0.35rem 0.4rem 0.35rem 0; border-bottom: 1px solid var(--grid); }
   :global(.ht-table .r) { text-align: right; }
